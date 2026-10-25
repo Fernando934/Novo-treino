@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Manual do Treinador de Corrida</title>
+  <title>StaminaLab 360° - Plataforma de Corrida</title>
 
   <!-- PWA Meta Tags -->
   <meta name="theme-color" content="#0d1117" />
@@ -54,7 +54,7 @@
     .gradient-border {
       border: 1px solid transparent;
       background: linear-gradient(#121824, #121824) padding-box,
-                  linear-gradient(135deg, rgba(139,92,246,0.4), rgba(6,182,212,0.4)) border-box;
+                  linear-gradient(135deg, rgba(6,182,212,0.4), rgba(16,185,129,0.4)) border-box;
     }
     .glass-nav {
       background: rgba(18, 24, 36, 0.85);
@@ -65,22 +65,22 @@
 </head>
 <body class="pb-28 pt-3 min-h-screen select-none">
 
-  <!-- Header / App Title -->
+  <!-- Header / App Title (Original e Exclusivo) -->
   <header class="px-4 mb-4 max-w-2xl mx-auto">
     <div class="flex items-center justify-between mb-2">
-      <div class="flex items-center space-x-2">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-cyan-400 flex items-center justify-center text-white shadow-lg shadow-purple-500/20">
-          <i class="fa-solid fa-person-running text-lg"></i>
+      <div class="flex items-center space-x-2.5">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-emerald-500 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-cyan-500/20">
+          <i class="fa-solid fa-bolt-lightning text-lg"></i>
         </div>
         <div>
-          <h1 class="text-base font-extrabold tracking-tight bg-gradient-to-r from-purple-400 via-cyan-300 to-amber-300 bg-clip-text text-transparent">
-            FisioTreino 360° Pro
+          <h1 class="text-base font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-emerald-400 to-amber-300 bg-clip-text text-transparent">
+            StaminaLab 360°
           </h1>
-          <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Manual do Treinador de Corrida</p>
+          <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Plataforma Científica de Corrida</p>
         </div>
       </div>
       <div class="flex items-center space-x-2">
-        <button onclick="filterFavorites()" class="p-2 rounded-xl bg-slate-800/80 border border-slate-700 text-amber-400 hover:bg-slate-700 transition" title="Favoritos">
+        <button onclick="filterFavorites()" class="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-amber-400 hover:bg-slate-700 transition" title="Favoritos">
           <i class="fa-solid fa-star text-sm"></i>
         </button>
       </div>
@@ -105,11 +105,11 @@
     <!-- Quick Access Grid -->
     <section id="quickAccessSection">
       <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-1 flex items-center">
-        <i class="fa-solid fa-bolt text-amber-400 mr-2"></i> Acesso Rápido
+        <i class="fa-solid fa-compass text-cyan-400 mr-2"></i> Navegação Rápida
       </h2>
       <div class="grid grid-cols-3 gap-2.5">
-        <button onclick="switchTab('plan')" class="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-indigo-500/40 transition-all active:scale-95 group">
-          <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-2 group-hover:bg-indigo-500/20"><i class="fa-solid fa-calendar-days text-lg"></i></div>
+        <button onclick="switchTab('plan')" class="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 transition-all active:scale-95 group">
+          <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-2 group-hover:bg-cyan-500/20"><i class="fa-solid fa-calendar-days text-lg"></i></div>
           <span class="text-[11px] font-semibold text-gray-200">Plano Auto</span>
         </button>
 
@@ -128,13 +128,13 @@
           <span class="text-[11px] font-semibold text-gray-200">Fisiologia</span>
         </button>
 
-        <button onclick="switchTab('calculators')" class="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 transition-all active:scale-95 group">
-          <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-2 group-hover:bg-cyan-500/20"><i class="fa-solid fa-calculator text-lg"></i></div>
+        <button onclick="switchTab('calculators')" class="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-amber-500/40 transition-all active:scale-95 group">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mb-2 group-hover:bg-amber-500/20"><i class="fa-solid fa-calculator text-lg"></i></div>
           <span class="text-[11px] font-semibold text-gray-200">Ferramentas</span>
         </button>
 
-        <button onclick="switchTab('workouts')" class="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-amber-500/40 transition-all active:scale-95 group">
-          <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mb-2 group-hover:bg-amber-500/20"><i class="fa-solid fa-person-running text-lg"></i></div>
+        <button onclick="switchTab('workouts')" class="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-indigo-500/40 transition-all active:scale-95 group">
+          <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-2 group-hover:bg-indigo-500/20"><i class="fa-solid fa-person-running text-lg"></i></div>
           <span class="text-[11px] font-semibold text-gray-200">Treinamento</span>
         </button>
       </div>
@@ -143,16 +143,16 @@
     <!-- TAB 1: HOME / DASHBOARD -->
     <div id="tab-home" class="tab-content space-y-6">
       <div onclick="switchTab('plan')" class="p-4 rounded-3xl gradient-border relative overflow-hidden cursor-pointer hover:border-cyan-500/50 transition">
-        <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-purple-600/10 rounded-full blur-2xl"></div>
+        <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-cyan-600/10 rounded-full blur-2xl"></div>
         <div class="relative z-10 flex justify-between items-center">
           <div>
-            <span class="px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] font-bold uppercase tracking-wider">Período Dinâmico Ativo</span>
+            <span class="px-2.5 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold uppercase tracking-wider">Laboratório Dinâmico</span>
             <h3 class="text-base font-extrabold text-white mt-2">Plano Semanal Automático</h3>
             <p class="text-xs text-gray-300 mt-1 leading-relaxed">
-              O plano altera automaticamente a cada semana do mês (Base, Intensidade e Descarga).
+              Periodização inteligente ajustada automaticamente conforme a semana do mês.
             </p>
           </div>
-          <div class="bg-indigo-600 text-white p-3 rounded-2xl shrink-0 ml-3">
+          <div class="bg-cyan-600 text-slate-950 p-3 rounded-2xl shrink-0 ml-3 font-bold">
             <i class="fa-solid fa-calendar-days text-lg"></i>
           </div>
         </div>
@@ -180,14 +180,14 @@
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
           <h2 class="text-sm font-bold text-white">Plano Semanal Dinâmico</h2>
-          <p id="cycleWeekLabel" class="text-xs text-indigo-400 font-semibold">Semana do Ciclo: Calculando...</p>
+          <p id="cycleWeekLabel" class="text-xs text-cyan-400 font-semibold">Semana do Ciclo: Calculando...</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-cyan-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
         </button>
       </div>
-      <div class="p-3 rounded-2xl bg-indigo-950/30 border border-indigo-500/30 text-xs text-indigo-200 leading-relaxed">
-        <i class="fa-solid fa-circle-info mr-1 text-indigo-400"></i> O sistema ajusta os volumes e intensidades semanalmente (Base ➔ Intensidade ➔ Polimento/Descarga).
+      <div class="p-3 rounded-2xl bg-cyan-950/30 border border-cyan-500/30 text-xs text-cyan-200 leading-relaxed">
+        <i class="fa-solid fa-circle-info mr-1 text-cyan-400"></i> O sistema calcula o volume e a intensidade de acordo com o progresso do mês.
       </div>
       <div id="planContainer" class="space-y-3"></div>
     </div>
@@ -204,7 +204,6 @@
         </button>
       </div>
 
-      <!-- Log Workout Card -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <h3 class="font-bold text-sm text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-pen-to-square"></i> Registar Treino Realizado</h3>
         <div>
@@ -233,7 +232,6 @@
         </button>
       </div>
 
-      <!-- History & Feedback list -->
       <div class="space-y-3">
         <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider px-1">Histórico de Carga & Feedback</h3>
         <div id="workoutHistoryContainer" class="space-y-2">
@@ -268,7 +266,6 @@
         </button>
       </div>
 
-      <!-- Pace Calculator -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <div class="flex items-center space-x-3 text-cyan-400">
           <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center"><i class="fa-solid fa-gauge-high"></i></div>
@@ -292,7 +289,6 @@
         </div>
       </div>
 
-      <!-- Race Predictor -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <div class="flex items-center space-x-3 text-emerald-400">
           <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center"><i class="fa-solid fa-flag-checkered"></i></div>
@@ -306,7 +302,6 @@
         <div id="predictorResult" class="hidden space-y-1.5 pt-1"></div>
       </div>
 
-      <!-- Karvonen HR Zones -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <div class="flex items-center space-x-3 text-rose-400">
           <div class="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center"><i class="fa-solid fa-heart-pulse"></i></div>
@@ -326,7 +321,6 @@
         <div id="karvonenResult" class="hidden space-y-1.5 pt-1"></div>
       </div>
 
-      <!-- VAM Paces -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <div class="flex items-center space-x-3 text-amber-400">
           <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center"><i class="fa-solid fa-fire-flame-curved"></i></div>
@@ -418,29 +412,27 @@
   <!-- JAVASCRIPT APP LOGIC -->
   <script>
     let currentModalItem = null;
-    let favorites = JSON.parse(localStorage.getItem('fisio360_favs') || '[]');
-    let completedPlanDays = JSON.parse(localStorage.getItem('fisio360_plan_done') || '[]');
-    let workoutLogs = JSON.parse(localStorage.getItem('fisio360_logs') || '[]');
+    let favorites = JSON.parse(localStorage.getItem('stamina_favs') || '[]');
+    let completedPlanDays = JSON.parse(localStorage.getItem('stamina_plan_done') || '[]');
+    let workoutLogs = JSON.parse(localStorage.getItem('stamina_logs') || '[]');
 
-    // --- AUTOMATIC DYNAMIC WEEKLY PLAN ---
     function getDynamicWeeklyPlan() {
-      // Calcula a semana atual do mês (1 a 4) para alterar automaticamente
       const now = new Date();
       const dayOfMonth = now.getDate();
-      const weekNumber = Math.ceil(dayOfMonth / 7); // 1, 2, 3 ou 4
+      const weekNumber = Math.ceil(dayOfMonth / 7);
       
       let phaseName = "Semana 1: Base Aeróbica & Volume";
       let multiplier = 1.0;
 
       if (weekNumber === 2) {
         phaseName = "Semana 2: Intensidade & Limiar";
-        multiplier = 1.1; // Aumenta exigência
+        multiplier = 1.1;
       } else if (weekNumber === 3) {
         phaseName = "Semana 3: Pico de Carga & VAM";
         multiplier = 1.2;
       } else if (weekNumber >= 4) {
         phaseName = "Semana 4: Polimento & Descarga (Taper)";
-        multiplier = 0.8; // Reduz volume para supercompensação
+        multiplier = 0.8;
       }
 
       document.getElementById('cycleWeekLabel').textContent = phaseName;
@@ -552,11 +544,10 @@
       } else {
         completedPlanDays.push(index);
       }
-      localStorage.setItem('fisio360_plan_done', JSON.stringify(completedPlanDays));
+      localStorage.setItem('stamina_plan_done', JSON.stringify(completedPlanDays));
       renderPlan();
     }
 
-    // --- FEEDBACK & WORKOUT LOGS ---
     function saveWorkoutLog() {
       const type = document.getElementById('logType').value;
       const duration = parseInt(document.getElementById('logDuration').value);
@@ -567,7 +558,6 @@
         return;
       }
 
-      // Carga de Treino (Método Foster: Duração x RPE)
       const load = duration * rpe;
       let feedback = "Treino equilibrado dentro da zona esperada.";
 
@@ -589,7 +579,7 @@
       };
 
       workoutLogs.unshift(newLog);
-      localStorage.setItem('fisio360_logs', JSON.stringify(workoutLogs));
+      localStorage.setItem('stamina_logs', JSON.stringify(workoutLogs));
       renderWorkoutLogs();
 
       document.getElementById('logDuration').value = '';
@@ -693,7 +683,7 @@
 
     function toggleFavorite(itemId) {
       if (favorites.includes(itemId)) { favorites = favorites.filter(id => id !== itemId); } else { favorites.push(itemId); }
-      localStorage.setItem('fisio360_favs', JSON.stringify(favorites));
+      localStorage.setItem('stamina_favs', JSON.stringify(favorites));
       renderHomeContent();
       if (currentModalItem && currentModalItem.id === itemId) updateModalFavoriteButton();
     }
@@ -758,7 +748,6 @@
     }
     function toggleFavoriteCurrentModal() { if (currentModalItem) toggleFavorite(currentModalItem.id); }
 
-    // Calculadoras
     function calculatePace() {
       const dist = parseFloat(document.getElementById('calcDist').value);
       const timeStr = document.getElementById('calcTime').value.trim();
