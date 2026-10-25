@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>StaminaLab 360° - Plataforma de Corrida & Força</title>
+  <title>StaminaLab 360° - Plataforma Científica de Corrida & Força</title>
 
   <!-- PWA Meta Tags -->
   <meta name="theme-color" content="#0d1117" />
@@ -102,7 +102,7 @@
   <!-- MAIN CONTAINER -->
   <main class="max-w-2xl mx-auto px-4 space-y-6" id="mainContent">
 
-    <!-- Quick Access Grid (Incluindo Fortalecimento) -->
+    <!-- Quick Access Grid -->
     <section id="quickAccessSection">
       <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-1 flex items-center">
         <i class="fa-solid fa-compass text-cyan-400 mr-2"></i> Navegação Rápida
@@ -146,10 +146,10 @@
         <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-emerald-600/10 rounded-full blur-2xl"></div>
         <div class="relative z-10 flex justify-between items-center">
           <div>
-            <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold uppercase tracking-wider">Novo Módulo</span>
-            <h3 class="text-base font-extrabold text-white mt-2">Treino de Fortalecimento com Elásticos[span_3](start_span)[span_3](end_span)</h3>
+            <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold uppercase tracking-wider">Módulo Completo</span>
+            <h3 class="text-base font-extrabold text-white mt-2">Treino de Força (Superior, Inferior e Core)[span_3](start_span)[span_3](end_span)</h3>
             <p class="text-xs text-gray-300 mt-1 leading-relaxed">
-              Planilhas estruturadas com tubos extensores, âncora de porta e mini bands[span_4](start_span)[span_4](end_span).
+              Planilhas estruturadas com tubos, âncora de porta e mini bands para corredores[span_4](start_span)[span_4](end_span).
             </p>
           </div>
           <div class="bg-emerald-600 text-slate-950 p-3 rounded-2xl shrink-0 ml-3 font-bold">
@@ -192,12 +192,12 @@
       <div id="planContainer" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 3: FORTALECIMENTO COM ELÁSTICOS (NOVO) -->
+    <!-- TAB 3: FORTALECIMENTO COM ELÁSTICOS (A, B e C COMPLETOS) -->
     <div id="tab-bands" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
-          <h2 class="text-sm font-bold text-white">Fortalecimento com Kit Elásticos[span_5](start_span)[span_5](end_span)</h2>
-          <p class="text-xs text-gray-400">Musculação funcional em casa (Tubos + Mini Bands[span_6](start_span)[span_6](end_span)).</p>
+          <h2 class="text-sm font-bold text-white">Musculação com Kit Elásticos[span_5](start_span)[span_5](end_span)</h2>
+          <p class="text-xs text-gray-400">Treinos A (Superiores), B (Pernas) e C (Core/Postura)[span_6](start_span)[span_6](end_span).</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-cyan-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
@@ -206,9 +206,9 @@
 
       <!-- Seletor de Treinos A, B ou C -->
       <div class="grid grid-cols-3 gap-2">
-        <button onclick="switchBandsWorkout('A')" id="btn-band-A" class="py-2.5 rounded-xl bg-cyan-600 text-slate-950 font-bold text-xs shadow-md transition">Treino A (Superior)</button>
+        <button onclick="switchBandsWorkout('A')" id="btn-band-A" class="py-2.5 rounded-xl bg-cyan-600 text-slate-950 font-bold text-xs shadow-md transition">Treino A (Superiores)</button>
         <button onclick="switchBandsWorkout('B')" id="btn-band-B" class="py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-gray-300 font-bold text-xs transition">Treino B (Pernas)</button>
-        <button onclick="switchBandsWorkout('C')" id="btn-band-C" class="py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-gray-300 font-bold text-xs transition">Treino C (Core)</button>
+        <button onclick="switchBandsWorkout('C')" id="btn-band-C" class="py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-gray-300 font-bold text-xs transition">Treino C (Core/Postura)</button>
       </div>
 
       <!-- Guia de Cores de Carga -->
@@ -221,13 +221,11 @@
           <div class="p-1 rounded bg-green-500/20 text-green-300 font-bold">Verde<br>18.1 kg</div>
           <div class="p-1 rounded bg-slate-800 text-slate-200 font-bold">Preto<br>22.7 kg</div>
         </div>
-        <p class="text-[10px] text-gray-400">Dica: Pode combinar múltiplos tubos nos pegadores para somar carga!</p>
+        <p class="text-[10px] text-gray-400">Dica: Você pode combinar tubos nos pegadores para somar a carga desejada!</p>
       </div>
 
-      <!-- Lista de Exercícios Dinâmica -->
-      <div id="bandsExercisesList" class="space-y-3">
-        <!-- Preenchido via JavaScript -->
-      </div>
+      <!-- Lista de Exercícios Dinâmica com Instruções de Execução -->
+      <div id="bandsExercisesList" class="space-y-3"></div>
     </div>
 
     <!-- TAB 4: FEEDBACK & EVOLUÇÃO DAS ATIVIDADES -->
@@ -248,7 +246,9 @@
           <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Tipo de Sessão</label>
           <select id="logType" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 outline-none">
             <option value="Rodagem Z2">Rodagem Aeróbica (Z2)</option>
-            <option value="Treino de Elásticos (Força)">Treino de Elásticos (Força)[span_8](start_span)[span_8](end_span)</option>
+            <option value="Treino A - Superiores (Elásticos)">Treino A - Superiores (Elásticos)[span_8](start_span)[span_8](end_span)</option>
+            <option value="Treino B - Pernas (Elásticos)">Treino B - Pernas (Elásticos)[span_9](start_span)[span_9](end_span)</option>
+            <option value="Treino C - Core (Elásticos)">Treino C - Core (Elásticos)[span_10](start_span)[span_10](end_span)</option>
             <option value="Intervalado / Tiros">Treino Intervalado / Tiros</option>
             <option value="Tempo Run">Tempo Run / Limiar</option>
             <option value="Longão">Longão (Long Run)</option>
@@ -413,7 +413,7 @@
         <i class="fa-solid fa-calendar-days text-base"></i><span class="text-[9px] font-medium mt-0.5">Plano</span>
       </button>
       <button onclick="switchTab('bands')" id="nav-bands" class="nav-item flex flex-col items-center p-1.5 text-gray-400 hover:text-gray-200 transition">
-        <i class="fa-solid fa-dumbbell text-base"></i><span class="text-[9px] font-medium mt-0.5">Elásticos[span_9](start_span)[span_9](end_span)</span>
+        <i class="fa-solid fa-dumbbell text-base"></i><span class="text-[9px] font-medium mt-0.5">Elásticos[span_11](start_span)[span_11](end_span)</span>
       </button>
       <button onclick="switchTab('feedback')" id="nav-feedback" class="nav-item flex flex-col items-center p-1.5 text-gray-400 hover:text-gray-200 transition">
         <i class="fa-solid fa-chart-line text-base"></i><span class="text-[9px] font-medium mt-0.5">Feedback</span>
@@ -456,23 +456,23 @@
 
     const BANDS_WORKOUTS = {
       A: [
-        { name: "Supino com Elástico Extensor", setup: "Prenda o elástico na altura média da porta (ou passe por trás das costas)", exec: "Segure os pegadores e empurre para frente até estender os braços.", sets: "3 séries x 15 repetições" },
-        { name: "Remada Baixa / Curvada", setup: "Pise no centro do elástico com os dois pés", exec: "Puxe os pegadores em direção ao quadril, mantendo o peito aberto.", sets: "3 séries x 15 repetições" },
-        { name: "Desenvolvimento de Ombros", setup: "Pise no elástico com os pés na largura dos ombros", exec: "Eleve os pegadores acima da cabeça controlando a descida.", sets: "3 séries x 12 repetições" },
-        { name: "Rosca Direta (Bíceps)", setup: "Pise no elástico com um ou ambos os pés", exec: "Flexione os cotovelos trazendo os pegadores em direção aos ombros.", sets: "3 séries x 15 repetições" },
-        { name: "Tríceps na Porta", setup: "Prenda o elástico no topo da porta (âncora alta)", exec: "Empurre para baixo estendendo totalmente os braços.", sets: "3 séries x 15 repetições" }
+        { name: "Supino com Elástico Extensor", setup: "Prenda o elástico na altura média da porta (ou passe por trás das costas na altura das escápulas).", exec: "Segure os pegadores e empurre para frente até estender os braços. Retorne controlando.", sets: "3 séries x 15 repetições" },
+        { name: "Remada Baixa / Curvada", setup: "Pise no centro do elástico tubular com os dois pés[span_12](start_span)[span_12](end_span) ou prenda a âncora embaixo na porta.", exec: "Incline o tronco levemente à frente, puxe os pegadores em direção ao quadril espremendo as escápulas.", sets: "3 séries x 15 repetições" },
+        { name: "Desenvolvimento de Ombros", setup: "Pise no centro do elástico com os dois pés na largura dos ombros[span_13](start_span)[span_13](end_span).", exec: "Segure os pegadores na altura dos ombros e eleve para cima da cabeça até quase juntar. Desça devagar.", sets: "3 séries x 12 repetições" },
+        { name: "Rosca Direta (Bíceps)", setup: "Pise no elástico com um ou ambos os pés[span_14](start_span)[span_14](end_span), mantendo os braços estendidos.", exec: "Mantenha os cotovelos colados na costela e flexione os braços trazendo os pegadores aos ombros.", sets: "3 séries x 15 repetições" },
+        { name: "Tríceps na Porta", setup: "Prenda o elástico na âncora de porta na posição mais alta (topo)[span_15](start_span)[span_15](end_span).", exec: "Fique de frente para a porta, cotovelos flexionados perto da cabeça, e empurre para baixo esticando o braço.", sets: "3 séries x 15 repetições" }
       ],
       B: [
-        { name: "Agachamento com Extensor", setup: "Pise no elástico e apoie os pegadores na altura dos ombros", exec: "Execute o agachamento mantendo o tronco erguido e joelhos alinhados.", sets: "3 séries x 15 repetições" },
-        { name: "Ponte de Glúteos com Mini Band", setup: "Coloque a mini band acima dos joelhos deitado de costas", exec: "Eleve o quadril fazendo força para abrir os joelhos contra o elástico.", sets: "3 séries x 20 repetições" },
-        { name: "Caminhada Lateral (Monster Walk)", setup: "Coloque a mini band ao redor dos tornozelos", exec: "Dê passos laterais mantendo a tensão constante na faixa elástica.", sets: "3 séries x 15 passos cada lado" },
-        { name: "Avanço / Passada com Elástico", setup: "Pise com um pé no centro do elástico e segure os pegadores", exec: "Dê o passo para trás ou para frente realizando o afundo.", sets: "3 séries x 12 reps por perna" }
+        { name: "Agachamento com Extensor", setup: "Pise no elástico[span_16](start_span)[span_16](end_span) e apoie os pegadores na altura dos ombros.", exec: "Execute o agachamento mantendo o tronco erguido, calcanhares no chão e joelhos alinhados com a ponta dos pés.", sets: "3 séries x 15 repetições" },
+        { name: "Ponte de Glúteos com Mini Band", setup: "Posicione a mini band logo acima dos joelhos[span_17](start_span)[span_17](end_span), deitado de costas com os Joelhos flexionados.", exec: "Eleve o quadril contraindo os glúteos e fazendo força leve para abrir os joelhos contra a faixa.", sets: "3 séries x 20 repetições" },
+        { name: "Caminhada Lateral (Monster Walk)", setup: "Coloque a mini band ao redor dos tornozelos[span_18](start_span)[span_18](end_span) ou logo abaixo dos joelhos.", exec: "Dê passos largos para o lateral mantendo a tensão constante na faixa e o corpo estabilizado.", sets: "3 séries x 15 passos cada lado" },
+        { name: "Avanço / Passada com Elástico", setup: "Pise com um pé no centro do elástico[span_19](start_span)[span_19](end_span) e segure os pegadores nos ombros.", exec: "Dê um passo para trás ou para frente realizando o afundo (joelho de trás quase encosta no chão).", sets: "3 séries x 12 reps por perna" }
       ],
       C: [
-        { name: "Pallof Press (Anti-rotação)", setup: "Prenda o elástico na porta na altura do peito", exec: "Segure com as duas mãos perto do peito e estique para frente resistindo à rotação.", sets: "3 séries x 12 reps cada lado" },
-        { name: "Abdução de Quadril", setup: "Use a tira de tornozelo conectada ao tubo na altura baixa da porta", exec: "Afaste a perna para o lado lateralmente contra a resistência.", sets: "3 séries x 15 reps cada lado" },
-        { name: "Face Pull com Elástico", setup: "Prenda o elástico na altura dos olhos na porta", exec: "Puxe em direção ao rosto abrindo os cotovelos (foco em postura e escápulas).", sets: "3 séries x 15 repetições" },
-        { name: "Prancha com Mini Band nos Pulsos", setup: "Coloque a mini band ao redor dos antebraços em posição de prancha", exec: "Faça leve pressão para fora mantendo o core estabilizado.", sets: "3 séries x 45 segundos" }
+        { name: "Pallof Press (Anti-rotação Core)", setup: "Prenda o elástico na porta na altura do peito[span_20](start_span)[span_20](end_span).", exec: "Segure com as duas mãos perto do esterno, estique os braços para frente resistindo à força lateral da porta.", sets: "3 séries x 12 reps cada lado" },
+        { name: "Abdução de Quadril (Tira de Tornozelo)", setup: "Conecte a tira de tornozelo[span_21](start_span)[span_21](end_span) no tubo e prenda na altura mais baixa da porta.", exec: "Afaste a perna lateralmente para fora contra a resistência do elástico, mantendo o tronco reto.", sets: "3 séries x 15 reps cada lado" },
+        { name: "Face Pull com Elástico", setup: "Prenda o elástico na altura dos olhos/rosto na porta[span_22](start_span)[span_22](end_span).", exec: "Puxe os pegadores em direção ao rosto abrindo bem os cotovelos para trás (foco em postura e ombro posterior).", sets: "3 séries x 15 repetições" },
+        { name: "Prancha com Mini Band nos Pulsos", setup: "Coloque a mini band ao redor dos antebraços[span_23](start_span)[span_23](end_span) e assuma a posição de prancha ventral.", exec: "Mantenha o core rígido e faça leve pressão para fora com os braços contra a faixa.", sets: "3 séries x 45 segundos" }
       ]
     };
 
@@ -495,8 +495,8 @@
             <h4 class="text-xs font-bold text-white"><span class="text-cyan-400 mr-1">${idx+1}.</span> ${ex.name}</h4>
             <span class="text-[10px] font-bold bg-cyan-500/10 text-cyan-300 px-2 py-0.5 rounded">${ex.sets}</span>
           </div>
-          <p class="text-[11px] text-gray-300"><strong class="text-emerald-400">Montagem:</strong> ${ex.setup}</p>
-          <p class="text-[11px] text-gray-300"><strong class="text-amber-400">Execução:</strong> ${ex.exec}</p>
+          <p class="text-[11px] text-gray-300"><strong class="text-emerald-400">Montagem / Posicionamento:</strong> ${ex.setup}</p>
+          <p class="text-[11px] text-gray-300"><strong class="text-amber-400">Execução correta:</strong> ${ex.exec}</p>
         </div>
       `).join('');
     }
@@ -523,12 +523,12 @@
       document.getElementById('cycleWeekLabel').textContent = phaseName;
 
       return [
-        { day: 'Segunda-feira', title: 'Corrida Contínua (Base Aeróbica)', type: 'Corrida Z2', color: 'text-blue-400', detail: `${Math.round(6 * multiplier)}k em ritmo conversacional (Z2) para adaptação mitocondrial.`, complement: 'Estabilização de core e Treino A de Elásticos.' },
-        { day: 'Terça-feira', title: 'Treino Intervalado (Tiros de Pista)', type: 'Tiros / VAM', color: 'text-red-400', detail: `Aquecimento + ${weekNumber >= 3 ? '8' : '6'} x 400m em ritmo forte com 1:30 min de trote leve.`, complement: 'Desaquecimento e alongamentos.' },
-        { day: 'Quarta-feira', title: 'Condicionamento Misto', type: 'Natação + Força', color: 'text-cyan-400', detail: 'Sessão de natação para gasto aeróbico sem impacto articular.', complement: 'Treino B de Elásticos (Membros Inferiores).' },
+        { day: 'Segunda-feira', title: 'Corrida Contínua (Base Aeróbica)', type: 'Corrida Z2 + Treino A', color: 'text-blue-400', detail: `${Math.round(6 * multiplier)}k em ritmo conversacional (Z2).`, complement: 'Força: Treino A (Membros Superiores).' },
+        { day: 'Terça-feira', title: 'Treino Intervalado (Tiros de Pista)', type: 'Tiros / VAM', color: 'text-red-400', detail: `Aquecimento + ${weekNumber >= 3 ? '8' : '6'} x 400m em ritmo forte com 1:30 min de trote leve.`, complement: 'Desaquecimento e descanso de força.' },
+        { day: 'Quarta-feira', title: 'Condicionamento Misto', type: 'Natação + Treino B', color: 'text-cyan-400', detail: 'Sessão de natação para gasto aeróbico sem impacto articular.', complement: 'Força: Treino B (Membros Inferiores).' },
         { day: 'Quinta-feira', title: 'Treino de Ritmo (Tempo Run)', type: 'Limiar Anaeróbico', color: 'text-yellow-400', detail: `Aquecimento + ${Math.round(3.5 * multiplier)}k contínuos no ritmo sustentado de limiar.`, complement: 'Trote de regresso à calma.' },
-        { day: 'Sexta-feira', title: 'Rodagem Regenerativa', type: 'Recuperação Ativa', color: 'text-emerald-400', detail: '3k a 4k em ritmo muito leve (Z1) para vascularização e recuperação.', complement: 'Treino C de Elásticos (Core & Postura).' },
-        { day: 'Sábado', title: weekNumber >= 4 ? 'Longão Reduzido (Descarga)' : 'O Longão (Long Run)', type: 'Resistência Prolongada', color: 'text-indigo-400', detail: `${Math.round((weekNumber >= 4 ? 8 : 10) * multiplier)}k contínuos e progressivos, focando em terminar forte.`, complement: 'Hidratação e reposição.' },
+        { day: 'Sexta-feira', title: 'Rodagem Regenerativa', type: 'Recuperação + Treino C', color: 'text-emerald-400', detail: '3k a 4k em ritmo muito leve (Z1) para vascularização e recuperação.', complement: 'Força: Treino C (Core & Postura).' },
+        { day: 'Sábado', title: weekNumber >= 4 ? 'Longão Reduzido (Descarga)' : 'O Longão (Long Run)', type: 'Resistência Prolongada', color: 'text-indigo-400', detail: `${Math.round((weekNumber >= 4 ? 8 : 10) * multiplier)}k contínuos e progressivos, focando em terminar forte.`, complement: 'Hidratação e repouso.' },
         { day: 'Domingo', title: 'Descanso Ativo', type: 'Regeneração Total', color: 'text-slate-400', detail: 'Descanso total de corrida. Opcional: caminhada leve.', complement: 'Mobilidade articular leve.' }
       ];
     }
