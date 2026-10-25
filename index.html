@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manual do Treinador de Corrida 360°</title>
+    <title>Manual do Treinador de Corrida</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -34,7 +34,7 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-base leading-tight">Manual do Treinador</h1>
-                    <span class="text-xs text-blue-400 font-medium">Corrida 360°</span>
+                    <span class="text-xs text-blue-400 font-medium">Corrida 360° Pro</span>
                 </div>
             </div>
             <button onclick="switchTab('favorites')" class="text-slate-400 hover:text-amber-400 transition relative p-2">
@@ -69,7 +69,7 @@
 
             <!-- Acesso Rápido / Grid Principal -->
             <div>
-                <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-3">Acesso Rápido</h2>
+                <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-3">Acesso Rápido Profissional</h2>
                 <div class="grid grid-cols-3 gap-3">
                     <button onclick="switchTab('plan')" class="bg-cardbg hover:bg-slate-800 border border-slate-700/60 p-3 rounded-xl flex flex-col items-center text-center transition group">
                         <div class="bg-indigo-500/10 text-indigo-400 p-3 rounded-lg mb-2 group-hover:scale-110 transition">
@@ -83,17 +83,17 @@
                         </div>
                         <span class="text-xs font-medium text-slate-300">Protocolos</span>
                     </button>
+                    <button onclick="switchTab('calculators')" class="bg-cardbg hover:bg-slate-800 border border-slate-700/60 p-3 rounded-xl flex flex-col items-center text-center transition group">
+                        <div class="bg-amber-500/10 text-amber-400 p-3 rounded-lg mb-2 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-calculator text-lg"></i>
+                        </div>
+                        <span class="text-xs font-medium text-slate-300">Ferramentas</span>
+                    </button>
                     <button onclick="switchTab('physiology')" class="bg-cardbg hover:bg-slate-800 border border-slate-700/60 p-3 rounded-xl flex flex-col items-center text-center transition group">
                         <div class="bg-pink-500/10 text-pink-400 p-3 rounded-lg mb-2 group-hover:scale-110 transition">
                             <i class="fa-solid fa-brain text-lg"></i>
                         </div>
                         <span class="text-xs font-medium text-slate-300">Fisiologia</span>
-                    </button>
-                    <button onclick="switchTab('calculators')" class="bg-cardbg hover:bg-slate-800 border border-slate-700/60 p-3 rounded-xl flex flex-col items-center text-center transition group">
-                        <div class="bg-amber-500/10 text-amber-400 p-3 rounded-lg mb-2 group-hover:scale-110 transition">
-                            <i class="fa-solid fa-calculator text-lg"></i>
-                        </div>
-                        <span class="text-xs font-medium text-slate-300">Calculadoras</span>
                     </button>
                     <button onclick="switchTab('training')" class="bg-cardbg hover:bg-slate-800 border border-slate-700/60 p-3 rounded-xl flex flex-col items-center text-center transition group">
                         <div class="bg-emerald-500/10 text-emerald-400 p-3 rounded-lg mb-2 group-hover:scale-110 transition">
@@ -115,28 +115,24 @@
                 <div class="flex justify-between items-center mb-3">
                     <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase">Destaques</h2>
                 </div>
-                <div class="space-y-2.5" id="home-highlights-list">
-                    <!-- Preenchido via JS -->
-                </div>
+                <div class="space-y-2.5" id="home-highlights-list"></div>
             </div>
         </section>
 
-        <!-- ABA PLANO DE TREINO (NOVA) -->
+        <!-- ABA PLANO DE TREINO -->
         <section id="tab-plan" class="space-y-3 hidden">
             <div class="flex items-center justify-between mb-2">
                 <h2 class="font-bold text-lg text-slate-100 flex items-center gap-2"><i class="fa-solid fa-calendar-check text-indigo-400"></i> Plano Semanal</h2>
                 <span class="text-xs bg-slate-800 text-indigo-400 px-2.5 py-1 rounded-full font-semibold">7 Dias / Foco Total</span>
             </div>
-            <div id="plan-list" class="space-y-3">
-                <!-- Inserido via JS -->
-            </div>
+            <div id="plan-list" class="space-y-3"></div>
         </section>
 
         <!-- ABA PROTOCOLOS -->
         <section id="tab-protocols" class="space-y-3 hidden">
             <div class="flex items-center justify-between mb-2">
                 <h2 class="font-bold text-lg text-slate-100 flex items-center gap-2"><i class="fa-solid fa-book-open text-blue-500"></i> Protocolos de Teste</h2>
-                <span class="text-xs bg-slate-800 text-slate-400 px-2.5 py-1 rounded-full">9 Protocolos</span>
+                <span class="text-xs bg-slate-800 text-slate-400 px-2.5 py-1 rounded-full">Protocolos</span>
             </div>
             <div id="protocols-list" class="space-y-2.5"></div>
         </section>
@@ -188,11 +184,13 @@
             </div>
         </section>
 
-        <!-- ABA CALCULADORAS -->
+        <!-- ABA CALCULADORAS E FERRAMENTAS PROFISSIONAIS -->
         <section id="tab-calculators" class="space-y-4 hidden">
             <div class="flex items-center justify-between mb-2">
-                <h2 class="font-bold text-lg text-slate-100 flex items-center gap-2"><i class="fa-solid fa-calculator text-amber-500"></i> Ferramentas de Cálculo</h2>
+                <h2 class="font-bold text-lg text-slate-100 flex items-center gap-2"><i class="fa-solid fa-calculator text-amber-500"></i> Ferramentas Profissionais</h2>
             </div>
+
+            <!-- 1. Conversor de Pace -->
             <div class="bg-cardbg border border-slate-700/60 p-4 rounded-xl space-y-3">
                 <h3 class="font-semibold text-sm text-blue-400 flex items-center gap-2"><i class="fa-solid fa-gauge"></i> Conversor de Pace & Velocidade</h3>
                 <div class="grid grid-cols-2 gap-3">
@@ -208,6 +206,20 @@
                 <button onclick="calculatePace()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs py-2.5 rounded-lg transition">Calcular</button>
                 <div id="pace-result" class="bg-slate-900 p-3 rounded-lg text-xs text-slate-300 space-y-1 hidden"></div>
             </div>
+
+            <!-- 2. Preditor de Ritmo de Prova (NOVO) -->
+            <div class="bg-cardbg border border-slate-700/60 p-4 rounded-xl space-y-3">
+                <h3 class="font-semibold text-sm text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-flag-checkered"></i> Preditor de Prova (Riegel)</h3>
+                <p class="text-[11px] text-slate-400">Estime o seu tempo para 5k, 10k e 21k com base no seu recorde atual nos 5 km.</p>
+                <div>
+                    <label class="text-[11px] text-slate-400 block mb-1">Seu tempo atual em 5 km (minutos exatos, ex: 25)</label>
+                    <input type="number" id="pred-time-5k" value="25" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-slate-200">
+                </div>
+                <button onclick="calculateRacePredictor()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs py-2.5 rounded-lg transition">Prever Tempos</button>
+                <div id="predictor-result" class="bg-slate-900 p-3 rounded-lg text-xs text-slate-300 space-y-1.5 hidden"></div>
+            </div>
+
+            <!-- 3. Zonas Karvonen -->
             <div class="bg-cardbg border border-slate-700/60 p-4 rounded-xl space-y-3">
                 <h3 class="font-semibold text-sm text-purple-400 flex items-center gap-2"><i class="fa-solid fa-heart-pulse"></i> Zonas por Karvonen (FC Reserva)</h3>
                 <div class="grid grid-cols-2 gap-3">
@@ -275,69 +287,20 @@
             </button>
             <button onclick="switchTab('calculators')" id="nav-calculators" class="nav-btn flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
                 <i class="fa-solid fa-calculator text-base"></i>
-                <span class="text-[10px] mt-1 font-medium">Calculadora</span>
+                <span class="text-[10px] mt-1 font-medium">Ferramentas</span>
             </button>
         </div>
     </nav>
 
     <script>
         const weeklyPlan = [
-            {
-                day: 'Segunda-feira',
-                title: 'Corrida Contínua (Base Aeróbica)',
-                type: 'Corrida Z2',
-                color: 'text-blue-400',
-                detail: '5k a 7k em ritmo conversacional (Z2) para construção de volume de base.',
-                complement: 'Sessão de estabilização de core e mobilidade com miniband.'
-            },
-            {
-                day: 'Terça-feira',
-                title: 'Treino Intervalado (Tiros de Pista)',
-                type: 'Tiros / VAM',
-                color: 'text-red-400',
-                detail: 'Aquecimento (1.5 km trote) + 6 x 400m em ritmo forte com 1:30 min de trote leve de recuperação.',
-                complement: 'Desaquecimento leve e alongamentos.'
-            },
-            {
-                day: 'Quarta-feira',
-                title: 'Condicionamento Misto',
-                type: 'Natação + Core',
-                color: 'text-cyan-400',
-                detail: 'Sessão de natação para gasto aeróbico sem impacto articular.',
-                complement: 'Circuito leve com miniband focado em glúteos e estabilização de joelho.'
-            },
-            {
-                day: 'Quinta-feira',
-                title: 'Treino de Ritmo (Tempo Run)',
-                type: 'Limiar Anaeróbico',
-                color: 'text-yellow-400',
-                detail: 'Aquecimento + 3k a 4k contínuos no ritmo sustentado de limiar.',
-                complement: 'Trote de regresso à calma.'
-            },
-            {
-                day: 'Sexta-feira',
-                title: 'Rodagem Regenerativa',
-                type: 'Recuperação Ativa',
-                color: 'text-emerald-400',
-                detail: '3k a 4k em ritmo muito leve (Z1) para vascularização e recuperação.',
-                complement: 'Sessão completa de mobilidade e liberação miofascial.'
-            },
-            {
-                day: 'Sábado',
-                title: 'O Longão (Long Run)',
-                type: 'Resistência Prolongada',
-                color: 'text-indigo-400',
-                detail: '8k a 10k contínuos e progressivos, focando em manter a cadência e terminar forte nos últimos 2k.',
-                complement: 'Hidratação e reposição com suplementação.'
-            },
-            {
-                day: 'Domingo',
-                title: 'Descanso Ativo',
-                type: 'Regeneração Total',
-                color: 'text-slate-400',
-                detail: 'Descanso total de corrida. Opcional: caminhada leve.',
-                complement: 'Rotina leve de mobilidade com elásticos miniband.'
-            }
+            { day: 'Segunda-feira', title: 'Corrida Contínua (Base Aeróbica)', type: 'Corrida Z2', color: 'text-blue-400', detail: '5k a 7k em ritmo conversacional (Z2) para construção de volume de base.', complement: 'Estabilização de core e mobilidade com miniband.' },
+            { day: 'Terça-feira', title: 'Treino Intervalado (Tiros de Pista)', type: 'Tiros / VAM', color: 'text-red-400', detail: 'Aquecimento (1.5 km trote) + 6 x 400m em ritmo forte com 1:30 min de trote leve de recuperação.', complement: 'Desaquecimento e alongamentos.' },
+            { day: 'Quarta-feira', title: 'Condicionamento Misto', type: 'Natação + Core', color: 'text-cyan-400', detail: 'Sessão de natação para gasto aeróbico sem impacto articular.', complement: 'Circuito leve com miniband focado em glúteos e joelhos.' },
+            { day: 'Quinta-feira', title: 'Treino de Ritmo (Tempo Run)', type: 'Limiar Anaeróbico', color: 'text-yellow-400', detail: 'Aquecimento + 3k a 4k contínuos no ritmo sustentado de limiar.', complement: 'Trote de regresso à calma.' },
+            { day: 'Sexta-feira', title: 'Rodagem Regenerativa', type: 'Recuperação Ativa', color: 'text-emerald-400', detail: '3k a 4k em ritmo muito leve (Z1) para vascularização e recuperação.', complement: 'Mobilidade completa e liberação miofascial.' },
+            { day: 'Sábado', title: 'O Longão (Long Run)', type: 'Resistência Prolongada', color: 'text-indigo-400', detail: '8k a 10k contínuos e progressivos, focando em terminar forte nos últimos 2k.', complement: 'Hidratação e reposição.' },
+            { day: 'Domingo', title: 'Descanso Ativo', type: 'Regeneração Total', color: 'text-slate-400', detail: 'Descanso total de corrida. Opcional: caminhada leve.', complement: 'Rotina leve com miniband.' }
         ];
 
         const database = [
@@ -532,6 +495,38 @@
             resDiv.innerHTML = `
                 <div><strong class="text-blue-400">Pace Médio:</strong> ${paceMin}:${paceSec < 10 ? '0' : ''}${paceSec} min/km</div>
                 <div><strong class="text-emerald-400">Velocidade Média:</strong> ${speed} km/h</div>
+            `;
+            resDiv.classList.remove('hidden');
+        }
+
+        function calculateRacePredictor() {
+            const t5k = parseFloat(document.getElementById('pred-time-5k').value);
+            const resDiv = document.getElementById('predictor-result');
+
+            if(!t5k || t5k <= 0) {
+                alert('Insira um tempo válido para os 5 km.');
+                return;
+            }
+
+            // Fórmula de Riegel: T2 = T1 * (D2 / D1)^1.06
+            const t10k = t5k * Math.pow(10 / 5, 1.06);
+            const t21k = t5k * Math.pow(21.097 / 5, 1.06);
+            const t42k = t5k * Math.pow(42.195 / 5, 1.06);
+
+            const formatTime = (totalMin) => {
+                const hrs = Math.floor(totalMin / 60);
+                const mins = Math.floor(totalMin % 60);
+                const secs = Math.round((totalMin - Math.floor(totalMin)) * 60);
+                if(hrs > 0) {
+                    return `${hrs}h ${mins}m ${secs < 10 ? '0' : ''}${secs}s`;
+                }
+                return `${mins}m ${secs < 10 ? '0' : ''}${secs}s`;
+            };
+
+            resDiv.innerHTML = `
+                <div><strong class="text-blue-400">Previsão 10 km:</strong> ${formatTime(t10k)}</div>
+                <div><strong class="text-yellow-400">Previsão Meia (21k):</strong> ${formatTime(t21k)}</div>
+                <div><strong class="text-red-400">Previsão Maratona (42k):</strong> ${formatTime(t42k)}</div>
             `;
             resDiv.classList.remove('hidden');
         }
