@@ -1,559 +1,965 @@
+html
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="h-full bg-slate-900 text-slate-100">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manual do Treinador de Corrida</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        darkbg: '#0F172A',
-                        cardbg: '#1E293B',
-                        accent: '#3B82F6',
-                        accenthover: '#2563EB'
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome para Ícones -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FisioTreino- Prescrição & Fisiologia de Elite</title>
+  
+  <!-- PWA Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0f172a">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- MathJax CDN for LaTeX Math rendering -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    
+    .tab-active {
+      border-bottom: 3px solid #06b6d4;
+      color: #06b6d4;
+      font-weight: 700;
+    }
+  </style>
 </head>
-<body class="bg-darkbg text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between">
+<body class="h-full flex flex-col font-sans antialiased bg-slate-900 text-slate-100 selection:bg-cyan-500 selection:text-slate-900">
 
-    <!-- CABEÇALHO -->
-    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 px-4 py-3 shadow-md">
-        <div class="max-w-md mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-2 cursor-pointer" onclick="switchTab('home')">
-                <div class="bg-blue-600 p-2 rounded-lg text-white">
-                    <i class="fa-solid fa-running"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-base leading-tight">Manual do Treinador</h1>
-                    <span class="text-xs text-blue-400 font-medium">Corrida 360° Pro</span>
-                </div>
-            </div>
-            <button onclick="switchTab('favorites')" class="text-slate-400 hover:text-amber-400 transition relative p-2">
-                <i class="fa-solid fa-star text-lg"></i>
-                <span id="fav-badge" class="absolute top-1 right-1 bg-amber-500 text-slate-950 text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center hidden">0</span>
-            </button>
+  <!-- HEADER / NAVBAR -->
+  <header class="bg-slate-800/90 backdrop-blur border-b border-slate-700 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="bg-gradient-to-tr from-cyan-500 to-blue-600 p-2 rounded-xl text-slate-900 shadow-lg shadow-cyan-500/20">
+          <i class="fa-solid me-0 fa-heart-pulse text-xl text-white"></i>
         </div>
-    </header>
-
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main class="max-w-md mx-auto w-full p-4 flex-grow pb-24">
-
-        <!-- ABA HOME -->
-        <section id="tab-home" class="space-y-4 animate-fade">
-            <!-- Barra de Pesquisa -->
-            <div class="relative">
-                <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-400"></i>
-                <input type="text" id="search-input" onkeyup="filterContent()" placeholder="Pesquisar protocolos, fórmulas, termos..." class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition text-slate-200 placeholder-slate-400">
-            </div>
-
-            <!-- Banner Plano da Semana -->
-            <div onclick="switchTab('plan')" class="bg-gradient-to-r from-blue-900/60 to-indigo-900/60 border border-blue-500/30 p-4 rounded-xl cursor-pointer hover:border-blue-500/60 transition flex justify-between items-center">
-                <div>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400">Meu Planejamento</span>
-                    <h2 class="font-bold text-sm text-slate-100">Plano Semanal de Treino</h2>
-                    <p class="text-xs text-slate-300 mt-0.5">Corrida, Tiros, Natação e Miniband</p>
-                </div>
-                <div class="bg-blue-600 text-white p-2.5 rounded-lg text-sm">
-                    <i class="fa-solid fa-calendar-check"></i>
-                </div>
-            </div>
-
-            <!-- Acesso Rápido / Grid Principal -->
-            <div>
-                <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-3">Acesso Rápido Profissional</h2>
-                <div class="grid grid-cols-3 gap-3">
-                    <button onclick="switchTab('plan')" class="bg-cardbg hover:bg-slate-800 border border-slate-700/60 p-3 rounded-xl flex flex-col items-center text-center transition group">
-                        <div class="bg-indigo-500/10 text-indigo-400 p-3 rounded-lg mb-2 group-hover:scale-110 transition">
-                            <i class="fa-solid fa-calendar-days text-lg"></i>
-                        </div>
-                        <span class="text-xs font-medium text-slate-300">Meu Plano</span>
-                    </button>
-                    <button onclick="switchTab('protocols')" class="bg-cardbg hover:bg-slate-800 border border-slate-700/60 p-3 rounded-xl flex flex-col items-center text-center transition group">
-                        <div class="bg-blue-500/10 text-blue-400 p-3 rounded-lg mb-2 group-hover:scale-110 transition">
-                            <i class="fa-solid fa-book-open text-lg"></i>
-                        </div>
-                        <span class="text-xs font-medium text-slate-300">Protocolos</span>
-                    </button>
-                    <button onclick="switchTab('calculators')" class="bg-cardbg hover:bg-slate-800 border border-slate-700/60 p-3 rounded-xl flex flex-col items-center text-center transition group">
-                        <div class="bg-amber-500/10 text-amber-400 p-3 rounded-lg mb-2 group-hover:scale-110 transition">
-                            <i class="fa-solid fa-calculator text-lg"></i>
-                        </div>
-                        <span class="text-xs font-medium text-slate-300">Ferramentas</span>
-                    </button>
-                    <button onclick="switchTab('physiology')" class="bg-cardbg hover:bg-slate-800 border border-slate-700/60 p-3 rounded-xl flex flex-col items-center text-center transition group">
-                        <div class="bg-pink-500/10 text-pink-400 p-3 rounded-lg mb-2 group-hover:scale-110 transition">
-                            <i class="fa-solid fa-brain text-lg"></i>
-                        </div>
-                        <span class="text-xs font-medium text-slate-300">Fisiologia</span>
-                    </button>
-                    <button onclick="switchTab('training')" class="bg-cardbg hover:bg-slate-800 border border-slate-700/60 p-3 rounded-xl flex flex-col items-center text-center transition group">
-                        <div class="bg-emerald-500/10 text-emerald-400 p-3 rounded-lg mb-2 group-hover:scale-110 transition">
-                            <i class="fa-solid fa-person-running text-lg"></i>
-                        </div>
-                        <span class="text-xs font-medium text-slate-300">Treinamento</span>
-                    </button>
-                    <button onclick="switchTab('zones')" class="bg-cardbg hover:bg-slate-800 border border-slate-700/60 p-3 rounded-xl flex flex-col items-center text-center transition group">
-                        <div class="bg-purple-500/10 text-purple-400 p-3 rounded-lg mb-2 group-hover:scale-110 transition">
-                            <i class="fa-solid fa-bullseye text-lg"></i>
-                        </div>
-                        <span class="text-xs font-medium text-slate-300">Zona Alvo</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Destaques -->
-            <div class="pt-2">
-                <div class="flex justify-between items-center mb-3">
-                    <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase">Destaques</h2>
-                </div>
-                <div class="space-y-2.5" id="home-highlights-list"></div>
-            </div>
-        </section>
-
-        <!-- ABA PLANO DE TREINO -->
-        <section id="tab-plan" class="space-y-3 hidden">
-            <div class="flex items-center justify-between mb-2">
-                <h2 class="font-bold text-lg text-slate-100 flex items-center gap-2"><i class="fa-solid fa-calendar-check text-indigo-400"></i> Plano Semanal</h2>
-                <span class="text-xs bg-slate-800 text-indigo-400 px-2.5 py-1 rounded-full font-semibold">7 Dias / Foco Total</span>
-            </div>
-            <div id="plan-list" class="space-y-3"></div>
-        </section>
-
-        <!-- ABA PROTOCOLOS -->
-        <section id="tab-protocols" class="space-y-3 hidden">
-            <div class="flex items-center justify-between mb-2">
-                <h2 class="font-bold text-lg text-slate-100 flex items-center gap-2"><i class="fa-solid fa-book-open text-blue-500"></i> Protocolos de Teste</h2>
-                <span class="text-xs bg-slate-800 text-slate-400 px-2.5 py-1 rounded-full">Protocolos</span>
-            </div>
-            <div id="protocols-list" class="space-y-2.5"></div>
-        </section>
-
-        <!-- ABA FISIOLOGIA -->
-        <section id="tab-physiology" class="space-y-3 hidden">
-            <div class="flex items-center justify-between mb-2">
-                <h2 class="font-bold text-lg text-slate-100 flex items-center gap-2"><i class="fa-solid fa-brain text-pink-500"></i> Fisiologia & Variáveis</h2>
-                <span class="text-xs bg-slate-800 text-slate-400 px-2.5 py-1 rounded-full">Conceitos</span>
-            </div>
-            <div id="physiology-list" class="space-y-2.5"></div>
-        </section>
-
-        <!-- ABA TREINAMENTO -->
-        <section id="tab-training" class="space-y-3 hidden">
-            <div class="flex items-center justify-between mb-2">
-                <h2 class="font-bold text-lg text-slate-100 flex items-center gap-2"><i class="fa-solid fa-person-running text-emerald-500"></i> Tipos de Treinamento</h2>
-                <span class="text-xs bg-slate-800 text-slate-400 px-2.5 py-1 rounded-full">Métodos</span>
-            </div>
-            <div id="training-list" class="space-y-2.5"></div>
-        </section>
-
-        <!-- ABA ZONAS -->
-        <section id="tab-zones" class="space-y-3 hidden">
-            <div class="flex items-center justify-between mb-2">
-                <h2 class="font-bold text-lg text-slate-100 flex items-center gap-2"><i class="fa-solid fa-bullseye text-purple-500"></i> Zonas Alvo de Treino</h2>
-            </div>
-            <div class="space-y-3">
-                <div class="bg-cardbg border border-slate-700/60 p-4 rounded-xl">
-                    <h3 class="font-semibold text-blue-400 text-sm mb-1">Z1 - Recuperação Ativa (50-60% FCmax)</h3>
-                    <p class="text-xs text-slate-300">Regenerativo, recuperação pós-esforço e circulação sanguínea leve.</p>
-                </div>
-                <div class="bg-cardbg border border-slate-700/60 p-4 rounded-xl">
-                    <h3 class="font-semibold text-emerald-400 text-sm mb-1">Z2 - Base Aeróbica (60-70% FCmax)</h3>
-                    <p class="text-xs text-slate-300">Desenvolvimento mitocondrial, queima de gordura e construção de volume (rodagens).</p>
-                </div>
-                <div class="bg-cardbg border border-slate-700/60 p-4 rounded-xl">
-                    <h3 class="font-semibold text-yellow-400 text-sm mb-1">Z3 - Limiar Aeróbico / Tempo (70-80% FCmax)</h3>
-                    <p class="text-xs text-slate-300">Economia de corrida, melhora do limiar e sustentação de ritmo médio.</p>
-                </div>
-                <div class="bg-cardbg border border-slate-700/60 p-4 rounded-xl">
-                    <h3 class="font-semibold text-orange-400 text-sm mb-1">Z4 - Limiar Anaeróbico (80-90% FCmax)</h3>
-                    <p class="text-xs text-slate-300">Treinos intervalados, tolerância ao lactato e ganho de VAM.</p>
-                </div>
-                <div class="bg-cardbg border border-slate-700/60 p-4 rounded-xl">
-                    <h3 class="font-semibold text-red-400 text-sm mb-1">Z5 - VO2 Máximo / Neuromuscular (90-100% FCmax)</h3>
-                    <p class="text-xs text-slate-300">Tiros curtos, máxima potência aeróbica e tiros de velocidade pura.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- ABA CALCULADORAS E FERRAMENTAS PROFISSIONAIS -->
-        <section id="tab-calculators" class="space-y-4 hidden">
-            <div class="flex items-center justify-between mb-2">
-                <h2 class="font-bold text-lg text-slate-100 flex items-center gap-2"><i class="fa-solid fa-calculator text-amber-500"></i> Ferramentas Profissionais</h2>
-            </div>
-
-            <!-- 1. Conversor de Pace -->
-            <div class="bg-cardbg border border-slate-700/60 p-4 rounded-xl space-y-3">
-                <h3 class="font-semibold text-sm text-blue-400 flex items-center gap-2"><i class="fa-solid fa-gauge"></i> Conversor de Pace & Velocidade</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Distância (km)</label>
-                        <input type="number" id="calc-dist" value="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-slate-200">
-                    </div>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Tempo Total (min)</label>
-                        <input type="number" id="calc-time" value="25" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-slate-200">
-                    </div>
-                </div>
-                <button onclick="calculatePace()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs py-2.5 rounded-lg transition">Calcular</button>
-                <div id="pace-result" class="bg-slate-900 p-3 rounded-lg text-xs text-slate-300 space-y-1 hidden"></div>
-            </div>
-
-            <!-- 2. Preditor de Ritmo de Prova (NOVO) -->
-            <div class="bg-cardbg border border-slate-700/60 p-4 rounded-xl space-y-3">
-                <h3 class="font-semibold text-sm text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-flag-checkered"></i> Preditor de Prova (Riegel)</h3>
-                <p class="text-[11px] text-slate-400">Estime o seu tempo para 5k, 10k e 21k com base no seu recorde atual nos 5 km.</p>
-                <div>
-                    <label class="text-[11px] text-slate-400 block mb-1">Seu tempo atual em 5 km (minutos exatos, ex: 25)</label>
-                    <input type="number" id="pred-time-5k" value="25" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-slate-200">
-                </div>
-                <button onclick="calculateRacePredictor()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs py-2.5 rounded-lg transition">Prever Tempos</button>
-                <div id="predictor-result" class="bg-slate-900 p-3 rounded-lg text-xs text-slate-300 space-y-1.5 hidden"></div>
-            </div>
-
-            <!-- 3. Zonas Karvonen -->
-            <div class="bg-cardbg border border-slate-700/60 p-4 rounded-xl space-y-3">
-                <h3 class="font-semibold text-sm text-purple-400 flex items-center gap-2"><i class="fa-solid fa-heart-pulse"></i> Zonas por Karvonen (FC Reserva)</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">FC Máxima (bpm)</label>
-                        <input type="number" id="fc-max" value="195" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-slate-200">
-                    </div>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">FC Repouso (bpm)</label>
-                        <input type="number" id="fc-rest" value="60" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-slate-200">
-                    </div>
-                </div>
-                <button onclick="calculateKarvonen()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-medium text-xs py-2.5 rounded-lg transition">Calcular Zonas</button>
-                <div id="karvonen-result" class="bg-slate-900 p-3 rounded-lg text-xs text-slate-300 space-y-1.5 hidden"></div>
-            </div>
-        </section>
-
-        <!-- ABA FAVORITOS -->
-        <section id="tab-favorites" class="space-y-3 hidden">
-            <div class="flex items-center justify-between mb-2">
-                <h2 class="font-bold text-lg text-slate-100 flex items-center gap-2"><i class="fa-solid fa-star text-amber-500"></i> Meus Favoritos</h2>
-            </div>
-            <div id="favorites-list" class="space-y-2.5">
-                <p class="text-xs text-slate-500 text-center py-8">Nenhum item favoritado ainda.</p>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- MODAL -->
-    <div id="detail-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden animate-fade">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg max-h-[85vh] rounded-t-2xl sm:rounded-2xl overflow-y-auto p-5 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-start border-b border-slate-800 pb-3">
-                <div>
-                    <span id="modal-category" class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 uppercase tracking-wider"></span>
-                    <h2 id="modal-title" class="text-base font-bold text-slate-100 mt-1"></h2>
-                </div>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1 text-sm"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div id="modal-body" class="text-xs text-slate-300 space-y-3 leading-relaxed"></div>
-            <div class="pt-2 border-t border-slate-800 flex justify-end">
-                <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium px-4 py-2 rounded-lg transition">Fechar</button>
-            </div>
+        <div>
+          <h1 class="font-extrabold text-lg tracking-wider text-white">FISIOTREINO <span class="text-cyan-400">360°</span></h1>
+          <p class="text-xs text-slate-400">Plataforma Profissional de Educação Física</p>
         </div>
+      </div>
+      <div class="hidden md:flex items-center space-x-4 text-xs font-semibold text-slate-300">
+        <span class="bg-slate-700 px-3 py-1 rounded-full border border-slate-600"><i class="fa-solid fa-graduation-cap text-cyan-400 mr-1"></i> Fisiologia Aplicada</span>
+        <span class="bg-slate-700 px-3 py-1 rounded-full border border-slate-600"><i class="fa-solid fa-calculator text-cyan-400 mr-1"></i> Prescrição Prática</span>
+      </div>
     </div>
+  </header>
 
-    <!-- RODAPÉ DE NAVEGAÇÃO -->
-    <nav class="bg-slate-900 border-t border-slate-800 fixed bottom-0 left-0 right-0 z-40 py-2 px-4 shadow-lg">
-        <div class="max-w-md mx-auto flex justify-around items-center">
-            <button onclick="switchTab('home')" id="nav-home" class="nav-btn flex flex-col items-center text-blue-500 transition">
-                <i class="fa-solid fa-house text-base"></i>
-                <span class="text-[10px] mt-1 font-medium">Home</span>
-            </button>
-            <button onclick="switchTab('plan')" id="nav-plan" class="nav-btn flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
-                <i class="fa-solid fa-calendar-days text-base"></i>
-                <span class="text-[10px] mt-1 font-medium">Plano</span>
-            </button>
-            <button onclick="switchTab('protocols')" id="nav-protocols" class="nav-btn flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
-                <i class="fa-solid fa-book-open text-base"></i>
-                <span class="text-[10px] mt-1 font-medium">Protocolos</span>
-            </button>
-            <button onclick="switchTab('training')" id="nav-training" class="nav-btn flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
-                <i class="fa-solid fa-person-running text-base"></i>
-                <span class="text-[10px] mt-1 font-medium">Treinos</span>
-            </button>
-            <button onclick="switchTab('calculators')" id="nav-calculators" class="nav-btn flex flex-col items-center text-slate-400 hover:text-slate-200 transition">
-                <i class="fa-solid fa-calculator text-base"></i>
-                <span class="text-[10px] mt-1 font-medium">Ferramentas</span>
-            </button>
+  <!-- NAVIGATION TABS -->
+  <nav class="bg-slate-800 border-b border-slate-700 overflow-x-auto no-scrollbar sticky top-16 z-40">
+    <div class="max-w-7xl mx-auto px-4 flex space-x-6 min-w-max">
+      <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn py-3 px-2 text-sm font-medium transition-colors flex items-center gap-2 tab-active">
+        <i class="fa-solid fa-chart-line"></i> Dashboard
+      </button>
+      <button onclick="switchTab('planner')" id="tab-planner" class="tab-btn py-3 px-2 text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors flex items-center gap-2">
+        <i class="fa-solid fa-calendar-check"></i> Plano Semanal (7 dias)
+      </button>
+      <button onclick="switchTab('calculators')" id="tab-calculators" class="tab-btn py-3 px-2 text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors flex items-center gap-2">
+        <i class="fa-solid fa-calculator"></i> Calculadoras & Predição
+      </button>
+      <button onclick="switchTab('load-monitor')" id="tab-load-monitor" class="tab-btn py-3 px-2 text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors flex items-center gap-2">
+        <i class="fa-solid fa-gauge-high"></i> Carga de Treino (PSE/Foster)
+      </button>
+      <button onclick="switchTab('nutrition')" id="tab-nutrition" class="tab-btn py-3 px-2 text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors flex items-center gap-2">
+        <i class="fa-solid fa-bottle-water"></i> Hidratação & Carbo
+      </button>
+      <button onclick="switchTab('theory')" id="tab-theory" class="tab-btn py-3 px-2 text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors flex items-center gap-2">
+        <i class="fa-solid fa-book-journal-whills"></i> Base Teórica / Pós
+      </button>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+
+    <!-- ========================================================================= -->
+    <!-- TAB 1: DASHBOARD -->
+    <!-- ========================================================================= -->
+    <section id="content-dashboard" class="tab-content space-y-6">
+      <div class="bg-gradient-to-r from-cyan-900/40 via-slate-800 to-slate-800 p-6 rounded-2xl border border-cyan-500/30 shadow-xl">
+        <h2 class="text-2xl font-bold text-white mb-2">Painel de Controle Profissional</h2>
+        <p class="text-slate-300 text-sm max-w-3xl">
+          Bem-vindo ao FisioTreino 360°. Esta ferramenta foi desenvolvida para Treinadores, Personal Trainers e Fisiologistas do Exercício. Gerencie planos semanais, calcule zonas fisiológicas precisas (VAM, Karvonen, Riegel), monitore carga interna/externa via PSE e prescreva suporte nutricional em tempo real.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Card 1 -->
+        <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Carga Semanal Acumulada</p>
+            <h3 class="text-2xl font-extrabold text-cyan-400 mt-1" id="dash-weekly-load">0 <span class="text-xs font-normal text-slate-400">UA</span></h3>
+          </div>
+          <div class="p-3 bg-cyan-500/10 rounded-xl text-cyan-400">
+            <i class="fa-solid fa-bolt text-2xl"></i>
+          </div>
         </div>
-    </nav>
 
-    <script>
-        const weeklyPlan = [
-            { day: 'Segunda-feira', title: 'Corrida Contínua (Base Aeróbica)', type: 'Corrida Z2', color: 'text-blue-400', detail: '5k a 7k em ritmo conversacional (Z2) para construção de volume de base.', complement: 'Estabilização de core e mobilidade com miniband.' },
-            { day: 'Terça-feira', title: 'Treino Intervalado (Tiros de Pista)', type: 'Tiros / VAM', color: 'text-red-400', detail: 'Aquecimento (1.5 km trote) + 6 x 400m em ritmo forte com 1:30 min de trote leve de recuperação.', complement: 'Desaquecimento e alongamentos.' },
-            { day: 'Quarta-feira', title: 'Condicionamento Misto', type: 'Natação + Core', color: 'text-cyan-400', detail: 'Sessão de natação para gasto aeróbico sem impacto articular.', complement: 'Circuito leve com miniband focado em glúteos e joelhos.' },
-            { day: 'Quinta-feira', title: 'Treino de Ritmo (Tempo Run)', type: 'Limiar Anaeróbico', color: 'text-yellow-400', detail: 'Aquecimento + 3k a 4k contínuos no ritmo sustentado de limiar.', complement: 'Trote de regresso à calma.' },
-            { day: 'Sexta-feira', title: 'Rodagem Regenerativa', type: 'Recuperação Ativa', color: 'text-emerald-400', detail: '3k a 4k em ritmo muito leve (Z1) para vascularização e recuperação.', complement: 'Mobilidade completa e liberação miofascial.' },
-            { day: 'Sábado', title: 'O Longão (Long Run)', type: 'Resistência Prolongada', color: 'text-indigo-400', detail: '8k a 10k contínuos e progressivos, focando em terminar forte nos últimos 2k.', complement: 'Hidratação e reposição.' },
-            { day: 'Domingo', title: 'Descanso Ativo', type: 'Regeneração Total', color: 'text-slate-400', detail: 'Descanso total de corrida. Opcional: caminhada leve.', complement: 'Rotina leve com miniband.' }
-        ];
+        <!-- Card 2 -->
+        <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Índice de Monotonia</p>
+            <h3 class="text-2xl font-extrabold text-emerald-400 mt-1" id="dash-monotony">0.00</h3>
+          </div>
+          <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400">
+            <i class="fa-solid fa-wave-square text-2xl"></i>
+          </div>
+        </div>
 
-        const database = [
-            { id: 'cooper', category: 'Protocolo', title: 'Teste de Cooper (12 min)', summary: 'Avaliação clássica para estimativa do VO2 máximo.', objective: 'Percorrer a maior distância possível em 12 min.', physiology: 'Estresse sobre o sistema aeróbico e consumo máximo de oxigênio.', whenToApply: 'Avaliação de condicionamento geral.', protocol: '10 min aquecimento + 12 min corrida máxima contínua.', calculation: 'VO2máx = (Distância - 504,9) / 44,73', commonErrors: 'Largada excessivamente rápida.', summaryBox: 'Teste padrão para medir condicionamento.' },
-            { id: 't3km', category: 'Protocolo', title: 'Teste de 3 km', summary: 'Distância fixa para avaliar capacidade aeróbica.', objective: 'Completar 3 km no menor tempo.', physiology: 'Esforço próximo ao limiar anaeróbico.', whenToApply: 'Avanço de performance em provas curtas.', protocol: 'Pista de 400m ou percurso aferido.', calculation: 'Pace médio necessário.', commonErrors: 'Falta de controle de ritmo.', summaryBox: 'Estimativa prática para zonas de limiar.' },
-            { id: 'vam', category: 'Protocolo', title: 'VAM (Velocidade Aeróbica Máxima)', summary: 'Velocidade correspondente ao VO2máx.', objective: 'Referência para tiros e intervalados.', physiology: 'Consumo máximo de oxigênio.', whenToApply: 'Prescrição de treinos intervalados.', protocol: 'Teste progressivo de campo.', calculation: 'Distância percorrida no tempo limite.', commonErrors: 'Confundir com sprint máximo.', summaryBox: 'Base para treinos de ritmo e tiros.' },
-            { id: 'vo2max', category: 'Fisiologia', title: 'VO2 Máximo', summary: 'Teto da capacidade aeróbica.', objective: 'Compreender o consumo máximo de O2.', physiology: 'Limitado pelo débito cardíaco.', whenToApply: 'Avaliação de potencial de corrida.', protocol: 'Teste de laboratório ou Cooper.', calculation: 'Expresso em ml/kg/min.', commonErrors: 'Ignorar a economia de corrida.', summaryBox: 'O tamanho do motor do atleta.' },
-            { id: 'limiar', category: 'Fisiologia', title: 'Limiar Anaeróbico', summary: 'Fronteira do esforço sustentável.', objective: 'Sustentar ritmo forte sem fadiga precoce.', physiology: 'Produção vs remoção de lactato.', whenToApply: 'Prescrição de Tempo Run.', protocol: 'Análise ventilatória ou teste progressivo.', calculation: 'Pace do limiar.', commonErrors: 'Treinar forte demais no dia leve.', summaryBox: 'Divisor entre esforço sustentável e exaustão.' },
-            { id: 'intervalado', category: 'Treinamento', title: 'Treino Intervalado', summary: 'Esforço intenso com recuperação curta.', objective: 'Ganho de potência aeróbica e VAM.', physiology: 'Estímulo a 90-100% da VAM.', whenToApply: 'Melhora de ritmo em provas de 5k a 10k.', protocol: 'Ex: 6 x 800m a 95% VAM.', calculation: 'Baseado na VAM.', commonErrors: 'Quebrar no meio do treino.', summaryBox: 'Estímulo direto para VO2máx.' },
-            { id: 'longao', category: 'Treinamento', title: 'Longão (Long Run)', summary: 'Treino longo semanal.', objective: 'Resistência orgânica e capilarização.', physiology: 'Oxidação de gorduras e resistência.', whenToApply: 'Base de preparação de rodagem.', protocol: 'Corrida em Z2.', calculation: 'Volume semanal acumulado.', commonErrors: 'Correr rápido demais.', summaryBox: 'Fundação de resistência.' }
-        ];
+        <!-- Card 3 -->
+        <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Strain (Tensão)</p>
+            <h3 class="text-2xl font-extrabold text-amber-400 mt-1" id="dash-strain">0 <span class="text-xs font-normal text-slate-400">UA</span></h3>
+          </div>
+          <div class="p-3 bg-amber-500/10 rounded-xl text-amber-400">
+            <i class="fa-solid fa-fire-flame-curved text-2xl"></i>
+          </div>
+        </div>
 
-        let favorites = JSON.parse(localStorage.getItem('fisiotreino_fav') || '[]');
-        let completedPlanDays = JSON.parse(localStorage.getItem('fisiotreino_plan_done') || '[]');
+        <!-- Card 4 -->
+        <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Metas Concluídas (7D)</p>
+            <h3 class="text-2xl font-extrabold text-indigo-400 mt-1" id="dash-weekly-progress">0%</h3>
+          </div>
+          <div class="p-3 bg-indigo-500/10 rounded-xl text-indigo-400">
+            <i class="fa-solid fa-tasks text-2xl"></i>
+          </div>
+        </div>
+      </div>
 
-        function renderPlan() {
-            const container = document.getElementById('plan-list');
-            if(!container) return;
-            container.innerHTML = '';
+      <!-- Quick Actions / Status -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-4">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-compass text-cyan-400"></i> Atalhos RÁPIDOS
+          </h3>
+          <div class="grid grid-cols-2 gap-3">
+            <button onclick="switchTab('planner')" class="p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-left border border-slate-600 transition">
+              <i class="fa-solid fa-calendar-day text-cyan-400 mb-2 text-xl block"></i>
+              <span class="font-bold text-sm block">Plano Semanal</span>
+              <span class="text-xs text-slate-400">Checklist e tarefas diárias</span>
+            </button>
+            <button onclick="switchTab('calculators')" class="p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-left border border-slate-600 transition">
+              <i class="fa-solid fa-stopwatch text-emerald-400 mb-2 text-xl block"></i>
+              <span class="font-bold text-sm block">Predição Riegel</span>
+              <span class="text-xs text-slate-400">Ritmos para 5k, 10k, 21k, 42k</span>
+            </button>
+            <button onclick="switchTab('load-monitor')" class="p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-left border border-slate-600 transition">
+              <i class="fa-solid fa-heart-pulse text-amber-400 mb-2 text-xl block"></i>
+              <span class="font-bold text-sm block">Monitor Foster</span>
+              <span class="text-xs text-slate-400">Registro de carga diária</span>
+            </button>
+            <button onclick="switchTab('nutrition')" class="p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-left border border-slate-600 transition">
+              <i class="fa-solid fa-glass-water text-indigo-400 mb-2 text-xl block"></i>
+              <span class="font-bold text-sm block">Estratégia CHO</span>
+              <span class="text-xs text-slate-400">Cálculo de CHO/h e sódio</span>
+            </button>
+          </div>
+        </div>
 
-            weeklyPlan.forEach((item, index) => {
-                const isDone = completedPlanDays.includes(index);
-                const card = document.createElement('div');
-                card.className = `bg-cardbg border ${isDone ? 'border-emerald-500/50 bg-emerald-950/10' : 'border-slate-700/60'} p-4 rounded-xl space-y-2 relative transition`;
-                
-                card.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-[10px] font-bold uppercase tracking-wider ${item.color}">${item.day} • ${item.type}</span>
-                            <h3 class="font-bold text-sm text-slate-100 ${isDone ? 'line-through text-slate-400' : ''}">${item.title}</h3>
-                        </div>
-                        <button onclick="togglePlanDone(${index})" class="p-2 rounded-lg ${isDone ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-400 hover:text-emerald-400'} transition">
-                            <i class="fa-solid fa-check text-xs"></i>
-                        </button>
-                    </div>
-                    <p class="text-xs text-slate-300 leading-relaxed">${item.detail}</p>
-                    <div class="bg-slate-900/80 p-2.5 rounded-lg text-[11px] text-slate-400 border border-slate-800">
-                        <strong class="text-indigo-400">Complemento:</strong> ${item.complement}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
+        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-3">
+              <i class="fa-solid fa-triangle-exclamation text-amber-400"></i> Diagnóstico da Carga Semanal
+            </h3>
+            <p id="dash-diagnostic-text" class="text-sm text-slate-300 leading-relaxed">
+              Insira os treinos no Monitor de Carga para obter uma análise em tempo real sobre os riscos de overtraining, imunodepressão e nível de variabilidade do estímulo.
+            </p>
+          </div>
+          <div class="mt-4 p-3 bg-slate-900/60 rounded-xl border border-slate-700 text-xs text-slate-400">
+            <strong>Referência Científica:</strong> Foster (1998) - <i>Monitoring training in athletes with reference to overtraining syndrome</i>.
+          </div>
+        </div>
+      </div>
+    </section>
 
-        function togglePlanDone(index) {
-            if(completedPlanDays.includes(index)) {
-                completedPlanDays = completedPlanDays.filter(i => i !== index);
-            } else {
-                completedPlanDays.push(index);
-            }
-            localStorage.setItem('fisiotreino_plan_done', JSON.stringify(completedPlanDays));
-            renderPlan();
-        }
+    <!-- ========================================================================= -->
+    <!-- TAB 2: PLANO SEMANAL DE 7 DIAS -->
+    <!-- ========================================================================= -->
+    <section id="content-planner" class="tab-content hidden space-y-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-800 p-6 rounded-2xl border border-slate-700">
+        <div>
+          <h2 class="text-2xl font-bold text-white">Plano Semanal de Treinamento Integrado</h2>
+          <p class="text-xs text-slate-400 mt-1">Acompanhe e confirme o cumprimento das sessões de Corrida, Natação, Musculação e Miniband.</p>
+        </div>
+        <button onclick="resetWeeklyPlanner()" class="px-4 py-2 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 text-xs font-semibold rounded-lg transition">
+          <i class="fa-solid fa-rotate-left mr-1"></i> Resetar Semana
+        </button>
+      </div>
 
-        function renderList(containerId, items) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            container.innerHTML = '';
-            
-            if (items.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">Nenhum item encontrado.</p>`;
-                return;
-            }
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4" id="weekly-cards-container">
+        <!-- Dinamicamente preenchido via JS com os 7 dias da semana -->
+      </div>
+    </section>
 
-            items.forEach(item => {
-                const isFav = favorites.includes(item.id);
-                const card = document.createElement('div');
-                card.className = 'bg-cardbg border border-slate-700/60 p-3.5 rounded-xl hover:border-slate-600 transition flex justify-between items-start cursor-pointer';
-                card.onclick = () => openModal(item);
-                
-                card.innerHTML = `
-                    <div class="space-y-1 flex-grow pr-2">
-                        <div class="flex items-center gap-2">
-                            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 uppercase">${item.category}</span>
-                            <h3 class="font-semibold text-sm text-slate-100">${item.title}</h3>
-                        </div>
-                        <p class="text-xs text-slate-400 line-clamp-1">${item.summary}</p>
-                    </div>
-                    <button onclick="event.stopPropagation(); toggleFavorite('${item.id}')" class="text-slate-500 hover:text-amber-400 p-1 transition">
-                        <i class="fa-${isFav ? 'solid' : 'regular'} fa-star text-amber-400"></i>
-                    </button>
-                `;
-                container.appendChild(card);
-            });
-        }
+    <!-- ========================================================================= -->
+    <!-- TAB 3: CALCULADORAS FISIOLÓGICAS & PREDIÇÃO -->
+    <!-- ========================================================================= -->
+    <section id="content-calculators" class="tab-content hidden space-y-8">
+      
+      <!-- CALCULADORA DE RIEGEL -->
+      <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-6">
+        <div class="border-b border-slate-700 pb-4">
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-stopwatch text-cyan-400"></i> Predição de Tempo de Prova (Fórmula de Riegel)
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">$$T_2 = T_1 \times \left(\frac{D_2}{D_1}\right)^{1.06}$$ - Utilizada para extrapolar performances entre diferentes distâncias endurance.</p>
+        </div>
 
-        function renderHighlights() {
-            renderList('home-highlights-list', database.slice(0, 4));
-        }
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Distância de Referência (km)</label>
+            <input type="number" id="riegel-d1" value="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Tempo Obtido (HH:MM:SS ou MM:SS)</label>
+            <input type="text" id="riegel-t1" value="22:30" placeholder="ex: 22:30" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Expoente $Faktor$ ($F$)</label>
+            <select id="riegel-f" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+              <option value="1.06" selected>1.06 (Padrão de Riegel - Treinado)</option>
+              <option value="1.08">1.08 (Iniciante / Menos Resistência)</option>
+              <option value="1.04">1.04 (Elite / Altíssima Eficiência Aeróbia)</option>
+            </select>
+          </div>
+        </div>
 
-        function switchTab(tabId) {
-            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-blue-500');
-                btn.classList.add('text-slate-400');
-            });
-            const activeNav = document.getElementById(`nav-${tabId}`);
-            if(activeNav) {
-                activeNav.classList.remove('text-slate-400');
-                activeNav.classList.add('text-blue-500');
-            }
-            window.scrollTo(0, 0);
+        <button onclick="calculateRiegel()" class="w-full py-3 bg-cyan-600 hover:bg-cyan-500 font-bold text-white rounded-xl transition shadow-lg shadow-cyan-600/30">
+          Calcular Predições de Ritmo
+        </button>
 
-            if(tabId === 'plan') renderPlan();
-            if(tabId === 'protocols') renderList('protocols-list', database.filter(i => i.category === 'Protocolo'));
-            if(tabId === 'physiology') renderList('physiology-list', database.filter(i => i.category === 'Fisiologia'));
-            if(tabId === 'training') renderList('training-list', database.filter(i => i.category === 'Treinamento'));
-            if(tabId === 'favorites') renderFavorites();
-        }
+        <div id="riegel-results" class="hidden grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-700">
+          <!-- Results injected via JS -->
+        </div>
+      </div>
 
-        function filterContent() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            if(!query) {
-                switchTab('home');
-                return;
-            }
-            const filtered = database.filter(i => i.title.toLowerCase().includes(query) || i.summary.toLowerCase().includes(query));
-            switchTab('protocols');
-            renderList('protocols-list', filtered);
-        }
+      <!-- ZONAS DE FREQUÊNCIA CARDÍACA (KARVONEN) -->
+      <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-6">
+        <div class="border-b border-slate-700 pb-4">
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-heart-pulse text-rose-400"></i> Zonas de Treinamento por FC de Reserva (Karvonen)
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">$$FC_{alvo} = FC_{repouso} + \% \times (FC_{máx} - FC_{repouso})$$</p>
+        </div>
 
-        function toggleFavorite(id) {
-            if(favorites.includes(id)) {
-                favorites = favorites.filter(fav => fav !== id);
-            } else {
-                favorites.push(id);
-            }
-            localStorage.setItem('fisiotreino_fav', JSON.stringify(favorites));
-            updateFavBadge();
-            
-            const activeSec = document.querySelector('main > section:not(.hidden)').id.replace('tab-', '');
-            if(activeSec === 'home') renderHighlights();
-            if(activeSec === 'protocols') renderList('protocols-list', database.filter(i => i.category === 'Protocolo'));
-            if(activeSec === 'physiology') renderList('physiology-list', database.filter(i => i.category === 'Fisiologia'));
-            if(activeSec === 'training') renderList('training-list', database.filter(i => i.category === 'Treinamento'));
-            if(activeSec === 'favorites') renderFavorites();
-        }
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Idade (anos)</label>
+            <input type="number" id="karv-age" value="30" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">FC de Repouso (bpm)</label>
+            <input type="number" id="karv-rest" value="60" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">FC Máxima Medida (Opcional - Tanaka se vazio)</label>
+            <input type="number" id="karv-max" placeholder="Auto: 208 - (0.7 x Idade)" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+          </div>
+        </div>
 
-        function renderFavorites() {
-            renderList('favorites-list', database.filter(i => favorites.includes(i.id)));
-        }
+        <button onclick="calculateKarvonen()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 font-bold text-white rounded-xl transition shadow-lg shadow-rose-600/30">
+          Gerar Zonas FC de Reserva
+        </button>
 
-        function updateFavBadge() {
-            const badge = document.getElementById('fav-badge');
-            if(favorites.length > 0) {
-                badge.innerText = favorites.length;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-        }
+        <div id="karvonen-results" class="hidden space-y-3">
+          <!-- Injetado por JS -->
+        </div>
+      </div>
 
-        function openModal(item) {
-            document.getElementById('modal-category').innerText = item.category;
-            document.getElementById('modal-title').innerText = item.title;
-            
-            let html = `<div class="space-y-3">`;
-            if(item.objective) html += `<div><strong class="text-blue-400 block mb-0.5">Objetivo:</strong> ${item.objective}</div>`;
-            if(item.physiology) html += `<div><strong class="text-pink-400 block mb-0.5">Fisiologia:</strong> ${item.physiology}</div>`;
-            if(item.whenToApply) html += `<div><strong class="text-emerald-400 block mb-0.5">Quando Aplicar:</strong> ${item.whenToApply}</div>`;
-            if(item.protocol) html += `<div><strong class="text-amber-400 block mb-0.5">Protocolo:</strong> ${item.protocol}</div>`;
-            if(item.calculation) html += `<div><strong class="text-purple-400 block mb-0.5">Cálculo & Interpretação:</strong> ${item.calculation}</div>`;
-            if(item.commonErrors) html += `<div><strong class="text-red-400 block mb-0.5">Erros Comuns:</strong> ${item.commonErrors}</div>`;
-            if(item.summaryBox) html += `<div class="bg-slate-800 p-3 rounded-lg border border-slate-700/60 mt-2"><strong class="text-slate-200 block mb-0.5">Resumo Prático:</strong> ${item.summaryBox}</div>`;
-            html += `</div>`;
+      <!-- CALCULADORA VAM & PACE (VELOCIDADE AERÓBIA MÁXIMA) -->
+      <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-6">
+        <div class="border-b border-slate-700 pb-4">
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-person-running text-emerald-400"></i> Zonas de Treino por VAM (Velocidade Aeróbia Máxima)
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Prescrição precisa para treinos intervalados (HIIT), limiar e contínuo baseados na VAM ($km/h$).</p>
+        </div>
 
-            document.getElementById('modal-body').innerHTML = html;
-            document.getElementById('detail-modal').classList.remove('hidden');
-        }
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">VAM Encontrada em Teste ($km/h$)</label>
+            <input type="number" step="0.1" id="vam-input" value="15.0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Estimativa de $VO_2máx$ ($ml \cdot kg^{-1} \cdot min^{-1}$)</label>
+            <input type="text" id="vam-vo2-est" readonly value="52.5 ml/kg/min" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-emerald-400 font-bold cursor-not-allowed">
+          </div>
+        </div>
 
-        function closeModal() {
-            document.getElementById('detail-modal').classList.add('hidden');
-        }
+        <button onclick="calculateVAM()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 font-bold text-white rounded-xl transition shadow-lg shadow-emerald-600/30">
+          Prescrever Paces por %VAM
+        </button>
 
-        function calculatePace() {
-            const dist = parseFloat(document.getElementById('calc-dist').value);
-            const time = parseFloat(document.getElementById('calc-time').value);
-            const resDiv = document.getElementById('pace-result');
+        <div id="vam-results" class="hidden space-y-3">
+          <!-- Injetado via JS -->
+        </div>
+      </div>
 
-            if(!dist || !time || dist <= 0 || time <= 0) {
-                alert('Insira valores válidos.');
-                return;
-            }
+    </section>
 
-            const paceMinTotal = time / dist;
-            const paceMin = Math.floor(paceMinTotal);
-            const paceSec = Math.round((paceMinTotal - paceMin) * 60);
-            const speed = (dist / (time / 60)).toFixed(2);
+    <!-- ========================================================================= -->
+    <!-- TAB 4: MONITOR DE CARGA DE TREINO (FOSTER / PSE) -->
+    <!-- ========================================================================= -->
+    <section id="content-load-monitor" class="tab-content hidden space-y-6">
+      <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-6">
+        <div class="border-b border-slate-700 pb-4 flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-gauge-high text-amber-400"></i> Monitor de Carga Interna (Método de Foster - PSE da Sessão)
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">$$\text{Carga da Sessão (UA)} = \text{PSE (Escala CR-10)} \times \text{Duração (min)}$$</p>
+          </div>
+        </div>
 
-            resDiv.innerHTML = `
-                <div><strong class="text-blue-400">Pace Médio:</strong> ${paceMin}:${paceSec < 10 ? '0' : ''}${paceSec} min/km</div>
-                <div><strong class="text-emerald-400">Velocidade Média:</strong> ${speed} km/h</div>
-            `;
-            resDiv.classList.remove('hidden');
-        }
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Dia da Semana</label>
+            <select id="foster-day" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+              <option value="Segunda">Segunda-feira</option>
+              <option value="Terça">Terça-feira</option>
+              <option value="Quarta">Quarta-feira</option>
+              <option value="Quinta">Quinta-feira</option>
+              <option value="Sexta">Sexta-feira</option>
+              <option value="Sábado">Sábado</option>
+              <option value="Domingo">Domingo</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Duração Total (minutos)</label>
+            <input type="number" id="foster-duration" value="60" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">PSE da Sessão (Borg CR-10)</label>
+            <select id="foster-pse" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+              <option value="0">0 - Repouso Total</option>
+              <option value="1">1 - Muito Leve</option>
+              <option value="2">2 - Leve / Fácil</option>
+              <option value="3">3 - Moderado</option>
+              <option value="4" selected>4 - Um Pouco Duro</option>
+              <option value="5">5 - Duro / Intenso</option>
+              <option value="7">7 - Muito Duro</option>
+              <option value="10">10 - Esforço Máximo / Exaustativo</option>
+            </select>
+          </div>
+          <div class="flex items-end">
+            <button onclick="addFosterSession()" class="w-full py-2.5 bg-amber-600 hover:bg-amber-500 font-bold text-white rounded-lg transition">
+              Registrar Sessão
+            </button>
+          </div>
+        </div>
 
-        function calculateRacePredictor() {
-            const t5k = parseFloat(document.getElementById('pred-time-5k').value);
-            const resDiv = document.getElementById('predictor-result');
+        <!-- Tabela de Cargas Registradas -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left text-slate-300">
+            <thead class="text-xs uppercase bg-slate-900 text-slate-400 border-b border-slate-700">
+              <tr>
+                <th class="px-4 py-3">Dia</th>
+                <th class="px-4 py-3">Duração (min)</th>
+                <th class="px-4 py-3">PSE (CR-10)</th>
+                <th class="px-4 py-3">Carga (UA)</th>
+                <th class="px-4 py-3 text-right">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="foster-table-body">
+              <!-- JS dinamico -->
+            </tbody>
+          </table>
+        </div>
 
-            if(!t5k || t5k <= 0) {
-                alert('Insira um tempo válido para os 5 km.');
-                return;
-            }
+        <!-- Métricas Finais Calculadas -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-700">
+          <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+            <span class="text-xs text-slate-400 block">Carga Semanal Total (TL)</span>
+            <span id="foster-total-load" class="text-xl font-bold text-cyan-400">0 UA</span>
+          </div>
+          <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+            <span class="text-xs text-slate-400 block">Monotonia Semanal ($\frac{Média}{Desvio}$)</span>
+            <span id="foster-monotony" class="text-xl font-bold text-emerald-400">0.00</span>
+            <span class="text-[10px] text-slate-500 block mt-1">Ideal: &lt; 2.0 (Valores &gt; 2.0 aumentam risco de infecção/lesão)</span>
+          </div>
+          <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+            <span class="text-xs text-slate-400 block">Strain / Tensão ($Carga \times Monotonia$)</span>
+            <span id="foster-strain" class="text-xl font-bold text-amber-400">0 UA</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            // Fórmula de Riegel: T2 = T1 * (D2 / D1)^1.06
-            const t10k = t5k * Math.pow(10 / 5, 1.06);
-            const t21k = t5k * Math.pow(21.097 / 5, 1.06);
-            const t42k = t5k * Math.pow(42.195 / 5, 1.06);
+    <!-- ========================================================================= -->
+    <!-- TAB 5: GUIA DE HIDRATAÇÃO & SUPORTE NUTRICIONAL -->
+    <!-- ========================================================================= -->
+    <section id="content-nutrition" class="tab-content hidden space-y-6">
+      <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-6">
+        <div class="border-b border-slate-700 pb-4">
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-bottle-water text-indigo-400"></i> Suporte Hidreletrolítico & Intra-Treino
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Dimensionamento exato da taxa de sudorese, reposição de Sódio ($Na^+$) e Carboidratos ($CHO/hora$) conforme diretrizes do ACSM & ISSN.</p>
+        </div>
 
-            const formatTime = (totalMin) => {
-                const hrs = Math.floor(totalMin / 60);
-                const mins = Math.floor(totalMin % 60);
-                const secs = Math.round((totalMin - Math.floor(totalMin)) * 60);
-                if(hrs > 0) {
-                    return `${hrs}h ${mins}m ${secs < 10 ? '0' : ''}${secs}s`;
-                }
-                return `${mins}m ${secs < 10 ? '0' : ''}${secs}s`;
-            };
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Peso Antes do Treino ($kg$)</label>
+            <input type="number" step="0.1" id="nutri-weight-before" value="70.0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Peso Após o Treino ($kg$)</label>
+            <input type="number" step="0.1" id="nutri-weight-after" value="69.2" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Líquido Ingerido no Treino ($L$)</label>
+            <input type="number" step="0.1" id="nutri-fluid-in" value="0.5" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Duração da Sessão (Horas)</label>
+            <input type="number" step="0.1" id="nutri-duration-hours" value="1.5" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Intensidade / Clima</label>
+            <select id="nutri-environment" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+              <option value="moderate">Clima Temperado / Moderado</option>
+              <option value="hot">Clima Quente / Úmido (&gt;28°C)</option>
+            </select>
+          </div>
+          <div class="flex items-end">
+            <button onclick="calculateNutrition()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 font-bold text-white rounded-lg transition">
+              Calcular Estratégia
+            </button>
+          </div>
+        </div>
 
-            resDiv.innerHTML = `
-                <div><strong class="text-blue-400">Previsão 10 km:</strong> ${formatTime(t10k)}</div>
-                <div><strong class="text-yellow-400">Previsão Meia (21k):</strong> ${formatTime(t21k)}</div>
-                <div><strong class="text-red-400">Previsão Maratona (42k):</strong> ${formatTime(t42k)}</div>
-            `;
-            resDiv.classList.remove('hidden');
-        }
+        <div id="nutri-results" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-700">
+          <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+            <span class="text-xs text-slate-400 block">Taxa de Sudorese Estimada</span>
+            <span id="nutri-sweat-rate" class="text-xl font-bold text-cyan-400">0 L/h</span>
+            <span id="nutri-dehydration-pct" class="text-xs text-amber-400 block mt-1">Perda corporal: 0%</span>
+          </div>
 
-        function calculateKarvonen() {
-            const fcMax = parseFloat(document.getElementById('fc-max').value);
-            const fcRest = parseFloat(document.getElementById('fc-rest').value);
-            const resDiv = document.getElementById('karvonen-result');
+          <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+            <span class="text-xs text-slate-400 block">Recomendação de Carboidrato ($CHO$)</span>
+            <span id="nutri-cho-recommendation" class="text-xl font-bold text-emerald-400">0 g/h</span>
+            <span class="text-[10px] text-slate-500 block mt-1">Fontes: Glicose:Frutose (Ratio 2:1 ou 1:0.8)</span>
+          </div>
 
-            if(!fcMax || !fcRest || fcMax <= fcRest) {
-                alert('Verifique os valores de FC Máxima e Repouso.');
-                return;
-            }
+          <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+            <span class="text-xs text-slate-400 block">Reposição de Sódio ($Na^+$)</span>
+            <span id="nutri-sodium-recommendation" class="text-xl font-bold text-indigo-400">0 mg/h</span>
+            <span class="text-[10px] text-slate-500 block mt-1">Prevenção rigorosa contra Hiponatremia</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            const fcr = fcMax - fcRest;
-            resDiv.innerHTML = `
-                <div><strong class="text-blue-400">Z1 (Recuperação):</strong> ${Math.round(fcr * 0.50 + fcRest)} - ${Math.round(fcr * 0.60 + fcRest)} bpm</div>
-                <div><strong class="text-emerald-400">Z2 (Base Aeróbica):</strong> ${Math.round(fcr * 0.60 + fcRest)} - ${Math.round(fcr * 0.70 + fcRest)} bpm</div>
-                <div><strong class="text-yellow-400">Z3 (Tempo/Limiar):</strong> ${Math.round(fcr * 0.70 + fcRest)} - ${Math.round(fcr * 0.80 + fcRest)} bpm</div>
-                <div><strong class="text-orange-400">Z4 (Anaeróbico):</strong> ${Math.round(fcr * 0.80 + fcRest)} - ${Math.round(fcr * 0.90 + fcRest)} bpm</div>
-                <div><strong class="text-red-400">Z5 (VO2 Máx):</strong> ${Math.round(fcr * 0.90 + fcRest)} - ${fcMax} bpm</div>
-            `;
-            resDiv.classList.remove('hidden');
-        }
+    <!-- ========================================================================= -->
+    <!-- TAB 6: BASE TEÓRICA & FISIOLOGIA AVANÇADA (NÍVEL PÓS-GRADUAÇÃO) -->
+    <!-- ========================================================================= -->
+    <section id="content-theory" class="tab-content hidden space-y-6">
+      
+      <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+        <h2 class="text-2xl font-bold text-white mb-2">Fundamentação Científica Avançada</h2>
+        <p class="text-slate-300 text-sm">
+          Guia de referência rápida para fisiologistas do exercício, cobrindo bioenergética, limiares ventilatórios, prescrição de endurance e modulação do treinamento.
+        </p>
+      </div>
 
-        renderHighlights();
-        updateFavBadge();
-    </script>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Modulo 1 -->
+        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-3">
+          <div class="flex items-center gap-3 text-cyan-400">
+            <i class="fa-solid fa-atom text-xl"></i>
+            <h3 class="font-bold text-lg text-white">1. Bioenergética e Transições Metabólicas</h3>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            O metabolismo de exercício é gerido por três sistemas energéticos interconectados:
+          </p>
+          <ul class="text-xs text-slate-400 space-y-2 list-disc pl-4">
+            <li><strong>Sistema ATP-CP (Aláctico):</strong> Ressíntese imediata via Creatina Quinase ($CP + ADP \leftrightarrow ATP + C$). Predominante nos primeiros 0-10s em intensidade supra-máxima.</li>
+            <li><strong>Glicólise Citossólica (Láctica):</strong> Degradabilidade da glicose sem dependência de $O_2$. Ocorre acúmulo de íons de Hidrogênio ($H^+$) e Lactato, reduzindo o pH intramuscular (acidose metabólica) e inibindo a Fosfofructoquinase (PFK).</li>
+            <li><strong>Fosforilação Oxidativa (Aeróbia):</strong> Ocorre na matriz mitocôndrial. Beta-oxidação de lipídios e ciclo de Krebs sustentam esforços longos sub-limiar com alta eficiência estequiométrica de ATP.</li>
+          </ul>
+        </div>
+
+        <!-- Modulo 2 -->
+        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-3">
+          <div class="flex items-center gap-3 text-emerald-400">
+            <i class="fa-solid fa-lungs text-xl"></i>
+            <h3 class="font-bold text-lg text-white">2. Limiares Ventilatórios e Lactato</h3>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            O modelo de três zonas (Modelo Trimodular) divide o espectro fisiológico:
+          </p>
+          <ul class="text-xs text-slate-400 space-y-2 list-disc pl-4">
+            <li><strong>Limiar Aeróbio ($LV_1$ / LT1):</strong> Primeiro aumento contínuo no lactato sanguíneo (~2.0 mmol/L). Transição entre a Zona Moderada (Z1) e a Zona Pesada (Z2). Esforço "conversacional".</li>
+            <li><strong>Limiar Anaeróbio ($LV_2$ / MLSS / LT2):</strong> Máximo Estado Estável de Lactato (~4.0 mmol/L). Acima deste ponto, a produção de $H^+$ supera a capacidade de tamponamento pelo bicarbonato ($HCO_3^-$), levando à fadiga precoce.</li>
+            <li><strong>$VO_2máx$ e VAM:</strong> O consumo máximo de oxigênio atinge seu platô. A menor velocidade que desencadeia o $VO_2máx$ é definida como Velocidade Aeróbia Máxima (VAM).</li>
+          </ul>
+        </div>
+
+        <!-- Modulo 3 -->
+        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-3">
+          <div class="flex items-center gap-3 text-amber-400">
+            <i class="fa-solid fa-heart-pulse text-xl"></i>
+            <h3 class="font-bold text-lg text-white">3. Modelos de Periodização do Endurance</h3>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Diferentes estratégias de distribuição de intensidade (TID - Training Intensity Distribution):
+          </p>
+          <ul class="text-xs text-slate-400 space-y-2 list-disc pl-4">
+            <li><strong>Modelo Polarizado (80/0/20):</strong> 80% do volume abaixo do $LV_1$ (Z1) e 20% acima do $LV_2$ (Z3), minimizando o tempo na Zona de Limiar (Z2) para prevenir contaminação da fadiga autonômica.</li>
+            <li><strong>Modelo Piramidal (70/20/10):</strong> Maior volume na Z1, volume moderado na Z2 e volume reduzido na Z3. Comum no início de temporadas preparatórias.</li>
+            <li><strong>Modelo de Limiar (Threshold Training):</strong> Foco pronunciado em acúmulo de volume na Z2 ($LV_1$ a $LV_2$), amplamente utilizado em maratonistas de elite.</li>
+          </ul>
+        </div>
+
+        <!-- Modulo 4 -->
+        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-3">
+          <div class="flex items-center gap-3 text-indigo-400">
+            <i class="fa-solid fa-notes-medical text-xl"></i>
+            <h3 class="font-bold text-lg text-white">4. Marcadores de Fisiologia e Monitoramento</h3>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Indicadores para acompanhamento contínuo da adaptação do atleta:
+          </p>
+          <ul class="text-xs text-slate-400 space-y-2 list-disc pl-4">
+            <li><strong>VFC (Variabilidade da Frequência Cardíaca - RMSSD):</strong> Avalia o tom vagal parassimpático. Reduções sustentadas no RMSSD indicam estresse não-funcional ou overreaching.</li>
+            <li><strong>Razão Carga Aguda:Crônica (ACWR):</strong> Média móvel de 7 dias dividida pela de 28 dias. Valores entre $0.8$ e $1.3$ representam a "zona de segurança" contra lesões.</li>
+            <li><strong>RPE Sessional (Foster):</strong> Quantificação da carga interna subjetiva validada para modalidades de endurance e força.</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 border-t border-slate-800 py-6 text-center text-xs text-slate-500 mt-auto">
+    <div class="max-w-7xl mx-auto px-4">
+      <p>FisioTreino 360° &copy; 2026 - Desenvolvido para Profissionais da Educação Física & Fisiologia do Exercício.</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // State global para armazenar dados da aplicação
+    let state = {
+      fosterSessions: [
+        { day: 'Segunda', duration: 60, pse: 4, load: 240 },
+        { day: 'Terça', duration: 45, pse: 7, load: 315 },
+        { day: 'Quarta', duration: 60, pse: 3, load: 180 },
+        { day: 'Quinta', duration: 50, pse: 5, load: 250 },
+        { day: 'Sexta', duration: 40, pse: 2, load: 80 },
+        { day: 'Sábado', duration: 90, pse: 6, load: 540 },
+        { day: 'Domingo', duration: 0, pse: 0, load: 0 }
+      ],
+      weeklyTasks: {
+        'Segunda': { run: true, swim: false, miniband: true },
+        'Terça': { run: true, swim: true, miniband: false },
+        'Quarta': { run: false, swim: false, miniband: true },
+        'Quinta': { run: true, swim: false, miniband: true },
+        'Sexta': { run: true, swim: true, miniband: false },
+        'Sábado': { run: true, swim: false, miniband: false },
+        'Domingo': { run: false, swim: false, miniband: false }
+      }
+    };
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+      renderPlannerCards();
+      renderFosterTable();
+      calculateFosterMetrics();
+      calculateRiegel();
+      calculateKarvonen();
+      calculateVAM();
+      calculateNutrition();
+    });
+
+    // Alternar Abas
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => {
+        el.classList.remove('tab-active');
+        el.classList.add('text-slate-400');
+      });
+
+      const selectedContent = document.getElementById(`content-${tabId}`);
+      const selectedTab = document.getElementById(`tab-${tabId}`);
+
+      if (selectedContent) selectedContent.classList.remove('hidden');
+      if (selectedTab) {
+        selectedTab.classList.add('tab-active');
+        selectedTab.classList.remove('text-slate-400');
+      }
+
+      // Re-renderizar fórmulas se MathJax estiver disponível
+      if (window.MathJax) {
+        MathJax.typesetPromise();
+      }
+    }
+
+    // ==========================================
+    // LÓGICA DO PLANO SEMANAL DE 7 DIAS
+    // ==========================================
+    function renderPlannerCards() {
+      const container = document.getElementById('weekly-cards-container');
+      const days = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+      container.innerHTML = '';
+
+      days.forEach(day => {
+        const tasks = state.weeklyTasks[day] || { run: false, swim: false, miniband: false };
+        const card = document.createElement('div');
+        card.className = 'bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-col justify-between space-y-3';
+        
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between border-b border-slate-700 pb-2 mb-3">
+              <span class="font-bold text-sm text-cyan-400">${day}</span>
+              <i class="fa-solid fa-calendar-day text-xs text-slate-500"></i>
+            </div>
+            <div class="space-y-2">
+              <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                <input type="checkbox" ${tasks.run ? 'checked' : ''} onchange="toggleTask('${day}', 'run')" class="rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-cyan-500">
+                <span><i class="fa-solid fa-person-running text-cyan-400 mr-1"></i> Corrida</span>
+              </label>
+              <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                <input type="checkbox" ${tasks.swim ? 'checked' : ''} onchange="toggleTask('${day}', 'swim')" class="rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-cyan-500">
+                <span><i class="fa-solid fa-person-swimming text-blue-400 mr-1"></i> Natação</span>
+              </label>
+              <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                <input type="checkbox" ${tasks.miniband ? 'checked' : ''} onchange="toggleTask('${day}', 'miniband')" class="rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-cyan-500">
+                <span><i class="fa-solid fa-dumbbell text-emerald-400 mr-1"></i> Miniband</span>
+              </label>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      updateWeeklyProgress();
+    }
+
+    function toggleTask(day, taskKey) {
+      if (!state.weeklyTasks[day]) state.weeklyTasks[day] = {};
+      state.weeklyTasks[day][taskKey] = !state.weeklyTasks[day][taskKey];
+      updateWeeklyProgress();
+    }
+
+    function resetWeeklyPlanner() {
+      Object.keys(state.weeklyTasks).forEach(day => {
+        state.weeklyTasks[day] = { run: false, swim: false, miniband: false };
+      });
+      renderPlannerCards();
+    }
+
+    function updateWeeklyProgress() {
+      let totalTasks = 0;
+      let completedTasks = 0;
+
+      Object.keys(state.weeklyTasks).forEach(day => {
+        Object.keys(state.weeklyTasks[day]).forEach(task => {
+          totalTasks++;
+          if (state.weeklyTasks[day][task]) completedTasks++;
+        });
+      });
+
+      const pct = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+      document.getElementById('dash-weekly-progress').innerText = `${pct}%`;
+    }
+
+    // ==========================================
+    // CALCULADORA DE RIEGEL
+    // ==========================================
+    function calculateRiegel() {
+      const d1 = parseFloat(document.getElementById('riegel-d1').value);
+      const t1Str = document.getElementById('riegel-t1').value;
+      const f = parseFloat(document.getElementById('riegel-f').value);
+
+      if (!d1 || !t1Str) return;
+
+      const t1Sec = parseTimeToSeconds(t1Str);
+      if (isNaN(t1Sec)) return;
+
+      const targets = [
+        { name: '5K', dist: 5 },
+        { name: '10K', dist: 10 },
+        { name: '21K (Meia)', dist: 21.0975 },
+        { name: '42K (Maratona)', dist: 42.195 }
+      ];
+
+      const resultsDiv = document.getElementById('riegel-results');
+      resultsDiv.innerHTML = '';
+      resultsDiv.classList.remove('hidden');
+
+      targets.forEach(target => {
+        // T2 = T1 * (D2/D1)^F
+        const t2Sec = t1Sec * Math.pow(target.dist / d1, f);
+        const formattedTime = formatSecondsToTime(t2Sec);
+        
+        // Pace min/km
+        const paceSec = t2Sec / target.dist;
+        const formattedPace = formatSecondsToPace(paceSec);
+
+        const card = document.createElement('div');
+        card.className = 'bg-slate-900 p-4 rounded-xl border border-slate-700 text-center space-y-1';
+        card.innerHTML = `
+          <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block">${target.name}</span>
+          <span class="text-lg font-extrabold text-white block">${formattedTime}</span>
+          <span class="text-xs text-slate-400 block">Pace: <strong class="text-slate-200">${formattedPace}</strong> /km</span>
+        `;
+        resultsDiv.appendChild(card);
+      });
+    }
+
+    function parseTimeToSeconds(str) {
+      const parts = str.split(':').map(Number);
+      if (parts.length === 3) {
+        return parts[0] * 3600 + parts[1] * 60 + parts[2];
+      } else if (parts.length === 2) {
+        return parts[0] * 60 + parts[1];
+      }
+      return NaN;
+    }
+
+    function formatSecondsToTime(totalSeconds) {
+      const hrs = Math.floor(totalSeconds / 3600);
+      const mins = Math.floor((totalSeconds % 3600) / 60);
+      const secs = Math.round(totalSeconds % 60);
+
+      if (hrs > 0) {
+        return `${hrs}h ${mins.toString().padStart(2, '0')}m ${secs.toString().padStart(2, '0')}s`;
+      }
+      return `${mins}m ${secs.toString().padStart(2, '0')}s`;
+    }
+
+    function formatSecondsToPace(totalSeconds) {
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = Math.round(totalSeconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // ==========================================
+    // CALCULADORA DE KARVONEN
+    // ==========================================
+    function calculateKarvonen() {
+      const age = parseFloat(document.getElementById('karv-age').value);
+      const rest = parseFloat(document.getElementById('karv-rest').value);
+      let maxInput = parseFloat(document.getElementById('karv-max').value);
+
+      if (!age || !rest) return;
+
+      // Tanaka Formula if max not provided
+      const maxFC = maxInput || Math.round(208 - (0.7 * age));
+      const reserveFC = maxFC - rest;
+
+      const zones = [
+        { name: 'Z1 - Recuperação / Regenerativo', pctMin: 50, pctMax: 60, desc: 'Recuperação ativa e base' },
+        { name: 'Z2 - Endurance Fundamental / Aeróbio 1', pctMin: 60, pctMax: 70, desc: 'Oxidação de gordura, adaptação mitocondrial' },
+        { name: 'Z3 - Tempo / Limiar Aeróbio 2', pctMin: 70, pctMax: 80, desc: 'Aumento de glicogênio e eficiência ventilatória' },
+        { name: 'Z4 - Limiar Anaeróbio / Sub-máximo', pctMin: 80, pctMax: 90, desc: 'Tolerância ao Lactato e capacidade tampão' },
+        { name: 'Z5 - VO2máx / Esforço Máximo', pctMin: 90, pctMax: 100, desc: 'Recrutamento de fibras tipo IIx e pico metabólico' }
+      ];
+
+      const resultsDiv = document.getElementById('karvonen-results');
+      resultsDiv.innerHTML = `<p class="text-xs text-slate-400 mb-2">FC Máxima Utilizada: <strong class="text-white">${maxFC} bpm</strong> | FC de Reserva: <strong class="text-white">${reserveFC} bpm</strong></p>`;
+      resultsDiv.classList.remove('hidden');
+
+      zones.forEach(z => {
+        const fcMin = Math.round(rest + (z.pctMin / 100) * reserveFC);
+        const fcMax = Math.round(rest + (z.pctMax / 100) * reserveFC);
+
+        const card = document.createElement('div');
+        card.className = 'bg-slate-900 p-3 rounded-xl border border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2';
+        card.innerHTML = `
+          <div>
+            <span class="font-bold text-sm text-rose-400 block">${z.name}</span>
+            <span class="text-xs text-slate-400 block">${z.desc}</span>
+          </div>
+          <div class="text-right">
+            <span class="text-base font-extrabold text-white">${fcMin} - ${fcMax} <span class="text-xs font-normal text-slate-400">bpm</span></span>
+            <span class="text-xs text-slate-500 block">(${z.pctMin}% - ${z.pctMax}%)</span>
+          </div>
+        `;
+        resultsDiv.appendChild(card);
+      });
+    }
+
+    // ==========================================
+    // CALCULADORA VAM & PACE
+    // ==========================================
+    function calculateVAM() {
+      const vam = parseFloat(document.getElementById('vam-input').value);
+      if (!vam) return;
+
+      // VO2max est = VAM * 3.5
+      const vo2Est = (vam * 3.5).toFixed(1);
+      document.getElementById('vam-vo2-est').value = `${vo2Est} ml/kg/min`;
+
+      const percentages = [
+        { label: '120% VAM (HIIT Curto / Tiros)', pct: 1.20 },
+        { label: '100% VAM (VO2máx / HIIT Longo)', pct: 1.00 },
+        { label: '90% VAM (Limiar Anaeróbio / Tempo)', pct: 0.90 },
+        { label: '80% VAM (Corrida Ritmada / Maratona)', pct: 0.80 },
+        { label: '70% VAM (Rodagem Leve / Z2)', pct: 0.70 }
+      ];
+
+      const resultsDiv = document.getElementById('vam-results');
+      resultsDiv.innerHTML = '';
+      resultsDiv.classList.remove('hidden');
+
+      percentages.forEach(p => {
+        const targetSpeed = vam * p.pct; // km/h
+        const paceSec = 3600 / targetSpeed;
+        const formattedPace = formatSecondsToPace(paceSec);
+
+        const card = document.createElement('div');
+        card.className = 'bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center';
+        card.innerHTML = `
+          <span class="text-xs font-bold text-emerald-400">${p.label}</span>
+          <div class="text-right">
+            <span class="text-sm font-extrabold text-white">${targetSpeed.toFixed(1)} km/h</span>
+            <span class="text-xs text-slate-400 ml-2">Pace: <strong class="text-slate-200">${formattedPace}</strong>/km</span>
+          </div>
+        `;
+        resultsDiv.appendChild(card);
+      });
+    }
+
+    // ==========================================
+    // MONITOR DE CARGA (FOSTER / PSE)
+    // ==========================================
+    function addFosterSession() {
+      const day = document.getElementById('foster-day').value;
+      const duration = parseFloat(document.getElementById('foster-duration').value) || 0;
+      const pse = parseFloat(document.getElementById('foster-pse').value) || 0;
+      const load = duration * pse;
+
+      // Atualizar ou inserir
+      const existingIdx = state.fosterSessions.findIndex(s => s.day === day);
+      if (existingIdx >= 0) {
+        state.fosterSessions[existingIdx] = { day, duration, pse, load };
+      } else {
+        state.fosterSessions.push({ day, duration, pse, load });
+      }
+
+      renderFosterTable();
+      calculateFosterMetrics();
+    }
+
+    function removeFosterSession(day) {
+      state.fosterSessions = state.fosterSessions.filter(s => s.day !== day);
+      renderFosterTable();
+      calculateFosterMetrics();
+    }
+
+    function renderFosterTable() {
+      const tbody = document.getElementById('foster-table-body');
+      tbody.innerHTML = '';
+
+      state.fosterSessions.forEach(s => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-800 hover:bg-slate-800/50';
+        tr.innerHTML = `
+          <td class="px-4 py-3 font-semibold text-white">${s.day}</td>
+          <td class="px-4 py-3">${s.duration} min</td>
+          <td class="px-4 py-3"><span class="px-2 py-0.5 rounded bg-slate-700 text-amber-400 font-bold">${s.pse}</span></td>
+          <td class="px-4 py-3 font-bold text-cyan-400">${s.load} UA</td>
+          <td class="px-4 py-3 text-right">
+            <button onclick="removeFosterSession('${s.day}')" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash text-xs"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function calculateFosterMetrics() {
+      const loads = state.fosterSessions.map(s => s.load);
+      const totalLoad = loads.reduce((a, b) => a + b, 0);
+
+      // Calcular Média e Desvio Padrão para Monotonia (7 dias)
+      const mean = totalLoad / 7;
+      const variance = loads.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / 7;
+      const sd = Math.sqrt(variance);
+
+      // Monotonia = Média / Desvio Padrão (se desvio for 0, monotonia é controlada)
+      const monotony = sd > 0 ? (mean / sd) : 1.0;
+      const strain = totalLoad * monotony;
+
+      // Exibir na UI
+      document.getElementById('foster-total-load').innerText = `${totalLoad} UA`;
+      document.getElementById('foster-monotony').innerText = monotony.toFixed(2);
+      document.getElementById('foster-strain').innerText = `${Math.round(strain)} UA`;
+
+      // Atualizar Dashboard Cards
+      document.getElementById('dash-weekly-load').innerHTML = `${totalLoad} <span class="text-xs font-normal text-slate-400">UA</span>`;
+      document.getElementById('dash-monotony').innerText = monotony.toFixed(2);
+      document.getElementById('dash-strain').innerHTML = `${Math.round(strain)} <span class="text-xs font-normal text-slate-400">UA</span>`;
+
+      // Diagnostic text
+      const diagText = document.getElementById('dash-diagnostic-text');
+      if (monotony > 2.0) {
+        diagText.innerHTML = `<span class="text-rose-400 font-bold">ALERTA DE ALTA MONOTONIA (${monotony.toFixed(2)}):</span> Os treinos estão com cargas muito homogêneas. Aumente a variação entre dias fortes e fracos para prevenir overtraining e infecções do trato respiratório superior.`;
+      } else if (totalLoad > 3000) {
+        diagText.innerHTML = `<span class="text-amber-400 font-bold">ATENÇÃO - CARGA MUITO ELEVADA (${totalLoad} UA):</span> Risco de fadiga neuromuscular acumulada. Certifique-se de incluir recuperação adequada.`;
+      } else {
+        diagText.innerHTML = `<span class="text-emerald-400 font-bold">CARGA EQUILIBRADA (${totalLoad} UA | Monotonia: ${monotony.toFixed(2)}):</span> Distribuição fisiológica adequada para supercompensação e adaptação.`;
+      }
+    }
+
+    // ==========================================
+    // CÁLCULO DE NUTRIÇÃO E HIDRATAÇÃO
+    // ==========================================
+    function calculateNutrition() {
+      const wBefore = parseFloat(document.getElementById('nutri-weight-before').value);
+      const wAfter = parseFloat(document.getElementById('nutri-weight-after').value);
+      const fluidIn = parseFloat(document.getElementById('nutri-fluid-in').value);
+      const hours = parseFloat(document.getElementById('nutri-duration-hours').value);
+      const env = document.getElementById('nutri-environment').value;
+
+      if (!wBefore || !wAfter || !hours) return;
+
+      // Perda de peso (kg = L)
+      const weightLoss = wBefore - wAfter;
+      const totalSweat = weightLoss + fluidIn; // Litros perdidos total
+      const sweatRate = totalSweat / hours; // L/h
+
+      const pctDehydration = (weightLoss / wBefore) * 100;
+
+      // Recomendação Carboidratos por hora
+      let choGramsHour = 0;
+      if (hours < 1) {
+        choGramsHour = 0; // Opcional ou bochecho
+      } else if (hours >= 1 && hours <= 2.5) {
+        choGramsHour = 30; // 30 - 60g/h
+      } else {
+        choGramsHour = 60; // 60 - 90g/h em ultra-endurance
+      }
+
+      // Recomendação Sódio (mg/h)
+      let sodiumMg = env === 'hot' ? 700 : 400;
+
+      const resultsDiv = document.getElementById('nutri-results');
+      resultsDiv.classList.remove('hidden');
+
+      document.getElementById('nutri-sweat-rate').innerText = `${sweatRate.toFixed(2)} L/h`;
+      document.getElementById('nutri-dehydration-pct').innerText = `Perda de massa corporal: ${pctDehydration.toFixed(1)}%`;
+      document.getElementById('nutri-cho-recommendation').innerText = `${choGramsHour} g/h`;
+      document.getElementById('nutri-sodium-recommendation').innerText = `${sodiumMg} mg/h`;
+    }
+  </script>
 </body>
 </html>
