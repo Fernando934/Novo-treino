@@ -16,8 +16,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- Google Fonts: Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <!-- Google Identity Services (Google Sign-In) -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <script>
     tailwind.config = {
@@ -149,10 +147,10 @@
         <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-purple-600/10 rounded-full blur-2xl"></div>
         <div class="relative z-10 flex justify-between items-center">
           <div>
-            <span class="px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold uppercase tracking-wider">Google Login & Analytics</span>
+            <span class="px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold uppercase tracking-wider">Perfil & Analytics</span>
             <h3 class="text-base font-extrabold text-white mt-2">Central de Feedback e Evolução</h3>
             <p class="text-xs text-gray-300 mt-1 leading-relaxed">
-              Login integrado com conta Google, gráficos semanais e registo de cargas.
+              Gráficos semanais de volume e gestão do perfil de treino do atleta.
             </p>
           </div>
           <div class="bg-purple-600 text-slate-950 p-3 rounded-2xl shrink-0 ml-3 font-bold">
@@ -227,12 +225,12 @@
       <div id="bandsExercisesList" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (GOOGLE LOGIN + GRÁFICO REAL) -->
+    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (SISTEMA DIRETO SEM ERRO 401) -->
     <div id="tab-feedback" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
-          <h2 class="text-sm font-bold text-white">Feedback, Gráficos & Conta Google</h2>
-          <p class="text-xs text-gray-400">Autenticação Google, gráfico semanal e registo de cargas.</p>
+          <h2 class="text-sm font-bold text-white">Feedback, Gráficos & Perfil</h2>
+          <p class="text-xs text-gray-400">Evolução do atleta, gráfico semanal e registo de cargas.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-cyan-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
@@ -250,7 +248,7 @@
           <div id="statBandsCount" class="text-lg font-black text-emerald-400 mt-1">0</div>
         </div>
         <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-center">
-          <span class="text-[9px] text-gray-400 uppercase font-bold block">Total Registado</span>
+          <span class="text-[9px] text-gray-400 uppercase font-bold block">Volume Total</span>
           <div id="statTotalKm" class="text-lg font-black text-amber-400 mt-1">0 km</div>
         </div>
       </div>
@@ -273,20 +271,20 @@
         </div>
       </div>
 
-      <!-- Módulo de Login com Google -->
+      <!-- Módulo do Perfil do Atleta -->
       <div class="p-4 rounded-2xl bg-gradient-to-br from-blue-950/40 to-slate-900 border border-blue-500/40 space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-2.5">
             <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">
-              <i class="fa-brands fa-google text-lg"></i>
+              <i class="fa-solid fa-user-check text-lg"></i>
             </div>
             <div>
-              <h3 class="text-xs font-bold text-white">Sessão com Conta Google</h3>
-              <p id="googleUserStatus" class="text-[10px] text-gray-400">Estado: Não autenticado</p>
+              <h3 class="text-xs font-bold text-white" id="athleteProfileTitle">Perfil de Atleta</h3>
+              <p id="athleteProfileStatus" class="text-[10px] text-gray-400">Ativo e sincronizado localmente</p>
             </div>
           </div>
-          <button onclick="loginWithGoogle()" id="googleLoginBtn" class="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs shadow-lg shadow-blue-600/20 hover:bg-blue-500 transition flex items-center gap-2">
-            <i class="fa-solid fa-right-to-bracket"></i> Login Google
+          <button onclick="setAthleteProfile()" id="profileBtn" class="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs shadow-lg shadow-blue-600/20 hover:bg-blue-500 transition flex items-center gap-2">
+            <i class="fa-solid fa-pen"></i> Alterar Perfil
           </button>
         </div>
       </div>
@@ -487,7 +485,7 @@
     let completedBands = JSON.parse(localStorage.getItem('stamina_bands_done') || '[]');
     let postponedDays = JSON.parse(localStorage.getItem('stamina_postponed') || '{}');
     let workoutLogs = JSON.parse(localStorage.getItem('stamina_logs') || '[]');
-    let googleUser = JSON.parse(localStorage.getItem('stamina_google_user') || 'null');
+    let athleteName = localStorage.getItem('stamina_athlete_name') || 'Fernando (Atleta)';
 
     const BANDS_WORKOUTS = {
       A: [
@@ -667,38 +665,13 @@
       }).join('');
     }
 
-    // Google Sign-In Integration
-    function loginWithGoogle() {
-      google.accounts.id.initialize({
-        client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com", // Substitua pelo seu ID Google Cloud se necessário
-        callback: handleGoogleResponse
-      });
-      google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // Fallback para pop-up se o one-tap for bloqueado
-          google.accounts.id.renderButton(
-            document.getElementById("googleLoginBtn"),
-            { theme: "outline", size: "large" }
-          );
-          alert("Por favor, clique no botão flutuante do Google para autenticar.");
-        }
-      });
-    }
-
-    function handleGoogleResponse(response) {
-      try {
-        const base64Url = response.credential.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-        googleUser = JSON.parse(jsonPayload);
-        localStorage.setItem('stamina_google_user', JSON.stringify(googleUser));
-        
-        document.getElementById('googleUserStatus').textContent = `Sessão ativa: ${googleUser.name}`;
-        document.getElementById('googleLoginBtn').textContent = "Conectado";
-        document.getElementById('googleLoginBtn').className = "px-4 py-2 rounded-xl bg-slate-800 text-emerald-400 font-bold text-xs";
-        alert(`Bem-vindo, ${googleUser.name}! Conta Google conectada.`);
-      } catch (e) {
-        console.error("Erro ao processar login Google", e);
+    function setAthleteProfile() {
+      const newName = prompt("Insira o seu nome para o perfil do atleta:", athleteName);
+      if (newName && newName.trim() !== "") {
+        athleteName = newName.trim();
+        localStorage.setItem('stamina_athlete_name', athleteName);
+        document.getElementById('athleteProfileTitle').textContent = athleteName;
+        alert("Perfil atualizado com sucesso!");
       }
     }
 
@@ -764,7 +737,7 @@
         duration,
         rpe,
         load,
-        distance: type.includes('Rodagem') || type.includes('Longão') ? 6.0 : 0 // Exemplo de atribuição de km para o gráfico
+        distance: type.includes('Rodagem') || type.includes('Longão') || type.includes('Tiros') ? 6.0 : 0
       };
 
       workoutLogs.unshift(newLog);
@@ -847,12 +820,7 @@
       renderCategoryList('workouts', 'workoutsContainer');
       renderWorkoutLogs();
       updateDashboardData();
-
-      if (googleUser) {
-        document.getElementById('googleUserStatus').textContent = `Sessão ativa: ${googleUser.name}`;
-        document.getElementById('googleLoginBtn').textContent = "Conectado";
-        document.getElementById('googleLoginBtn').className = "px-4 py-2 rounded-xl bg-slate-800 text-emerald-400 font-bold text-xs";
-      }
+      document.getElementById('athleteProfileTitle').textContent = athleteName;
     });
 
     function switchTab(tabId) {
