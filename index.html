@@ -679,10 +679,58 @@
 
     const DATABASE = {
       protocols: [
-        { id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos em pista aferida.', whatItMeasures: 'Capacidade aeróbica máxima, VAM e estimativa de VO2máx.', physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico durante todo o teste.', stepByStep: '1. Aquecimento leve de 5 a 10 min.\n2. Corra a maior distância possível em 12 min mantendo ritmo contínuo e forte.\n3. Anote a distância total percorrida.' },
-        { id: 'proto-tc3k', category: 'Protocolo de Teste', title: 'Teste de 3.200 Metros (2 Milhas)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Avaliação militar e de performance', icon: 'fa-person-running', description: 'Corrida cronometrada cobrindo exatamente 3.200 metros no menor tempo possível.', whatItMeasures: 'Velocidade aeróbica máxima e eficiência de ritmo.', physiology: 'Alto estresse cardiovascular com recrutamento intenso do sistema oxidativo e glicolítico.', stepByStep: '1. Aquecimento dinâmico.\n2. Execute 3.200m no menor tempo possível.\n3. Anote o tempo total final.' },
-        { id: 'proto-tc1k', category: 'Protocolo de Teste', title: 'Teste de 1.000 Metros (1 km Máximo)', badgeColor: 'bg-orange-500/20 text-orange-300', subtitle: 'Potência anaeróbica lática', icon: 'fa-gauge-high', description: 'Avaliação de tiro em distância média para estimar velocidade pura e limiar superior.', whatItMeasures: 'Potência anaeróbica lática e velocidade máxima sustentada.', physiology: 'Altíssima exigência dos sistemas glicolítico e ATP-CP.', stepByStep: '1. Aquecimento completo e progressivo.\n2. Corra 1.000m na máxima intensidade suportada.\n3. Registre o tempo final.' },
-        { id: 'proto-t5k', category: 'Protocolo de Teste', title: 'Contorrida de 5 Quilómetros (5K Time Trial)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Padrão ouro de limiar e ritmo de prova', icon: 'fa-stopwatch', description: 'Corrida contínua de 5 km em esforço máximo para calibrar todas as zonas de treino.', whatItMeasures: 'VO2máx funcional e limiar anaeróbico real de prova.', physiology: 'Equilíbrio ideal entre capacidade oxidativa e tolerância ao lactato.', stepByStep: '1. Trote leve de 10 min + educativos.\n2. Largada controlada para evitar quebra no primeiro km.\n3. Ritmo progressivo até o sprint final.' }
+        { 
+          id: 'proto-cooper', 
+          category: 'Protocolo de Teste', 
+          title: 'Teste de Cooper (12 Minutos)', 
+          badgeColor: 'bg-purple-500/20 text-purple-300', 
+          subtitle: 'Estimativa prática do VO2 Máximo', 
+          icon: 'fa-stopwatch', 
+          description: 'Mede a maior distância possível percorrida em 12 minutos contínuos em pista aferida.', 
+          whatItMeasures: 'Capacidade aeróbica máxima, VAM e estimativa de VO2máx.', 
+          physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico durante todo o teste.', 
+          stepByStep: '1. Aquecimento leve de 5 a 10 min.\n2. Corra a maior distância possível em 12 min mantendo ritmo contínuo e forte.\n3. Anote a distância total percorrida.', 
+          howToUseResult: '• Calcule o seu VO2máx estimado com a fórmula: (Distância em metros - 504.9) / 44.73.\n• Use a distância total para classificar sua aptidão cardiorrespiratória em tabelas normativas.\n• Direcione o resultado para ajustar os ritmos dos treinos de rodagem e limiar.' 
+        },
+        { 
+          id: 'proto-tc3k', 
+          category: 'Protocolo de Teste', 
+          title: 'Teste de 3.200 Metros (2 Milhas)', 
+          badgeColor: 'bg-cyan-500/20 text-cyan-300', 
+          subtitle: 'Avaliação militar e de performance', 
+          icon: 'fa-person-running', 
+          description: 'Corrida cronometrada cobrindo exatamente 3.200 metros no menor tempo possível.', 
+          whatItMeasures: 'Velocidade aeróbica máxima e eficiência de ritmo.', 
+          physiology: 'Alto estresse cardiovascular com recrutamento intenso do sistema oxidativo e glicolítico.', 
+          stepByStep: '1. Aquecimento dinâmico.\n2. Execute 3.200m no menor tempo possível.\n3. Anote o tempo total final.', 
+          howToUseResult: '• Pegue o tempo total obtido e insira na Calculadora de Pace para descobrir o seu pace médio por quilómetro.\n• Utilize este pace médio para estruturar os seus treinos intervalados e metas de provas de média distância.' 
+        },
+        { 
+          id: 'proto-tc1k', 
+          category: 'Protocolo de Teste', 
+          title: 'Teste de 1.000 Metros (1 km Máximo)', 
+          badgeColor: 'bg-orange-500/20 text-orange-300', 
+          subtitle: 'Potência anaeróbica lática', 
+          icon: 'fa-gauge-high', 
+          description: 'Avaliação de tiro em distância média para estimar velocidade pura e limiar superior.', 
+          whatItMeasures: 'Potência anaeróbica lática e velocidade máxima sustentada.', 
+          physiology: 'Altíssima exigência dos sistemas glicolítico e ATP-CP.', 
+          stepByStep: '1. Aquecimento completo e progressivo.\n2. Corra 1000m na máxima intensidade suportada.\n3. Registre o tempo final.', 
+          howToUseResult: '• O tempo obtido nos 1.000m serve como referência exata para o pace dos seus tiros curtos e intervalados intensos (Z5).\n• Se o tempo caiu em relação ao teste anterior, indica ganho de potência neuromuscular e velocidade pura.' 
+        },
+        { 
+          id: 'proto-t5k', 
+          category: 'Protocolo de Teste', 
+          title: 'Corrida de 5 Quilómetros (5K Time Trial)', 
+          badgeColor: 'bg-emerald-500/20 text-emerald-300', 
+          subtitle: 'Padrão ouro de limiar e ritmo de prova', 
+          icon: 'fa-stopwatch', 
+          description: 'Corrida contínua de 5 km em esforço máximo para calibrar todas as zonas de treino.', 
+          whatItMeasures: 'VO2máx funcional e limiar anaeróbico real de prova.', 
+          physiology: 'Equilíbrio ideal entre capacidade oxidativa e tolerância ao lactato.', 
+          stepByStep: '1. Trote leve de 10 min + educativos.\n2. Largada controlada para evitar quebra no primeiro km.\n3. Ritmo progressivo até o sprint final.', 
+          howToUseResult: '• Insira o tempo final dos 5K na ferramenta de Previsões e Calculadora de Pace.\n• O sistema recalculará automaticamente os seus tempos estimados para 10K, Meia Maratona e Maratona.\n• Utilize o pace médio dos 5K para definir o ritmo exato dos treinos de limiar (Tempo Run).' 
+        }
       ],
       physiology: [
         { 
@@ -1342,6 +1390,9 @@
       let extraHtml = '';
       if (item.stepByStep) {
         extraHtml += `<div class="p-3 bg-slate-950 rounded-xl border border-slate-800 whitespace-pre-line text-gray-200 text-xs"><strong>Passo a Passo Prático:</strong><br>${item.stepByStep}</div>`;
+      }
+      if (item.howToUseResult) {
+        extraHtml += `<div class="p-3 bg-slate-950 rounded-xl border border-slate-800 whitespace-pre-line text-gray-200 text-xs"><strong>Como Usar o Resultado / Utilidade Prática:</strong><br>${item.howToUseResult}</div>`;
       }
       if (item.howToApply) {
         extraHtml += `<div class="p-3 bg-slate-950 rounded-xl border border-slate-800 whitespace-pre-line text-gray-200 text-xs"><strong>Como Aplicar na Prática:</strong><br>${item.howToApply}</div>`;
