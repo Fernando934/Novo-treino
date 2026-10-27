@@ -155,11 +155,11 @@
       </section>
     </div>
 
-    <!-- TAB 2: PLANO SEMANAL AUTOMÁTICO (COM REGISTOS DE ATIVIDADE DIÁRIA INTEGRADOS) -->
+    <!-- TAB 2: PLANO SEMANAL AUTOMÁTICO (ORIGINAL COMO ANTES) -->
     <div id="tab-plan" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
-          <h2 class="text-sm font-bold text-white">Plano Semanal Dinâmico & Diário</h2>
+          <h2 class="text-sm font-bold text-white">Plano Semanal Dinâmico</h2>
           <p id="cycleWeekLabel" class="text-xs text-orange-400 font-semibold">Semana do Ciclo: Calculando...</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
@@ -167,7 +167,7 @@
         </button>
       </div>
       <div class="p-3 rounded-2xl bg-orange-950/30 border border-orange-500/30 text-xs text-orange-200 leading-relaxed">
-        <i class="fa-solid fa-circle-info mr-1 text-orange-400"></i> Os seus registos reais de corrida e força aparecem diretamente nos dias correspondentes abaixo, mantendo a estrutura do plano.
+        <i class="fa-solid fa-circle-info mr-1 text-orange-400"></i> Marque o treino de corrida e de força separadamente. Se precisar, utilize o botão de adiar.
       </div>
       <div id="planContainer" class="space-y-3"></div>
     </div>
@@ -496,6 +496,9 @@
 
   <script>
     let currentModalItem = null;
+    let completedRuns = JSON.parse(localStorage.getItem('stamina_runs_done') || '[]');
+    let completedBands = JSON.parse(localStorage.getItem('stamina_bands_done') || '[]');
+    let postponedDays = JSON.parse(localStorage.getItem('stamina_postponed') || '{}');
     let manualActivities = JSON.parse(localStorage.getItem('stamina_manual_runs') || '[]');
     let timerInterval = null;
 
@@ -568,58 +571,84 @@
       `).join('');
     }
 
-    // INTEGRAÇÃO AUTOMÁTICA DOS REGISTOS REAIS NO PLANO/DIÁRIO DIÁRIO
+    // PLANO SEMANAL DINÂMICO ORIGINAL
+    function getDynamicWeeklyPlan() {
+      const now = new Date();
+      const weekNumber = Math.ceil(now.getDate() / 7);
+      let phaseName = "Semana 1: Base Aeróbica & Volume";
+      let mult = 1.0;
+      if (weekNumber === 2) { phaseName = "Semana 2: Intensidade & Limiar"; mult = 1.1; }
+      else if (weekNumber === 3) { phaseName = "Semana 3: Pico de Carga & VAM"; mult = 1.2; }
+      else if (weekNumber >= 4) { phaseName = "Semana 4: Polimento & Descarga (Taper)"; mult = 0.8; }
+      document.getElementById('cycleWeekLabel').textContent = phaseName;
+
+      return [
+        { day: 'Segunda-feira', title: 'Corrida Contínua (Base Aeróbica)', type: 'Corrida Z2', strength: 'Força: Treino A (Superiores)', color: 'text-blue-400', detail: `${Math.round(6 * mult)}k em ritmo conversacional (Z2).` },
+        { day: 'Terça-feira', title: 'Treino Intervalado (Tiros de Pista)', type: 'Tiros / VAM', strength: 'Descanso de Força', color: 'text-red-400', detail: `Aquecimento + ${weekNumber >= 3 ? '8' : '6'} x 400m forte.` },
+        { day: 'Quarta-feira', title: 'Condicionamento Misto', type: 'Natação / Aeróbico', strength: 'Força: Treino B (Pernas)', color: 'text-cyan-400', detail: 'Sessão de natação ou aeróbico sem impacto.' },
+        { day: 'Quinta-feira', title: 'Treino de Ritmo (Tempo Run)', type: 'Limiar Anaeróbico', strength: 'Trote Regenerativo', color: 'text-yellow-400', detail: `Aquecimento + ${Math.round(3.5 * mult)}k em limiar.` },
+        { day: 'Sexta-feira', title: 'Rodagem Regenerativa', type: 'Recuperação Ativa', strength: 'Força: Treino C (Core)', color: 'text-emerald-400', detail: '3k a 4k em ritmo leve (Z1).' },
+        { day: 'Sábado', title: 'O Longão (Long Run)', type: 'Resistência', strength: 'Hidratação e Descanso', color: 'text-indigo-400', detail: `${Math.round((weekNumber >= 4 ? 8 : 10) * mult)}k contínuos.` },
+        { day: 'Domingo', title: 'Descanso Ativo', type: 'Regeneração Total', strength: 'Mobilidade Leve', color: 'text-slate-400', detail: 'Descanso total de corrida.' }
+      ];
+    }
+
     function renderPlan() {
       const container = document.getElementById('planContainer');
       if (!container) return;
+      const dynamicPlan = getDynamicWeeklyPlan();
 
-      const baseDays = [
-        { dayName: 'Segunda-feira', defaultTitle: 'Corrida Contínua (Base Aeróbica)', defaultDesc: '6k em ritmo conversacional (Z2).', defaultStrength: 'Força: Treino A (Superiores)', color: 'text-blue-400' },
-        { dayName: 'Terça-feira', defaultTitle: 'Treino Intervalado (Tiros de Pista)', defaultDesc: 'Aquecimento + 6 x 400m forte.', defaultStrength: 'Descanso de Força', color: 'text-red-400' },
-        { dayName: 'Quarta-feira', defaultTitle: 'Condicionamento Misto', defaultDesc: 'Sessão de natação ou aeróbico sem impacto.', defaultStrength: 'Força: Treino B (Pernas)', color: 'text-cyan-400' },
-        { dayName: 'Quinta-feira', defaultTitle: 'Treino de Ritmo (Tempo Run)', defaultDesc: 'Aquecimento + 3.5k em limiar.', defaultStrength: 'Trote Regenerativo', color: 'text-yellow-400' },
-        { dayName: 'Sexta-feira', defaultTitle: 'Rodagem Regenerativa', defaultDesc: '3k a 4k em ritmo leve (Z1).', defaultStrength: 'Força: Treino C (Core)', color: 'text-emerald-400' },
-        { dayName: 'Sábado', defaultTitle: 'O Longão (Long Run)', defaultDesc: '10k contínuos.', defaultStrength: 'Hidratação e Descanso', color: 'text-indigo-400' },
-        { dayName: 'Domingo', defaultTitle: 'Descanso Ativo', defaultDesc: 'Descanso total de corrida.', defaultStrength: 'Mobilidade Leve', color: 'text-slate-400' }
-      ];
-
-      container.innerHTML = baseDays.map((d, index) => {
-        // Procurar se existe corrida registada que caia neste dia da semana
-        let matchingRun = manualActivities.find(act => {
-          if (!act.start_date) return false;
-          let actDate = new Date(act.start_date + 'T00:00:00');
-          let dayOfWeek = actDate.getDay() - 1; // 0 = Seg, 5 = Sáb, etc.
-          if (dayOfWeek < 0) dayOfWeek = 6;
-          return dayOfWeek === index;
-        });
-
-        let displayTitle = d.defaultTitle;
-        let displayDesc = d.defaultDesc;
-        let badgeHtml = '';
-
-        if (matchingRun) {
-          displayTitle = `[Registo Real] ${matchingRun.name}`;
-          displayDesc = `Distância: <strong>${matchingRun.distance.toFixed(1)} km</strong> • Tempo: ${matchingRun.time} • Pace: ${matchingRun.pace}`;
-          if (matchingRun.splits) {
-            displayDesc += `<br><span class="text-cyan-400 font-mono">Splits: ${matchingRun.splits}</span>`;
-          }
-          badgeHtml = `<span class="px-2 py-0.5 rounded-md bg-orange-500/20 text-orange-400 text-[9px] font-bold uppercase ml-2">Realizado</span>`;
-        }
+      container.innerHTML = dynamicPlan.map((item, index) => {
+        const isRunDone = completedRuns.includes(index);
+        const isBandDone = completedBands.includes(index);
+        const isPostponed = postponedDays[index] || false;
 
         return `
-          <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
-            <div class="flex justify-between items-center">
-              <span class="text-[10px] font-bold uppercase tracking-wider ${d.color}">${d.dayName}</span>
-              ${badgeHtml}
+          <div class="p-4 rounded-2xl bg-slate-900 border ${isPostponed ? 'border-amber-500/50 bg-amber-950/10' : 'border-slate-800'} space-y-2.5 transition">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider ${item.color}">${item.day} • ${item.type}</span>
+                <h4 class="text-xs font-bold text-white mt-0.5 ${isRunDone ? 'line-through text-gray-400' : ''}">${item.title}</h4>
+              </div>
+              <button onclick="togglePostpone(${index})" class="text-[10px] bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-lg text-amber-400 hover:bg-slate-700 transition">
+                <i class="fa-solid fa-clock-rotate-left mr-1"></i> ${isPostponed ? 'Adiado' : 'Adiar'}
+              </button>
             </div>
-            <h4 class="text-xs font-bold text-white">${displayTitle}</h4>
-            <p class="text-xs text-gray-300">${displayDesc}</p>
-            <div class="bg-slate-950 p-2.5 rounded-xl text-[11px] text-gray-400 border border-slate-800">
-              <strong class="text-emerald-400">Musculação / Força:</strong> ${d.defaultStrength}
+            <p class="text-xs text-gray-300">${item.detail}</p>
+            <div class="bg-slate-950 p-2.5 rounded-xl text-[11px] text-gray-400 border border-slate-800/80">
+              <strong class="text-emerald-400">Musculação:</strong> ${item.strength}
+            </div>
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button onclick="toggleRunDone(${index})" class="py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition ${isRunDone ? 'bg-orange-500 text-slate-950' : 'bg-slate-800 text-gray-300'}">
+                <i class="fa-solid fa-person-running"></i> ${isRunDone ? 'Feito' : 'Marcar Corrida'}
+              </button>
+              <button onclick="toggleBandDone(${index})" class="py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition ${isBandDone ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-gray-300'}">
+                <i class="fa-solid fa-dumbbell"></i> ${isBandDone ? 'Feito' : 'Marcar Força'}
+              </button>
             </div>
           </div>
         `;
       }).join('');
+    }
+
+    function toggleRunDone(index) {
+      if (completedRuns.includes(index)) completedRuns = completedRuns.filter(i => i !== index);
+      else completedRuns.push(index);
+      localStorage.setItem('stamina_runs_done', JSON.stringify(completedRuns));
+      renderPlan();
+    }
+
+    function toggleBandDone(index) {
+      if (completedBands.includes(index)) completedBands = completedBands.filter(i => i !== index);
+      else completedBands.push(index);
+      localStorage.setItem('stamina_bands_done', JSON.stringify(completedBands));
+      renderPlan();
+    }
+
+    function togglePostpone(index) {
+      postponedDays[index] = !postponedDays[index];
+      localStorage.setItem('stamina_postponed', JSON.stringify(postponedDays));
+      renderPlan();
     }
 
     function exportBackupData() {
@@ -644,7 +673,6 @@
             manualActivities = data.manualRuns;
             localStorage.setItem('stamina_manual_runs', JSON.stringify(manualActivities));
             updateDashboardData();
-            renderPlan();
             alert("Backup restaurado com sucesso!");
           }
         } catch (err) { alert("Erro ao ler ficheiro."); }
@@ -680,7 +708,6 @@
       localStorage.setItem('stamina_manual_runs', JSON.stringify(manualActivities));
       clearRunForm();
       updateDashboardData();
-      renderPlan();
     }
 
     function editManualRun(id) {
@@ -722,7 +749,6 @@
         manualActivities = manualActivities.filter(act => act.id !== id);
         localStorage.setItem('stamina_manual_runs', JSON.stringify(manualActivities));
         updateDashboardData();
-        renderPlan();
       }
     }
 
@@ -742,7 +768,7 @@
       return `${m}:${s < 10 ? '0' : ''}${s} /km`;
     }
 
-    // AUTÓPSIA INDIVIDUAL (AO CLICAR NO OLHO)
+    // AUTÓPSIA CIENTÍFICA INDIVIDUAL (AO CLICAR NO OLHO NO HISTÓRICO)
     function viewRunDetails(id) {
       let act = manualActivities.find(a => a.id == id);
       if (!act) return;
@@ -866,12 +892,13 @@
       document.getElementById('statMonthKm').textContent = `${totalPeriodKm.toFixed(1)} km`;
 
       renderWeeklyChart();
-      renderGeneralFeedbackEngine(filteredActivities);
+      renderGeneralFeedbackEngine(filteredActivities, period, currentMonth, currentYear);
       renderManualActivitiesList(filteredActivities);
       updatePerformancePredictions(filteredActivities);
     }
 
-    function renderGeneralFeedbackEngine(filteredActs) {
+    // ANÁLISE MENSAL / GERAL COM O PADRÃO ANTERIOR
+    function renderGeneralFeedbackEngine(filteredActs, period, currentMonth, currentYear) {
       const container = document.getElementById('monthlyFeedbackContent');
       if (!container) return;
 
@@ -893,13 +920,66 @@
         return `${m}:${s < 10 ? '0' : ''}${s} /km`;
       };
 
-      container.innerHTML = `
-        <div class="space-y-1.5">
-          <p class="text-gray-300">• <strong>Volume do Período:</strong> <strong>${totalKm.toFixed(1)} km</strong> em <strong>${totalSessions} treinos</strong> (Média de ${avgDist.toFixed(1)} km/sessão).</p>
-          <p class="text-gray-300">• <strong>Pace Médio Global:</strong> <strong>${formatPace(avgPaceSec)}</strong>.</p>
-          <p class="text-gray-400 text-[11px] mt-1"><i class="fa-solid fa-circle-info text-cyan-400 mr-1"></i> Clique no ícone de olho em cada treino abaixo para ver a autópsia detalhada com base nos splits de cada quilómetro.</p>
-        </div>
-      `;
+      if (period === 'all') {
+        container.innerHTML = `
+          <div class="space-y-1.5 border-b border-slate-800/80 pb-3">
+            <div class="text-amber-400 font-bold text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-chart-pie"></i> Levantamento Geral do Histórico Completo
+            </div>
+            <p class="text-gray-300">• <strong>Volume Global:</strong> <strong>${totalKm.toFixed(1)} km</strong> acumulados em <strong>${totalSessions} sessões</strong> (Média de ${avgDist.toFixed(1)} km por treino).</p>
+            <p class="text-gray-300">• <strong>Pace Médio Global:</strong> <strong>${formatPace(avgPaceSec)}</strong> consolidado em toda a base de dados.</p>
+          </div>
+          <div class="space-y-1.5 pt-1">
+            <div class="text-rose-400 font-bold text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-compass"></i> Prescrição Estrutural
+            </div>
+            <p class="text-gray-300">• Para continuar evoluindo sem platôs, intercale treinos intervalados curtos (tiros de 400m) com sessões de força com elásticos.</p>
+          </div>
+        `;
+      } else {
+        let targetMonth = currentMonth;
+        if (period === 'september') targetMonth = currentMonth - 1;
+        else if (period === 'august') targetMonth = currentMonth - 2;
+        else targetMonth = currentMonth - 1;
+
+        let prevActs = manualActivities.filter(act => {
+          if (!act.start_date) return false;
+          let d = new Date(act.start_date);
+          return d.getMonth() === targetMonth && d.getFullYear() === currentYear;
+        });
+
+        let prevKm = prevActs.reduce((acc, curr) => acc + (curr.distance || 0), 0);
+        let prevSec = prevActs.reduce((acc, curr) => acc + parseTimeString(curr.time), 0);
+        let avgPacePrev = prevKm > 0 ? (prevSec / prevKm) : 0;
+        let paceDiff = avgPaceSec - avgPacePrev;
+
+        let comparativeText = "";
+        if (prevActs.length > 0) {
+          if (paceDiff < -3) {
+            comparativeText = `🚀 <strong>Evolução de Velocidade:</strong> Reduziu o pace médio de <strong>${formatPace(avgPacePrev)}</strong> para <strong>${formatPace(avgPaceSec)}</strong> (${Math.abs(Math.round(paceDiff))}s/km mais rápido) com ${totalKm.toFixed(1)} km acumulados.`;
+          } else {
+            comparativeText = `📈 <strong>Estabilidade de Carga:</strong> Volume ajustado para ${totalKm.toFixed(1)} km com pace médio de ${formatPace(avgPaceSec)}.`;
+          }
+        } else {
+          comparativeText = `📊 <strong>Panorama do Período:</strong> Acumulou ${totalKm.toFixed(1)} km em ${totalSessions} treinos (média de ${avgDist.toFixed(1)} km/sessão a ${formatPace(avgPaceSec)}).`;
+        }
+
+        container.innerHTML = `
+          <div class="space-y-2 border-b border-slate-800/80 pb-3">
+            <div class="text-amber-400 font-bold text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-chart-bar"></i> Sumário Operacional do Mês
+            </div>
+            <p class="text-gray-300">• <strong>Volume Executado:</strong> ${totalKm.toFixed(1)} km em ${totalSessions} treinos.</p>
+            <p class="text-gray-300">• <strong>Pace Médio Ponderado:</strong> ${formatPace(avgPaceSec)}</p>
+          </div>
+          <div class="space-y-2 pt-1">
+            <div class="text-emerald-400 font-bold text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-bolt"></i> Análise Crítica Comparativa
+            </div>
+            <p class="text-gray-300">${comparativeText}</p>
+          </div>
+        `;
+      }
     }
 
     function renderWeeklyChart() {
@@ -951,9 +1031,9 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="text-orange-400 font-bold">${act.distance.toFixed(1)} km</span>
-            <button onclick="viewRunDetails(${act.id})" class="p-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 rounded-lg transition" title="Ver Análise Detalhada"><i class="fa-solid fa-eye text-sm"></i></button>
-            <button onclick="editManualRun(${act.id})" class="p-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 rounded-lg transition" title="Editar Corrida"><i class="fa-solid fa-pen text-sm"></i></button>
-            <button onclick="deleteManualRun(${act.id})" class="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg transition" title="Apagar Atividade"><i class="fa-solid fa-trash text-sm"></i></button>
+            <button onclick="viewRunDetails(${act.id})" class="p-2 bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-400 rounded-lg transition" title="Ver Análise Detalhada (Autópsia)"><i class="fa-solid fa-eye text-sm"></i></button>
+            <button onclick="editManualRun(${act.id})" class="p-2 bg-amber-500/15 hover:bg-amber-500/30 text-amber-400 rounded-lg transition" title="Editar Corrida"><i class="fa-solid fa-pen text-sm"></i></button>
+            <button onclick="deleteManualRun(${act.id})" class="p-2 bg-rose-500/15 hover:bg-rose-500/30 text-rose-400 rounded-lg transition" title="Apagar Atividade"><i class="fa-solid fa-trash text-sm"></i></button>
           </div>
         </div>
       `).join('');
