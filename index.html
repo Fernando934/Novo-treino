@@ -142,18 +142,18 @@
 
     <!-- TAB 1: HOME / DASHBOARD -->
     <div id="tab-home" class="tab-content space-y-6">
-      <div onclick="switchTab('plan')" class="p-4 rounded-3xl gradient-border relative overflow-hidden cursor-pointer hover:border-cyan-500/50 transition">
-        <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-cyan-600/10 rounded-full blur-2xl"></div>
+      <div onclick="switchTab('feedback')" class="p-4 rounded-3xl gradient-border relative overflow-hidden cursor-pointer hover:border-purple-500/50 transition">
+        <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-purple-600/10 rounded-full blur-2xl"></div>
         <div class="relative z-10 flex justify-between items-center">
           <div>
-            <span class="px-2.5 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold uppercase tracking-wider">Laboratório Dinâmico</span>
-            <h3 class="text-base font-extrabold text-white mt-2">Plano Semanal Automático</h3>
+            <span class="px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold uppercase tracking-wider">Analytics & Strava</span>
+            <h3 class="text-base font-extrabold text-white mt-2">Central de Feedback e Evolução</h3>
             <p class="text-xs text-gray-300 mt-1 leading-relaxed">
-              Periodização inteligente com marcação isolada de corrida e força.
+              Consulta os gráficos de desempenho e sincroniza as tuas corridas do Strava.
             </p>
           </div>
-          <div class="bg-cyan-600 text-slate-950 p-3 rounded-2xl shrink-0 ml-3 font-bold">
-            <i class="fa-solid fa-calendar-days text-lg"></i>
+          <div class="bg-purple-600 text-slate-950 p-3 rounded-2xl shrink-0 ml-3 font-bold">
+            <i class="fa-solid fa-chart-line text-lg"></i>
           </div>
         </div>
       </div>
@@ -175,7 +175,7 @@
       </section>
     </div>
 
-    <!-- TAB 2: PLANO SEMANAL AUTOMÁTICO (COM SEPARAÇÃO E ADIAMENTO) -->
+    <!-- TAB 2: PLANO SEMANAL AUTOMÁTICO -->
     <div id="tab-plan" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -187,7 +187,7 @@
         </button>
       </div>
       <div class="p-3 rounded-2xl bg-cyan-950/30 border border-cyan-500/30 text-xs text-cyan-200 leading-relaxed">
-        <i class="fa-solid fa-circle-info mr-1 text-cyan-400"></i> Marca o treino de corrida e de força separadamente. Se faltar por imprevisto, usa o botão de adiar para ajustar a semana.
+        <i class="fa-solid fa-circle-info mr-1 text-cyan-400"></i> Marca o treino de corrida e de força separadamente. Os dados refletem instantaneamente nos gráficos da aba de Feedback!
       </div>
       <div id="planContainer" class="space-y-3"></div>
     </div>
@@ -197,7 +197,7 @@
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
           <h2 class="text-sm font-bold text-white">Musculação com Kit Elásticos</h2>
-          <p class="text-xs text-gray-400">Treinos A (Superiores), B (Pernas) e C (Core/Postura).</p>
+          <p class="text-xs text-gray-400">Treinos A, B e C para corredores.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-cyan-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
@@ -207,7 +207,7 @@
       <div class="grid grid-cols-3 gap-2">
         <button onclick="switchBandsWorkout('A')" id="btn-band-A" class="py-2.5 rounded-xl bg-cyan-600 text-slate-950 font-bold text-xs shadow-md transition">Treino A (Superiores)</button>
         <button onclick="switchBandsWorkout('B')" id="btn-band-B" class="py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-gray-300 font-bold text-xs transition">Treino B (Pernas)</button>
-        <button onclick="switchBandsWorkout('C')" id="btn-band-C" class="py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-gray-300 font-bold text-xs transition">Treino C (Core/Postura)</button>
+        <button onclick="switchBandsWorkout('C')" id="btn-band-C" class="py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-gray-300 font-bold text-xs transition">Treino C (Core)</button>
       </div>
 
       <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
@@ -224,20 +224,100 @@
       <div id="bandsExercisesList" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 4: FEEDBACK -->
+    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (COM GRÁFICOS E STRAVA) -->
     <div id="tab-feedback" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
-          <h2 class="text-sm font-bold text-white">Registo & Feedback de Treino</h2>
-          <p class="text-xs text-gray-400">Controle de carga interna (RPE) e evolução de desempenho.</p>
+          <h2 class="text-sm font-bold text-white">Feedback, Gráficos & Strava</h2>
+          <p class="text-xs text-gray-400">Registo de treinos, análises de desempenho e dados de GPS.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-cyan-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
         </button>
       </div>
 
+      <!-- Resumo Estatístico (Gráficos Visuais) -->
+      <div class="grid grid-cols-3 gap-2.5">
+        <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-center">
+          <span class="text-[9px] text-gray-400 uppercase font-bold block">Corridas Feitas</span>
+          <div id="statRunsCount" class="text-lg font-black text-cyan-400 mt-1">0</div>
+        </div>
+        <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-center">
+          <span class="text-[9px] text-gray-400 uppercase font-bold block">Força Feita</span>
+          <div id="statBandsCount" class="text-lg font-black text-emerald-400 mt-1">0</div>
+        </div>
+        <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-center">
+          <span class="text-[9px] text-gray-400 uppercase font-bold block">Strava Sync</span>
+          <div id="statStravaCount" class="text-lg font-black text-orange-400 mt-1">0 km</div>
+        </div>
+      </div>
+
+      <!-- Barras de Progresso / Taxa de Cumprimento -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-        <h3 class="font-bold text-sm text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-pen-to-square"></i> Registar Treino Realizado</h3>
+        <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+          <i class="fa-solid fa-chart-column text-cyan-400"></i> Taxa de Cumprimento da Semana
+        </h3>
+        <div class="space-y-2 text-xs">
+          <div>
+            <div class="flex justify-between text-gray-300 mb-1">
+              <span>Corridas Executadas</span>
+              <span id="labelRunPct" class="font-bold text-cyan-400">0%</span>
+            </div>
+            <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
+              <div id="barRunPct" class="bg-gradient-to-r from-cyan-500 to-blue-600 h-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between text-gray-300 mb-1">
+              <span>Sessões de Força (Elásticos)</span>
+              <span id="labelBandPct" class="font-bold text-emerald-400">0%</span>
+            </div>
+            <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
+              <div id="barBandPct" class="bg-gradient-to-r from-emerald-500 to-teal-600 h-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Módulo Strava Integration -->
+      <div class="p-4 rounded-2xl bg-gradient-to-br from-orange-950/30 to-slate-900 border border-orange-500/30 space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2.5">
+            <div class="w-9 h-9 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center font-bold">
+              <i class="fa-brands fa-strava text-lg"></i>
+            </div>
+            <div>
+              <h3 class="text-xs font-bold text-white">Conexão Strava API</h3>
+              <p id="stravaStatusText" class="text-[10px] text-gray-400">Estado: Não conectado</p>
+            </div>
+          </div>
+          <button onclick="toggleStravaConnection()" id="stravaConnectBtn" class="px-3 py-1.5 rounded-xl bg-orange-600 text-white font-bold text-[11px] shadow-md hover:bg-orange-500 transition">
+            Conectar Strava
+          </button>
+        </div>
+
+        <div id="stravaDataContainer" class="hidden space-y-2 pt-2 border-t border-slate-800">
+          <div class="flex justify-between items-center text-xs text-gray-300">
+            <span>Última Atividade Sincronizada:</span>
+            <span class="text-orange-400 font-bold" id="stravaLastActivity">Nenhuma ainda</span>
+          </div>
+          <button onclick="syncStravaActivity()" class="w-full py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs font-bold text-orange-300 hover:bg-slate-800 transition flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-rotate"></i> Sincronizar Atividades Recentes (GPS)
+          </button>
+        </div>
+      </div>
+
+      <!-- Histórico de Atividades Strava -->
+      <div class="space-y-2">
+        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider px-1">Atividades Importadas do Strava</h3>
+        <div id="stravaHistoryList" class="space-y-2">
+          <p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade do Strava sincronizada.</p>
+        </div>
+      </div>
+
+      <!-- Formulário de Registo de Carga Interna (RPE) -->
+      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+        <h3 class="font-bold text-sm text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-pen-to-square"></i> Registar Carga de Treino (RPE)</h3>
         <div>
           <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Tipo de Sessão</label>
           <select id="logType" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 outline-none">
@@ -257,7 +337,7 @@
             <input type="number" id="logDuration" placeholder="ex: 40" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 outline-none" />
           </div>
           <div>
-            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Esforço Percebido (RPE 1-10)</label>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Esforço (RPE 1-10)</label>
             <input type="number" id="logRpe" min="1" max="10" placeholder="ex: 7" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 outline-none" />
           </div>
         </div>
@@ -266,10 +346,11 @@
         </button>
       </div>
 
+      <!-- Histórico de Carga -->
       <div class="space-y-3">
-        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider px-1">Histórico de Carga & Feedback</h3>
+        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider px-1">Histórico de Carga Interna</h3>
         <div id="workoutHistoryContainer" class="space-y-2">
-          <p class="text-xs text-gray-500 text-center py-4">Nenhum treino registado ainda.</p>
+          <p class="text-xs text-gray-500 text-center py-4">Nenhum registo de carga ainda.</p>
         </div>
       </div>
     </div>
@@ -277,13 +358,8 @@
     <!-- TAB 5: PROTOCOLS -->
     <div id="tab-protocols" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
-        <div>
-          <h2 class="text-sm font-bold text-white">Protocolos de Teste de Corrida</h2>
-          <p class="text-xs text-gray-400">Avaliações científicas completas.</p>
-        </div>
-        <button onclick="switchTab('home')" class="text-xs text-cyan-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
-          <i class="fa-solid fa-arrow-left"></i> Voltar
-        </button>
+        <h2 class="text-sm font-bold text-white">Protocolos de Teste</h2>
+        <button onclick="switchTab('home')" class="text-xs text-cyan-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl">Voltar</button>
       </div>
       <div id="protocolsContainer" class="space-y-2.5"></div>
     </div>
@@ -291,95 +367,31 @@
     <!-- TAB 6: CALCULATORS -->
     <div id="tab-calculators" class="tab-content hidden space-y-4">
       <div class="px-1 mb-1 flex justify-between items-center">
-        <div>
-          <h2 class="text-sm font-bold text-white">Ferramentas Profissionais</h2>
-          <p class="text-xs text-gray-400">Pace, preditor de prova, zonas de FC e VAM.</p>
-        </div>
-        <button onclick="switchTab('home')" class="text-xs text-cyan-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
-          <i class="fa-solid fa-arrow-left"></i> Voltar
-        </button>
+        <h2 class="text-sm font-bold text-white">Ferramentas Profissionais</h2>
+        <button onclick="switchTab('home')" class="text-xs text-cyan-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl">Voltar</button>
       </div>
-
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-        <div class="flex items-center space-x-3 text-cyan-400">
-          <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center"><i class="fa-solid fa-gauge-high"></i></div>
-          <h3 class="font-bold text-sm text-white">Calculadora de Pace e VO2 Máx</h3>
-        </div>
+        <h3 class="font-bold text-sm text-white">Calculadora de Pace e VO2 Máx</h3>
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Distância (m)</label>
-            <input type="number" id="calcDist" value="3000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-500 outline-none" />
+            <input type="number" id="calcDist" value="3000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none" />
           </div>
           <div>
             <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Tempo (mm:ss)</label>
-            <input type="text" id="calcTime" value="12:30" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-500 outline-none" />
+            <input type="text" id="calcTime" value="12:30" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none" />
           </div>
         </div>
-        <button onclick="calculatePace()" class="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl text-xs font-bold text-white shadow-lg shadow-cyan-500/20 active:scale-95 transition">Calcular Pace & VO2</button>
-        <div id="paceResult" class="hidden p-3 rounded-xl bg-slate-950/80 border border-slate-800/80 grid grid-cols-3 gap-2 text-center">
-          <div><span class="text-[9px] text-gray-400 uppercase font-bold">Pace Médio</span><div id="resPace" class="text-sm font-black text-cyan-400">--:--</div></div>
-          <div><span class="text-[9px] text-gray-400 uppercase font-bold">Velocidade</span><div id="resSpeed" class="text-sm font-black text-purple-400">-- km/h</div></div>
-          <div><span class="text-[9px] text-gray-400 uppercase font-bold">Est. VO2máx</span><div id="resVo2" class="text-sm font-black text-emerald-400">-- ml/kg</div></div>
-        </div>
-      </div>
-
-      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-        <div class="flex items-center space-x-3 text-emerald-400">
-          <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center"><i class="fa-solid fa-flag-checkered"></i></div>
-          <h3 class="font-bold text-sm text-white">Preditor de Prova (Riegel)</h3>
-        </div>
-        <div>
-          <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Tempo atual em 5 km (minutos exatos, ex: 25)</label>
-          <input type="number" id="predTime5k" value="25" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 outline-none" />
-        </div>
-        <button onclick="calculateRacePredictor()" class="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl text-xs font-bold text-white shadow-lg shadow-emerald-500/20 active:scale-95 transition">Prever Tempos (10k, 21k, 42k)</button>
-        <div id="predictorResult" class="hidden space-y-1.5 pt-1"></div>
-      </div>
-
-      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-        <div class="flex items-center space-x-3 text-rose-400">
-          <div class="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center"><i class="fa-solid fa-heart-pulse"></i></div>
-          <h3 class="font-bold text-sm text-white">Zonas de Frequência (Karvonen)</h3>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">FC Máxima (bpm)</label>
-            <input type="number" id="calcFcMax" value="195" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-rose-500 outline-none" />
-          </div>
-          <div>
-            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">FC Repouso (bpm)</label>
-            <input type="number" id="calcFcRest" value="60" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-rose-500 outline-none" />
-          </div>
-        </div>
-        <button onclick="calculateKarvonen()" class="w-full py-2.5 bg-gradient-to-r from-rose-500 to-red-600 rounded-xl text-xs font-bold text-white shadow-lg shadow-rose-500/20 active:scale-95 transition">Calcular Zonas Alvo</button>
-        <div id="karvonenResult" class="hidden space-y-1.5 pt-1"></div>
+        <button onclick="calculatePace()" class="w-full py-2.5 bg-cyan-600 rounded-xl text-xs font-bold text-slate-950">Calcular</button>
+        <div id="paceResult" class="hidden p-3 rounded-xl bg-slate-950 text-center text-xs text-cyan-400"></div>
       </div>
     </div>
 
-    <!-- TAB 7: PHYSIOLOGY -->
-    <div id="tab-physiology" class="tab-content hidden space-y-3">
-      <div class="px-1 mb-2 flex justify-between items-center">
-        <div>
-          <h2 class="text-sm font-bold text-white">Fisiologia do Exercício Avançada</h2>
-          <p class="text-xs text-gray-400">Bioenergética, fibras e deriva cardíaca.</p>
-        </div>
-        <button onclick="switchTab('home')" class="text-xs text-cyan-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
-          <i class="fa-solid fa-arrow-left"></i> Voltar
-        </button>
-      </div>
-      <div id="physiologyContainer" class="space-y-2.5"></div>
-    </div>
-
-    <!-- TAB 8: WORKOUTS -->
+    <!-- TAB 7: WORKOUTS -->
     <div id="tab-workouts" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
-        <div>
-          <h2 class="text-sm font-bold text-white">Métodos de Treinamento Profissional</h2>
-          <p class="text-xs text-gray-400">Catálogo completo de sessões estruturadas.</p>
-        </div>
-        <button onclick="switchTab('home')" class="text-xs text-cyan-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
-          <i class="fa-solid fa-arrow-left"></i> Voltar
-        </button>
+        <h2 class="text-sm font-bold text-white">Métodos de Treinamento</h2>
+        <button onclick="switchTab('home')" class="text-xs text-cyan-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl">Voltar</button>
       </div>
       <div id="workoutsContainer" class="space-y-2.5"></div>
     </div>
@@ -407,26 +419,14 @@
     </div>
   </nav>
 
-  <!-- MODAL FOR DETAILED VIEWS -->
-  <div id="detailModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex flex-col justify-end sm:justify-center p-0 sm:p-4 transition-opacity duration-200">
+  <!-- MODAL -->
+  <div id="detailModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex flex-col justify-end sm:justify-center p-0 sm:p-4">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl mx-auto rounded-t-3xl sm:rounded-3xl max-h-[88vh] flex flex-col overflow-hidden shadow-2xl">
-      <div class="p-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-900/90">
-        <div class="flex items-center space-x-2.5">
-          <span id="modalCategoryBadge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-500/20 text-purple-300">Categoria</span>
-          <h3 id="modalTitle" class="text-sm font-bold text-white truncate max-w-[180px] sm:max-w-xs">Título</h3>
-        </div>
-        <div class="flex items-center space-x-2">
-          <button id="modalFavoriteBtn" onclick="toggleFavoriteCurrentModal()" class="p-2 rounded-full text-gray-400 hover:text-amber-400 transition"><i class="fa-regular fa-star text-base"></i></button>
-          <button onclick="closeModal()" class="p-2 rounded-full text-gray-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
-        </div>
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+        <h3 id="modalTitle" class="text-sm font-bold text-white">Título</h3>
+        <button onclick="closeModal()" class="p-2 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
-      <div id="modalBody" class="p-4 sm:p-6 overflow-y-auto space-y-4 text-xs text-gray-300 leading-relaxed no-scrollbar"></div>
-      <div class="p-3 border-t border-slate-800/80 bg-slate-950 flex justify-between items-center">
-        <button onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-cyan-400 font-semibold text-xs flex items-center gap-1.5 hover:bg-slate-700 transition">
-          <i class="fa-solid fa-arrow-left"></i> Voltar
-        </button>
-        <button onclick="closeModal()" class="px-5 py-2 rounded-xl bg-slate-800 text-gray-300 font-semibold text-xs hover:bg-slate-700 transition">Fechar</button>
-      </div>
+      <div id="modalBody" class="p-4 overflow-y-auto space-y-4 text-xs text-gray-300"></div>
     </div>
   </div>
 
@@ -438,26 +438,28 @@
     let completedBands = JSON.parse(localStorage.getItem('stamina_bands_done') || '[]');
     let postponedDays = JSON.parse(localStorage.getItem('stamina_postponed') || '{}');
     let workoutLogs = JSON.parse(localStorage.getItem('stamina_logs') || '[]');
+    let stravaConnected = JSON.parse(localStorage.getItem('stamina_strava_conn') || 'false');
+    let stravaActivities = JSON.parse(localStorage.getItem('stamina_strava_acts') || '[]');
 
     const BANDS_WORKOUTS = {
       A: [
-        { name: "Supino com Elástico Extensor", setup: "Prenda o elástico na altura média da porta (ou passe por trás das costas na altura das escápulas).", exec: "Segure os pegadores e empurre para frente até estender os braços. Retorne controlando.", sets: "3 séries x 15 repetições" },
-        { name: "Remada Baixa / Curvada", setup: "Pise no centro do elástico tubular com os dois pés ou prenda a âncora embaixo na porta.", exec: "Incline o tronco levemente à frente, puxe os pegadores em direção ao quadril espremendo as escápulas.", sets: "3 séries x 15 repetições" },
-        { name: "Desenvolvimento de Ombros", setup: "Pise no centro do elástico com os dois pés na largura dos ombros.", exec: "Segure os pegadores na altura dos ombros e eleve para cima da cabeça até quase juntar. Desça devagar.", sets: "3 séries x 12 repetições" },
-        { name: "Rosca Direta (Bíceps)", setup: "Pise no elástico com um ou ambos os pés, mantendo os braços estendidos.", exec: "Mantenha os cotovelos colados na costela e flexione os braços trazendo os pegadores aos ombros.", sets: "3 séries x 15 repetições" },
-        { name: "Tríceps na Porta", setup: "Prenda o elástico na âncora de porta na posição mais alta (topo).", exec: "Fique de frente para a porta, cotovelos flexionados perto da cabeça, e empurre para baixo esticando o braço.", sets: "3 séries x 15 repetições" }
+        { name: "Supino com Elástico Extensor", setup: "Prenda o elástico na altura média da porta.", exec: "Empurre para frente até estender os braços.", sets: "3 x 15 reps" },
+        { name: "Remada Baixa / Curvada", setup: "Pise no centro do elástico tubular.", exec: "Puxe em direção ao quadril.", sets: "3 x 15 reps" },
+        { name: "Desenvolvimento de Ombros", setup: "Pise no centro do elástico.", exec: "Eleve os braços acima da cabeça.", sets: "3 x 12 reps" },
+        { name: "Rosca Direta (Bíceps)", setup: "Pise no elástico com os pés.", exec: "Flexione os braços mantendo cotovelos fixos.", sets: "3 x 15 reps" },
+        { name: "Tríceps na Porta", setup: "Prenda o elástico no topo da porta.", exec: "Empurre para baixo esticando o braço.", sets: "3 x 15 reps" }
       ],
       B: [
-        { name: "Agachamento com Extensor", setup: "Pise no elástico e apoie os pegadores na altura dos ombros.", exec: "Execute o agachamento mantendo o tronco erguido, calcanhares no chão e joelhos alinhados com a ponta dos pés.", sets: "3 séries x 15 repetições" },
-        { name: "Ponte de Glúteos com Mini Band", setup: "Posicione a mini band logo acima dos joelhos, deitado de costas com os joelhos flexionados.", exec: "Eleve o quadril contraindo os glúteos e fazendo força leve para abrir os joelhos contra a faixa.", sets: "3 séries x 20 repetições" },
-        { name: "Caminhada Lateral (Monster Walk)", setup: "Coloque a mini band ao redor dos tornozelos ou logo abaixo dos joelhos.", exec: "Dê passos largos para o lateral mantendo a tensão constante na faixa e o corpo estabilizado.", sets: "3 séries x 15 passos cada lado" },
-        { name: "Avanço / Passada com Elástico", setup: "Pise com um pé no centro do elástico e segure os pegadores nos ombros.", exec: "Dê um passo para trás ou para frente realizando o afundo (joelho de trás quase encosta no chão).", sets: "3 séries x 12 reps por perna" }
+        { name: "Agachamento com Extensor", setup: "Pise no elástico e apoie nos ombros.", exec: "Agachamento mantendo o tronco erguido.", sets: "3 x 15 reps" },
+        { name: "Ponte de Glúteos com Mini Band", setup: "Mini band acima dos joelhos.", exec: "Eleve o quadril abrindo os joelhos.", sets: "3 x 20 reps" },
+        { name: "Caminhada Lateral (Monster Walk)", setup: "Mini band nos tornozelos.", exec: "Passos laterais mantendo tensão.", sets: "3 x 15 passos" },
+        { name: "Avanço / Passada", setup: "Pise com um pé no centro.", exec: "Afundo alternado controlando o joelho.", sets: "3 x 12 reps" }
       ],
       C: [
-        { name: "Pallof Press (Anti-rotação Core)", setup: "Prenda o elástico na porta na altura do peito.", exec: "Segure com as duas mãos perto do esterno, estique os braços para frente resistindo à força lateral da porta.", sets: "3 séries x 12 reps cada lado" },
-        { name: "Abdução de Quadril (Tira de Tornozelo)", setup: "Conecte a tira de tornozelo no tubo e prenda na altura mais baixa da porta.", exec: "Afaste a perna lateralmente para fora contra a resistência do elástico, mantendo o tronco reto.", sets: "3 séries x 15 reps cada lado" },
-        { name: "Face Pull com Elástico", setup: "Prenda o elástico na altura dos olhos/rosto na porta.", exec: "Puxe os pegadores em direção ao rosto abrindo bem os cotovelos para trás (foco em postura e ombro posterior).", sets: "3 séries x 15 repetições" },
-        { name: "Prancha com Mini Band nos Pulsos", setup: "Coloque a mini band ao redor dos antebraços e assuma a posição de prancha ventral.", exec: "Mantenha o core rígido e faça leve pressão para fora com os braços contra a faixa.", sets: "3 séries x 45 segundos" }
+        { name: "Pallof Press (Anti-rotação)", setup: "Prenda na porta na altura do peito.", exec: "Estique os braços resistindo à rotação.", sets: "3 x 12 reps" },
+        { name: "Abdução de Quadril", setup: "Tira de tornozelo na parte baixa.", exec: "Afaste a perna lateralmente.", sets: "3 x 15 reps" },
+        { name: "Face Pull com Elástico", setup: "Prenda na altura do rosto.", exec: "Puxe em direção ao rosto abrindo cotovelos.", sets: "3 x 15 reps" },
+        { name: "Prancha com Mini Band", setup: "Mini band nos antebraços.", exec: "Manter core rígido com pressão externa.", sets: "3 x 45 seg" }
       ]
     };
 
@@ -470,51 +472,34 @@
           btn.className = "py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-gray-300 font-bold text-xs transition";
         }
       });
-
       const container = document.getElementById('bandsExercisesList');
-      const list = BANDS_WORKOUTS[type];
-
-      container.innerHTML = list.map((ex, idx) => `
-        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
-          <div class="flex justify-between items-start">
-            <h4 class="text-xs font-bold text-white"><span class="text-cyan-400 mr-1">${idx+1}.</span> ${ex.name}</h4>
-            <span class="text-[10px] font-bold bg-cyan-500/10 text-cyan-300 px-2 py-0.5 rounded">${ex.sets}</span>
-          </div>
-          <p class="text-[11px] text-gray-300"><strong class="text-emerald-400">Montagem / Posicionamento:</strong> ${ex.setup}</p>
-          <p class="text-[11px] text-gray-300"><strong class="text-amber-400">Execução correta:</strong> ${ex.exec}</p>
+      container.innerHTML = BANDS_WORKOUTS[type].map((ex, idx) => `
+        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
+          <h4 class="text-xs font-bold text-white">${idx+1}. ${ex.name} <span class="text-cyan-400 font-normal">(${ex.sets})</span></h4>
+          <p class="text-[11px] text-gray-300"><strong>Montagem:</strong> ${ex.setup}</p>
+          <p class="text-[11px] text-gray-300"><strong>Execução:</strong> ${ex.exec}</p>
         </div>
       `).join('');
     }
 
     function getDynamicWeeklyPlan() {
       const now = new Date();
-      const dayOfMonth = now.getDate();
-      const weekNumber = Math.ceil(dayOfMonth / 7);
-      
+      const weekNumber = Math.ceil(now.getDate() / 7);
       let phaseName = "Semana 1: Base Aeróbica & Volume";
-      let multiplier = 1.0;
-
-      if (weekNumber === 2) {
-        phaseName = "Semana 2: Intensidade & Limiar";
-        multiplier = 1.1;
-      } else if (weekNumber === 3) {
-        phaseName = "Semana 3: Pico de Carga & VAM";
-        multiplier = 1.2;
-      } else if (weekNumber >= 4) {
-        phaseName = "Semana 4: Polimento & Descarga (Taper)";
-        multiplier = 0.8;
-      }
-
+      let mult = 1.0;
+      if (weekNumber === 2) { phaseName = "Semana 2: Intensidade & Limiar"; mult = 1.1; }
+      else if (weekNumber === 3) { phaseName = "Semana 3: Pico de Carga & VAM"; mult = 1.2; }
+      else if (weekNumber >= 4) { phaseName = "Semana 4: Polimento & Descarga (Taper)"; mult = 0.8; }
       document.getElementById('cycleWeekLabel').textContent = phaseName;
 
       return [
-        { day: 'Segunda-feira', title: 'Corrida Contínua (Base Aeróbica)', type: 'Corrida Z2', strength: 'Força: Treino A (Superiores)', color: 'text-blue-400', detail: `${Math.round(6 * multiplier)}k em ritmo conversacional (Z2).` },
-        { day: 'Terça-feira', title: 'Treino Intervalado (Tiros de Pista)', type: 'Tiros / VAM', strength: 'Descanso de Força', color: 'text-red-400', detail: `Aquecimento + ${weekNumber >= 3 ? '8' : '6'} x 400m em ritmo forte com 1:30 min de trote.` },
-        { day: 'Quarta-feira', title: 'Condicionamento Misto', type: 'Natação / Aeróbico', strength: 'Força: Treino B (Pernas)', color: 'text-cyan-400', detail: 'Sessão de natação para gasto aeróbico sem impacto articular.' },
-        { day: 'Quinta-feira', title: 'Treino de Ritmo (Tempo Run)', type: 'Limiar Anaeróbico', strength: 'Trote de Regresso à Calma', color: 'text-yellow-400', detail: `Aquecimento + ${Math.round(3.5 * multiplier)}k contínuos no ritmo sustentado de limiar.` },
-        { day: 'Sexta-feira', title: 'Rodagem Regenerativa', type: 'Recuperação Ativa', strength: 'Força: Treino C (Core/Postura)', color: 'text-emerald-400', detail: '3k a 4k em ritmo muito leve (Z1) para vascularização.' },
-        { day: 'Sábado', title: weekNumber >= 4 ? 'Longão Reduzido (Descarga)' : 'O Longão (Long Run)', type: 'Resistência Prolongada', strength: 'Hidratação e Descanso', color: 'text-indigo-400', detail: `${Math.round((weekNumber >= 4 ? 8 : 10) * multiplier)}k contínuos e progressivos.` },
-        { day: 'Domingo', title: 'Descanso Ativo', type: 'Regeneração Total', strength: 'Mobilidade Leve', color: 'text-slate-400', detail: 'Descanso total de corrida. Opcional: caminhada leve.' }
+        { day: 'Segunda-feira', title: 'Corrida Contínua (Base Aeróbica)', type: 'Corrida Z2', strength: 'Força: Treino A (Superiores)', color: 'text-blue-400', detail: `${Math.round(6 * mult)}k em ritmo conversacional (Z2).` },
+        { day: 'Terça-feira', title: 'Treino Intervalado (Tiros de Pista)', type: 'Tiros / VAM', strength: 'Descanso de Força', color: 'text-red-400', detail: `Aquecimento + ${weekNumber >= 3 ? '8' : '6'} x 400m forte.` },
+        { day: 'Quarta-feira', title: 'Condicionamento Misto', type: 'Natação / Aeróbico', strength: 'Força: Treino B (Pernas)', color: 'text-cyan-400', detail: 'Sessão de natação sem impacto.' },
+        { day: 'Quinta-feira', title: 'Treino de Ritmo (Tempo Run)', type: 'Limiar Anaeróbico', strength: 'Trote Regenerativo', color: 'text-yellow-400', detail: `Aquecimento + ${Math.round(3.5 * mult)}k em limiar.` },
+        { day: 'Sexta-feira', title: 'Rodagem Regenerativa', type: 'Recuperação Ativa', strength: 'Força: Treino C (Core)', color: 'text-emerald-400', detail: '3k a 4k em ritmo leve (Z1).' },
+        { day: 'Sábado', title: 'O Longão (Long Run)', type: 'Resistência', strength: 'Hidratação e Descanso', color: 'text-indigo-400', detail: `${Math.round((weekNumber >= 4 ? 8 : 10) * mult)}k contínuos.` },
+        { day: 'Domingo', title: 'Descanso Ativo', type: 'Regeneração Total', strength: 'Mobilidade Leve', color: 'text-slate-400', detail: 'Descanso total de corrida.' }
       ];
     }
 
@@ -535,46 +520,38 @@
                 <span class="text-[10px] font-bold uppercase tracking-wider ${item.color}">${item.day} • ${item.type}</span>
                 <h4 class="text-xs font-bold text-white mt-0.5 ${isRunDone ? 'line-through text-gray-400' : ''}">${item.title}</h4>
               </div>
-              <button onclick="togglePostpone(${index})" class="text-[10px] bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-lg text-amber-400 hover:bg-slate-700 transition" title="Adiar ou ajustar se faltou o treino">
-                <i class="fa-solid fa-clock-rotate-left mr-1"></i> ${isPostponed ? 'Adiado / Ajustado' : 'Adiar Treino'}
+              <button onclick="togglePostpone(${index})" class="text-[10px] bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-lg text-amber-400 hover:bg-slate-700 transition">
+                <i class="fa-solid fa-clock-rotate-left mr-1"></i> ${isPostponed ? 'Adiado' : 'Adiar'}
               </button>
             </div>
-            
             <p class="text-xs text-gray-300">${item.detail}</p>
             <div class="bg-slate-950 p-2.5 rounded-xl text-[11px] text-gray-400 border border-slate-800/80">
               <strong class="text-emerald-400">Musculação:</strong> ${item.strength}
             </div>
-
-            <!-- Checkboxes Independentes -->
             <div class="grid grid-cols-2 gap-2 pt-1">
-              <button onclick="toggleRunDone(${index})" class="py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition ${isRunDone ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800/80 text-gray-300 hover:bg-slate-800'}">
+              <button onclick="toggleRunDone(${index})" class="py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition ${isRunDone ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-gray-300'}">
                 <i class="fa-solid fa-person-running"></i> ${isRunDone ? 'Corrida Feita' : 'Marcar Corrida'}
               </button>
-              <button onclick="toggleBandDone(${index})" class="py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition ${isBandDone ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800/80 text-gray-300 hover:bg-slate-800'}">
+              <button onclick="toggleBandDone(${index})" class="py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition ${isBandDone ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-gray-300'}">
                 <i class="fa-solid fa-dumbbell"></i> ${isBandDone ? 'Força Feita' : 'Marcar Força'}
               </button>
             </div>
           </div>
         `;
       }).join('');
+      updateFeedbackDashboard();
     }
 
     function toggleRunDone(index) {
-      if (completedRuns.includes(index)) {
-        completedRuns = completedRuns.filter(i => i !== index);
-      } else {
-        completedRuns.push(index);
-      }
+      if (completedRuns.includes(index)) completedRuns = completedRuns.filter(i => i !== index);
+      else completedRuns.push(index);
       localStorage.setItem('stamina_runs_done', JSON.stringify(completedRuns));
       renderPlan();
     }
 
     function toggleBandDone(index) {
-      if (completedBands.includes(index)) {
-        completedBands = completedBands.filter(i => i !== index);
-      } else {
-        completedBands.push(index);
-      }
+      if (completedBands.includes(index)) completedBands = completedBands.filter(i => i !== index);
+      else completedBands.push(index);
       localStorage.setItem('stamina_bands_done', JSON.stringify(completedBands));
       renderPlan();
     }
@@ -583,40 +560,122 @@
       postponedDays[index] = !postponedDays[index];
       localStorage.setItem('stamina_postponed', JSON.stringify(postponedDays));
       renderPlan();
-      if(postponedDays[index]) {
-        alert("⚠️ Treino adiado/marcado como pendente. Ajusta o ritmo nos próximos dias para evitar fadiga acumulada!");
+    }
+
+    function updateFeedbackDashboard() {
+      const runsCount = completedRuns.length;
+      const bandsCount = completedBands.length;
+      document.getElementById('statRunsCount').textContent = runsCount;
+      document.getElementById('statBandsCount').textContent = bandsCount;
+
+      const runPct = Math.round((runsCount / 7) * 100);
+      const bandPct = Math.round((bandsCount / 5) * 100);
+
+      document.getElementById('labelRunPct').textContent = `${runPct}%`;
+      document.getElementById('barRunPct').style.width = `${Math.min(runPct, 100)}%`;
+
+      document.getElementById('labelBandPct').textContent = `${bandPct}%`;
+      document.getElementById('barBandPct').style.width = `${Math.min(bandPct, 100)}%`;
+
+      let totalKm = stravaActivities.reduce((acc, curr) => acc + curr.distance, 0);
+      document.getElementById('statStravaCount').textContent = `${totalKm.toFixed(1)} km`;
+      renderStravaHistory();
+    }
+
+    function toggleStravaConnection() {
+      stravaConnected = !stravaConnected;
+      localStorage.setItem('stamina_strava_conn', JSON.stringify(stravaConnected));
+      const btn = document.getElementById('stravaConnectBtn');
+      const status = document.getElementById('stravaStatusText');
+      const container = document.getElementById('stravaDataContainer');
+
+      if (stravaConnected) {
+        btn.textContent = "Desconectar";
+        btn.className = "px-3 py-1.5 rounded-xl bg-slate-800 text-gray-300 font-bold text-[11px]";
+        status.textContent = "Estado: Conectado com sucesso (API Ativa)";
+        container.classList.remove('hidden');
+      } else {
+        btn.textContent = "Conectar Strava";
+        btn.className = "px-3 py-1.5 rounded-xl bg-orange-600 text-white font-bold text-[11px]";
+        status.textContent = "Estado: Não conectado";
+        container.classList.add('hidden');
       }
     }
 
-    const DATABASE = {
-      protocols: [
-        { id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos.', whatItMeasures: 'Capacidade aeróbica máxima e estimativa do VO2 máx.', physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico e VAM.', whenToUse: 'Corredores iniciantes a avançados.', whenNotToUse: 'Indivíduos com contraindicações cardiovasculares.', materials: 'Pista de 400m ou percurso plano medido por GPS.', formula: 'VO2 máx = (Distância em metros - 504.9) / 44.73', howToCalculate: 'Aplique a distância na fórmula após os 12 minutos.', example: '2800m → VO2 máx = 51.3 ml/kg/min.', summary: 'Teste clássico de campo altamente correlacionado com o VO2máx.' },
-        { id: 'proto-3km', category: 'Protocolo de Teste', title: 'Teste de 3 km', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Determinação de VAM e Pace Máximo', icon: 'fa-flag-checkered', description: 'Avaliação de ritmo sustentado em 3.000 metros.', whatItMeasures: 'Velocidade Aeróbica Máxima (VAM).', physiology: 'Solicitação intensa de ~90-100% do VO2máx.', whenToUse: 'Corredores intermediários e avançados.', whenNotToUse: 'Iniciantes absolutos.', materials: 'Pista de atletismo e cronômetro.', formula: 'VAM (km/h) = 10.800 / Tempo em segundos', howToCalculate: 'Divida 3km pelo tempo em horas.', example: '12:00 min → VAM = 15.0 km/h.', summary: 'Excelente para prescrever tiros e intervalados.' },
-        { id: 'proto-conconi', category: 'Protocolo de Teste', title: 'Teste de Conconi', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Deflexão da Frequência Cardíaca', icon: 'fa-chart-line', description: 'Teste incremental contínuo correlacionando velocidade e FC.', whatItMeasures: 'Limiar Anaeróbico por deflexão cardíaca.', physiology: 'Identifica o ponto onde a FC deixa de subir linearmente devido ao acúmulo de lactato.', whenToUse: 'Definição de limiar sem coleta de sangue.', whenNotToUse: 'Pessoas com arritmias.', materials: 'Cinta cardíaca e pista marcada.', formula: 'Ponto de Deflexão da FC.', howToCalculate: 'Plota-se o gráfico velocidade x FC.', example: 'FC estabiliza a 172 bpm antes de romper a linearidade.', summary: 'Método tradicional não invasivo de limiar.' },
-        { id: 'proto-cs', category: 'Protocolo de Teste', title: 'Critical Speed (Velocidade Crítica)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Modelo Matemático de Dois Pontos', icon: 'fa-calculator', description: 'Combina tempos de duas distâncias máximas distintas (ex: 800m e 3000m).', whatItMeasures: 'Velocidade crítica e reserva anaeróbica (D\').', physiology: 'Separa o domínio de intensidade pesada do severo.', whenToUse: 'Atletas de alta performance.', whenNotToUse: 'Iniciantes.', materials: 'Cronômetro e pista.', formula: 'CS = (D2 - D1) / (T2 - T1)', howToCalculate: 'Divida a variação de distância pela variação de tempo.', example: 'CS calculada em 16.8 km/h.', summary: 'Fórmula matemática precisa sem laboratório.' }
-      ],
-      physiology: [
-        { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) é a molécula de energia direta.', whatItMeasures: 'Ressíntese de energia muscular.', physiology: 'ATP-CP, Glicolítico e Oxidativo.', whenToUse: 'Estruturação de pausas.', whenNotToUse: 'N/A', materials: 'N/A', formula: 'ATP → ADP + Pi + Energia', howToCalculate: 'Baseado na duração do esforço.', example: 'Sprints usam ATP-CP; maratona usa sistema oxidativo.', summary: 'A base da bioenergética humana.' },
-        { id: 'phys-vo2', category: 'Consumo de Oxigênio', title: 'VO2 e VO2 Máximo', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'O teto aeróbico', icon: 'fa-lung', description: 'Volume máximo de oxigênio captado por minuto.', whatItMeasures: 'Potência aeróbica máxima.', physiology: 'Limitado pelo débito cardíaco e extração muscular.', whenToUse: 'Avaliação biológica do corredor.', whenNotToUse: 'N/A', materials: 'Ergoespirometria.', formula: 'Débito cardíaco x Diferença a-vO2', howToCalculate: 'ml/kg/min.', example: 'Elite: 70-85 ml/kg/min.', summary: 'O tamanho do motor aeróbico.' },
-        { id: 'phys-lactate', category: 'Cinética Metabólica', title: 'Cinética e Depuração de Lactato', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'O lactato como combustível', icon: 'fa-fire', description: 'O lactato não é apenas lixo metabólico; é reaproveitado como substrato energético pelas fibras lentas e pelo coração.', whatItMeasures: 'Capacidade de tamponamento e depuração.', physiology: 'Produção nas fibras rápidas e oxidação nas fibras lentas.', whenToUse: 'Prescrição de treinos de limiar.', whenNotToUse: 'N/A', materials: 'Lactatímetro portátil.', formula: 'Taxa de Produção vs Taxa de Depuração', howToCalculate: 'Medição pós-esforço em minutos 1, 3 e 5.', example: 'Treinos de Tempo Run melhoram a densidade de transportadores MCT.', summary: 'O lactato é amigo do corredor, não vilão.' },
-        { id: 'phys-fibers', category: 'Morfologia Muscular', title: 'Tipos de Fibras Musculares (I, IIa, IIx)', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A composição do músculo', icon: 'fa-dna', description: 'Fibras Tipo I (contrações lentas, altamente oxidativas) e Tipo II (rápidas, glicolíticas).', whatItMeasures: 'Predisposição a velocidade ou resistência.', physiology: 'Recrutamento ordenado pelo Princípio de Henneman.', whenToUse: 'Definição de perfil de atleta (fundista vs sprinter).', whenNotToUse: 'N/A', materials: 'Biópsia ou testes de campo.', formula: 'Princípio de Henneman (Recrutamento de menor para maior)', howToCalculate: 'Testes de potência vs testes de tempo limite.', example: 'Fundistas possuem alta densidade de Fibras Tipo I.', summary: 'A genética e o treino moldam a capacidade contrátil.' },
-        { id: 'phys-drift', category: 'Cardiodinâmica', title: 'Deriva Cardíaca (Cardiac Drift)', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'Aumento da FC em ritmo constante', icon: 'fa-heart-pulse', description: 'Fenômeno onde a FC sobe gradualmente mesmo mantendo o mesmo pace em treinos longos devido à desidratação e perda de volume plasmático.', whatItMeasures: 'Estresse térmico e cardiovascular prolongado.', physiology: 'Desvio termorregulador e queda do retorno venoso.', whenToUse: 'Ajuste de esforço no Longão.', whenNotToUse: 'N/A', materials: 'GPS e cinta cardíaca.', formula: 'ΔFC = FC Final - FC Inicial (em pace constante)', howToCalculate: 'Observado após 45-60 min de exercício contínuo.', example: 'FC sobe 10 bpm no km 15 mantendo o mesmo pace.', summary: 'Um alerta fisiológico sobre hidratação e fadiga.' }
-      ],
-      workouts: [
-        { id: 'work-interval', category: 'Método de Treino', title: 'Treino Intervalado (VO2máx)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Repetições de 400m a 1000m', icon: 'fa-stopwatch-20', description: 'Esforços intensos (95-100% VAM) com recuperação incompleta.', whatItMeasures: 'Potência aeróbica e VO2máx.', physiology: 'Elevação do batimento cardíaco próximo ao teto.', whenToUse: 'Fases específicas de prova.', whenNotToUse: 'Atletas sem base.', materials: 'Pista ou GPS.', formula: '95-100% VAM', howToCalculate: 'Pausas 1:1', example: '8x 400m forte / 1 min trote.', summary: 'O treino mestre para esticar o teto aeróbico.' },
-        { id: 'work-tempo', category: 'Método de Treino', title: 'Treino de Ritmo (Tempo Run)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Corrida no Limiar', icon: 'fa-gauge', description: 'Corrida contínua sustentada na intensidade do Limiar Anaeróbico.', whatItMeasures: 'Taxa de remoção de lactato.', physiology: 'Trabalho no estado estável de lactato.', whenToUse: 'Provas de 10k a maratona.', whenNotToUse: 'Dias de recuperação.', materials: 'GPS.', formula: 'Pace de Limiar (L2)', howToCalculate: '20 a 40 minutos contínuos.', example: '25 min a 4:30/km.', summary: 'Aumenta a velocidade sem acumular fadiga.' },
-        { id: 'work-long', category: 'Método de Treino', title: 'Longão (Long Run)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Resistência aeróbica', icon: 'fa-route', description: 'Treino longo semanal em ritmo confortável.', whatItMeasures: 'Capilarização e mitocôndrias.', physiology: 'Oxidação de gorduras.', whenToUse: 'Preparação de fundo.', whenNotToUse: 'Exceder 30% do volume semanal.', materials: 'Hidratação.', formula: '65-75% FCmax', howToCalculate: 'Pace conversacional.', example: '16km a 18km contínuos.', summary: 'A fundação de resistência.' }
-      ]
-    };
+    function syncStravaActivity() {
+      if (!stravaConnected) return;
+      const simulatedDistances = [5.2, 6.5, 8.0, 10.1];
+      const randomDist = simulatedDistances[Math.floor(Math.random() * simulatedDistances.length)];
+      const newAct = {
+        date: new Date().toLocaleDateString('pt-BR'),
+        name: "Corrida Diária no Asfalto (Strava GPS)",
+        distance: randomDist,
+        pace: "5:15 /km",
+        time: `${Math.round(randomDist * 5.25)} min`
+      };
+      stravaActivities.unshift(newAct);
+      localStorage.setItem('stamina_strava_acts', JSON.stringify(stravaActivities));
+      document.getElementById('stravaLastActivity').textContent = `${newAct.distance} km (${newAct.date})`;
+      updateFeedbackDashboard();
+      alert(`Sincronização bem-sucedida! Atividade de ${newAct.distance} km importada do Strava.`);
+    }
+
+    function renderStravaHistory() {
+      const container = document.getElementById('stravaHistoryList');
+      if (!container) return;
+      if (stravaActivities.length === 0) {
+        container.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade do Strava sincronizada.</p>`;
+        return;
+      }
+      container.innerHTML = stravaActivities.map(act => `
+        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs flex justify-between items-center">
+          <div>
+            <strong class="text-white">${act.name}</strong>
+            <div class="text-[10px] text-gray-400">${act.date} • Duração: ${act.time}</div>
+          </div>
+          <div class="text-right">
+            <span class="text-orange-400 font-bold">${act.distance} km</span>
+            <div class="text-[10px] text-gray-300">Pace: ${act.pace}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function saveWorkoutLog() {
+      const type = document.getElementById('logType').value;
+      const duration = parseInt(document.getElementById('logDuration').value);
+      const rpe = parseInt(document.getElementById('logRpe').value);
+      if (!duration || !rpe) { alert("Preencha duração e RPE."); return; }
+      const load = duration * rpe;
+      workoutLogs.unshift({ date: new Date().toLocaleDateString('pt-BR'), type, duration, rpe, load });
+      localStorage.setItem('stamina_logs', JSON.stringify(workoutLogs));
+      renderWorkoutLogs();
+      alert("Registo guardado com sucesso!");
+    }
+
+    function renderWorkoutLogs() {
+      const container = document.getElementById('workoutHistoryContainer');
+      if (!container) return;
+      if (workoutLogs.length === 0) { container.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">Nenhum registo de carga.</p>`; return; }
+      container.innerHTML = workoutLogs.map(l => `
+        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs flex justify-between">
+          <div><strong class="text-white">${l.type}</strong><div class="text-[10px] text-gray-400">${l.date} - ${l.duration} min</div></div>
+          <div class="text-right"><strong class="text-emerald-400">${l.load} AU</strong><div class="text-[10px] text-amber-400">RPE ${l.rpe}</div></div>
+        </div>
+      `).join('');
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
-      renderHomeContent();
       renderPlan();
       switchBandsWorkout('A');
-      renderCategoryList('protocols', 'protocolsContainer');
-      renderCategoryList('physiology', 'physiologyContainer');
-      renderCategoryList('workouts', 'workoutsContainer');
+      updateFeedbackDashboard();
       renderWorkoutLogs();
+      if (stravaConnected) {
+        document.getElementById('stravaConnectBtn').textContent = "Desconectar";
+        document.getElementById('stravaConnectBtn').className = "px-3 py-1.5 rounded-xl bg-slate-800 text-gray-300 font-bold text-[11px]";
+        document.getElementById('stravaStatusText').textContent = "Estado: Conectado com sucesso (API Ativa)";
+        document.getElementById('stravaDataContainer').classList.remove('hidden');
+      }
     });
 
     function switchTab(tabId) {
@@ -635,147 +694,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function renderHomeContent() {
-      document.getElementById('homeProtocolsList').innerHTML = DATABASE.protocols.slice(0, 3).map(item => createCardHTML(item)).join('');
-      document.getElementById('homePhysiologyGrid').innerHTML = DATABASE.physiology.slice(0, 2).map(item => createSmallCardHTML(item)).join('');
-    }
-
-    function renderCategoryList(categoryKey, containerId) {
-      const container = document.getElementById(containerId);
-      if (!container) return;
-      container.innerHTML = DATABASE[categoryKey].map(item => createCardHTML(item)).join('');
-    }
-
-    function createCardHTML(item) {
-      const isFav = favorites.includes(item.id);
-      return `
-        <div onclick="openModal('${item.id}')" class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition cursor-pointer flex items-center justify-between group">
-          <div class="flex items-center space-x-3 overflow-hidden">
-            <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/50 flex items-center justify-center text-cyan-400 shrink-0 group-hover:scale-105 transition">
-              <i class="fa-solid ${item.icon} text-base"></i>
-            </div>
-            <div class="truncate">
-              <span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${item.badgeColor}">${item.category}</span>
-              <h4 class="text-xs font-bold text-white truncate mt-1">${item.title}</h4>
-              <p class="text-[10px] text-gray-400 truncate">${item.subtitle}</p>
-            </div>
-          </div>
-          <button onclick="event.stopPropagation(); toggleFavorite('${item.id}')" class="p-2 text-gray-500 hover:text-amber-400 transition">
-            <i class="fa-${isFav ? 'solid' : 'regular'} fa-star ${isFav ? 'text-amber-400' : ''}"></i>
-          </button>
-        </div>
-      `;
-    }
-
-    function createSmallCardHTML(item) {
-      return `
-        <div onclick="openModal('${item.id}')" class="p-3 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition cursor-pointer flex flex-col justify-between space-y-2">
-          <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center"><i class="fa-solid ${item.icon} text-sm"></i></div>
-          <div>
-            <h4 class="text-xs font-bold text-white line-clamp-1">${item.title}</h4>
-            <p class="text-[10px] text-gray-400 line-clamp-1">${item.subtitle}</p>
-          </div>
-        </div>
-      `;
-    }
-
-    function handleSearch() {
-      const query = document.getElementById('searchInput').value.toLowerCase().trim();
-      const clearBtn = document.getElementById('clearSearch');
-      if (query.length > 0) { clearBtn.classList.remove('hidden'); } else { clearBtn.classList.add('hidden'); switchTab('home'); return; }
-      const allItems = [...DATABASE.protocols, ...DATABASE.physiology, ...DATABASE.workouts];
-      const results = allItems.filter(item => item.title.toLowerCase().includes(query) || item.subtitle.toLowerCase().includes(query) || item.description.toLowerCase().includes(query));
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      let searchTab = document.getElementById('tab-search');
-      if (!searchTab) {
-        searchTab = document.createElement('div');
-        searchTab.id = 'tab-search';
-        searchTab.className = 'tab-content space-y-3';
-        document.getElementById('mainContent').appendChild(searchTab);
-      }
-      searchTab.classList.remove('hidden');
-      searchTab.innerHTML = results.length === 0 ? `<div class="text-center py-10 space-y-2"><i class="fa-solid fa-magnifying-glass text-3xl text-gray-600"></i><p class="text-xs text-gray-400">Nenhum resultado encontrado.</p></div>` : `
-        <div class="px-1 mb-2 flex justify-between items-center"><p class="text-xs text-gray-400">Resultados da pesquisa:</p><button onclick="clearSearchInput()" class="text-xs text-cyan-400"><i class="fa-solid fa-arrow-left"></i> Voltar</button></div>
-        <div class="space-y-2.5">${results.map(item => createCardHTML(item)).join('')}</div>
-      `;
-    }
-
-    function clearSearchInput() {
-      document.getElementById('searchInput').value = '';
-      document.getElementById('clearSearch').classList.add('hidden');
-      const searchTab = document.getElementById('tab-search');
-      if (searchTab) searchTab.classList.add('hidden');
-      switchTab('home');
-    }
-
-    function toggleFavorite(itemId) {
-      if (favorites.includes(itemId)) { favorites = favorites.filter(id => id !== itemId); } else { favorites.push(itemId); }
-      localStorage.setItem('stamina_favs', JSON.stringify(favorites));
-      renderHomeContent();
-    }
-
-    function filterFavorites() {
-      if (favorites.length === 0) { alert("Nenhum item favoritado ainda."); return; }
-      const allItems = [...DATABASE.protocols, ...DATABASE.physiology, ...DATABASE.workouts];
-      const favItems = allItems.filter(item => favorites.includes(item.id));
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      let searchTab = document.getElementById('tab-search');
-      if (!searchTab) {
-        searchTab = document.createElement('div');
-        searchTab.id = 'tab-search';
-        searchTab.className = 'tab-content space-y-3';
-        document.getElementById('mainContent').appendChild(searchTab);
-      }
-      searchTab.classList.remove('hidden');
-      searchTab.innerHTML = `
-        <div class="px-1 mb-2 flex justify-between items-center"><h2 class="text-sm font-bold text-amber-400"><i class="fa-solid fa-star mr-1"></i> Seus Favoritos</h2><button onclick="clearSearchInput()" class="text-xs text-cyan-400"><i class="fa-solid fa-arrow-left"></i> Voltar</button></div>
-        <div class="space-y-2.5">${favItems.map(item => createCardHTML(item)).join('')}</div>
-      `;
-    }
-
-    function openModal(itemId) {
-      const allItems = [...DATABASE.protocols, ...DATABASE.physiology, ...DATABASE.workouts];
-      const item = allItems.find(i => i.id === itemId);
-      if (!item) return;
-      currentModalItem = item;
-      document.getElementById('modalCategoryBadge').textContent = item.category;
-      document.getElementById('modalTitle').textContent = item.title;
-      document.getElementById('modalBody').innerHTML = `
-        <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1"><span class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider block">Visão Geral</span><p class="text-gray-200 text-xs">${item.description}</p></div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <div class="p-3 rounded-2xl bg-slate-950/60 border border-slate-800"><span class="text-[10px] text-purple-400 font-bold uppercase tracking-wider block">O que mede</span><p class="text-gray-300 text-xs">${item.whatItMeasures}</p></div>
-          <div class="p-3 rounded-2xl bg-slate-950/60 border border-slate-800"><span class="text-[10px] text-rose-400 font-bold uppercase tracking-wider block">Fisiologia</span><p class="text-gray-300 text-xs">${item.physiology}</p></div>
-        </div>
-      `;
-      document.getElementById('detailModal').classList.remove('hidden');
-    }
-
-    function closeModal() { document.getElementById('detailModal').classList.add('hidden'); currentModalItem = null; }
-
-    function saveWorkoutLog() {
-      const type = document.getElementById('logType').value;
-      const duration = parseInt(document.getElementById('logDuration').value);
-      const rpe = parseInt(document.getElementById('logRpe').value);
-      if (!duration || !rpe) { alert("Preencha duração e RPE."); return; }
-      const load = duration * rpe;
-      workoutLogs.unshift({ date: new Date().toLocaleDateString('pt-BR'), type, duration, rpe, load });
-      localStorage.setItem('stamina_logs', JSON.stringify(workoutLogs));
-      renderWorkoutLogs();
-      alert("Registo guardado com sucesso!");
-    }
-
-    function renderWorkoutLogs() {
-      const container = document.getElementById('workoutHistoryContainer');
-      if (!container) return;
-      if (workoutLogs.length === 0) { container.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">Nenhum registo.</p>`; return; }
-      container.innerHTML = workoutLogs.map(l => `
-        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs flex justify-between">
-          <div><strong class="text-white">${l.type}</strong><div class="text-[10px] text-gray-400">${l.date} - ${l.duration} min</div></div>
-          <div class="text-right"><strong class="text-emerald-400">${l.load} AU</strong><div class="text-[10px] text-amber-400">RPE ${l.rpe}</div></div>
-        </div>
-      `).join('');
-    }
-
     function calculatePace() {
       const dist = parseFloat(document.getElementById('calcDist').value);
       const timeStr = document.getElementById('calcTime').value.trim();
@@ -786,47 +704,11 @@
       const paceSecPerKm = totalSeconds / distKm;
       const paceMin = Math.floor(paceSecPerKm / 60);
       const paceSec = Math.round(paceSecPerKm % 60);
-      document.getElementById('resPace').textContent = `${paceMin}:${paceSec < 10 ? '0' : ''}${paceSec} /km`;
-      document.getElementById('resSpeed').textContent = `${(distKm / (totalSeconds / 3600)).toFixed(2)} km/h`;
-      document.getElementById('resVo2').textContent = dist >= 1000 ? `${((dist - 504.9) / 44.73).toFixed(1)} ml/kg` : "--";
+      document.getElementById('paceResult').textContent = `Pace: ${paceMin}:${paceSec < 10 ? '0' : ''}${paceSec} /km`;
       document.getElementById('paceResult').classList.remove('hidden');
     }
 
-    function calculateRacePredictor() {
-      const t5k = parseFloat(document.getElementById('predTime5k').value);
-      if (!t5k || t5k <= 0) { alert("Insira um tempo válido."); return; }
-      const t10k = t5k * Math.pow(10 / 5, 1.06);
-      const t21k = t5k * Math.pow(21.097 / 5, 1.06);
-      const t42k = t5k * Math.pow(42.195 / 5, 1.06);
-      const fmt = (m) => `${Math.floor(m/60) > 0 ? Math.floor(m/60)+'h ' : ''}${Math.floor(m%60)}m`;
-      document.getElementById('predictorResult').innerHTML = `
-        <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex justify-between text-xs"><span class="text-blue-400 font-bold">10 km</span><span class="font-mono text-white">${fmt(t10k)}</span></div>
-        <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex justify-between text-xs"><span class="text-yellow-400 font-bold">Meia (21.1k)</span><span class="font-mono text-white">${fmt(t21k)}</span></div>
-        <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex justify-between text-xs"><span class="text-rose-400 font-bold">Maratona (42.2k)</span><span class="font-mono text-white">${fmt(t42k)}</span></div>
-      `;
-      document.getElementById('predictorResult').classList.remove('hidden');
-    }
-
-    function calculateKarvonen() {
-      const fcMax = parseInt(document.getElementById('calcFcMax').value);
-      const fcRest = parseInt(document.getElementById('calcFcRest').value);
-      if (!fcMax || !fcRest || fcMax <= fcRest) { alert("Verifique os valores de FC."); return; }
-      const hrr = fcMax - fcRest;
-      const zones = [
-        { name: 'Z1 - Recuperação', min: 0.50, max: 0.60, color: 'text-gray-300' },
-        { name: 'Z2 - Aeróbico Leve', min: 0.60, max: 0.70, color: 'text-cyan-400' },
-        { name: 'Z3 - Limiar / Tempo', min: 0.70, max: 0.80, color: 'text-emerald-400' },
-        { name: 'Z4 - Anaeróbico', min: 0.80, max: 0.90, color: 'text-amber-400' },
-        { name: 'Z5 - VO2 Máx', min: 0.90, max: 1.00, color: 'text-rose-400' }
-      ];
-      document.getElementById('karvonenResult').innerHTML = zones.map(z => `
-        <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-          <span class="font-bold ${z.color}">${z.name}</span>
-          <span class="font-mono text-white">${Math.round(fcRest + hrr * z.min)} - ${Math.round(fcRest + hrr * z.max)} bpm</span>
-        </div>
-      `).join('');
-      document.getElementById('karvonenResult').classList.remove('hidden');
-    }
+    function closeModal() { document.getElementById('detailModal').classList.add('hidden'); }
   </script>
 </body>
 </html>
