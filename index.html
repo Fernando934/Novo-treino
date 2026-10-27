@@ -70,11 +70,11 @@
         </div>
       </div>
 
-      <!-- SELETOR E BOTÃO DE ADICIONAR PERFIL -->
+      <!-- SELETOR E BOTÃO DE ADICIONAR PERFIL CORRIGIDOS -->
       <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5">
         <i class="fa-solid fa-user-shield text-orange-400 text-xs"></i>
         <select id="activeProfileSelect" onchange="handleProfileSelection(this.value)" class="bg-transparent text-xs font-bold text-white outline-none cursor-pointer">
-          <!-- Populado via JS dinamicamente -->
+          <!-- Populado dinamicamente -->
         </select>
         <button onclick="createNewProfilePrompt()" class="text-xs text-orange-400 hover:text-orange-300 px-1 py-0.5 border-l border-slate-700 ml-1" title="Adicionar Novo Perfil">
           <i class="fa-solid fa-plus"></i>
@@ -309,8 +309,8 @@
           </div>
         </div>
         <div>
-          <label class="text-[10px] text-cyan-400 uppercase font-bold block mb-1"><i class="fa-solid fa-list-ol mr-1"></i> Ritmo por KM (ex: 5:0, 5:30, 5:0, 4:40)</label>
-          <input type="text" id="newRunSplits" placeholder="ex: 5:0, 5:30, 5:0, 4:40" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-500 outline-none" />
+          <label class="text-[10px] text-cyan-400 uppercase font-bold block mb-1"><i class="fa-solid fa-list-ol mr-1"></i> Ritmo por KM (ex: 5:00, 5:30, 5:10, 4:40)</label>
+          <input type="text" id="newRunSplits" placeholder="ex: 5:00, 5:30, 5:10, 4:40" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-500 outline-none" />
         </div>
         <div class="flex gap-2">
           <button onclick="saveOrUpdateManualRun()" id="saveRunBtn" class="flex-1 py-2.5 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl text-xs font-bold text-white shadow-lg shadow-orange-500/20 active:scale-95 transition">
@@ -363,7 +363,7 @@
         </div>
       </div>
 
-      <!-- ANÁLISE CRÍTICA RESTAURADA E DETALHADA -->
+      <!-- ANÁLISE CRÍTICA COM DIAGNÓSTICO DE CARGA DINÂMICO E PERSONALIZADO -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
           <i class="fa-solid fa-brain"></i> ANÁLISE CRÍTICA DE DESEMPENHO & EVOLUÇÃO
@@ -382,7 +382,7 @@
       </div>
     </div>
 
-    <!-- TAB 5: PROTOCOLS (PASSO A PASSO DETALHADO) -->
+    <!-- TAB 5: PROTOCOLS -->
     <div id="tab-protocols" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -516,7 +516,7 @@
       <div id="physiologyContainer" class="space-y-2.5"></div>
     </div>
 
-    <!-- TAB 8: WORKOUTS (MÉTODOS DE TREINAMENTO) -->
+    <!-- TAB 8: WORKOUTS -->
     <div id="tab-workouts" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -553,7 +553,7 @@
     </div>
   </nav>
 
-  <!-- MODAL FOR DETAILED VIEWS & AUTÓPSIA DE RITMO POR KM -->
+  <!-- MODAL FOR DETAILED VIEWS -->
   <div id="detailModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex flex-col justify-end sm:justify-center p-0 sm:p-4">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl mx-auto rounded-t-3xl sm:rounded-3xl max-h-[88vh] flex flex-col overflow-hidden shadow-2xl">
       <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
@@ -578,25 +578,37 @@
     let manualActivities = [];
     let timerInterval = null;
 
+    // POPULAR E ATUALIZAR O SELETOR DE PERFIL SEMPRE QUE MUDAR
     function initProfileSelector() {
       const select = document.getElementById('activeProfileSelect');
-      select.innerHTML = profilesList.map(p => `<option value="${p}" class="bg-slate-900">Perfil: ${p.charAt(0).toUpperCase() + p.slice(1)}</option>`).join('');
+      if (!select) return;
+      select.innerHTML = profilesList.map(p => `
+        <option value="${p}" class="bg-slate-900" ${p === currentProfile ? 'selected' : ''}>
+          Perfil: ${p.charAt(0).toUpperCase() + p.slice(1)}
+        </option>
+      `).join('');
       select.value = currentProfile;
     }
 
+    // CRIAR E SELECIONAR AUTOMATICAMENTE O NOVO PERFIL
     function createNewProfilePrompt() {
       let nome = prompt("Digite o nome do novo atleta/perfil:");
       if (!nome) return;
       let key = nome.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
-      if (profilesList.includes(key)) {
-        alert("Este perfil já existe.");
-        return;
+      if (!key) return;
+
+      if (!profilesList.includes(key)) {
+        profilesList.push(key);
+        localStorage.setItem('stamina_profiles_list', JSON.stringify(profilesList));
       }
-      profilesList.push(key);
-      localStorage.setItem('stamina_profiles_list', JSON.stringify(profilesList));
-      switchProfile(key);
+      
+      // Seleciona imediatamente o perfil criado
+      currentProfile = key;
+      localStorage.setItem('stamina_active_profile', currentProfile);
       initProfileSelector();
-      alert(`Perfil '${nome}' criado com sucesso! Partilhe o link com ?perfil=${key}`);
+      loadProfileData();
+      renderPlan();
+      updateDashboardData();
     }
 
     function loadProfileData() {
@@ -614,7 +626,6 @@
       updateDashboardData();
     }
 
-    // CATÁLOGO COMPLETO DE ELÁSTICOS
     const BANDS_WORKOUTS = {
       A: [
         { name: "Supino Reto com Elástico", setup: "Pise no centro do elástico e segure as extremidades nas mãos.", exec: "Empurre para cima estendendo os braços controlando a volta.", sets: "3 x 15 reps" },
@@ -641,49 +652,14 @@
 
     const DATABASE = {
       protocols: [
-        { 
-          id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos em pista aferida.', whatItMeasures: 'Capacidade aeróbica máxima, VAM e estimativa de VO2máx.', physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico durante todo o teste.',
-          stepByStep: '1. Faça um aquecimento leve de 5 a 10 minutos (trote e educativos).\n2. Posicione-se na linha de partida de uma pista de atletismo ou percurso com marcação métrica.\n3. Ao sinal de partida, inicie o cronómetro e corra a maior distância possível mantendo ritmo constante e forte, sem estourar no primeiro minuto.\n4. Ao completar exatamente 12 minutos, pare e marque a distância exata percorrida (voltas completas + metros adicionais).'
-        },
-        { 
-          id: 'proto-tc3k', category: 'Protocolo de Teste', title: 'Teste de 3.200 Metros (2 Milhas)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Avaliação militar e de performance', icon: 'fa-person-running', description: 'Corrida cronometrada cobrindo exatamente 3.200 metros no menor tempo possível.', whatItMeasures: 'Velocidade aeróbica máxima e eficiência de ritmo.', physiology: 'Alto estresse cardiovascular com recrutamento intenso do sistema oxidativo e glicolítico.',
-          stepByStep: '1. Realize aquecimento dinâmico e ativação articular.\n2. Alinhe-se na marca de partida para cobrir 3.200 metros (ex: 8 voltas completas em pista oficial de 400 metros).\n3. O objetivo é cruzar a linha de chegada no menor tempo cronometrado possível.\n4. Anote o tempo final total e calcule o pace médio por quilómetro.'
-        },
-        { 
-          id: 'proto-time-trial', category: 'Protocolo de Teste', title: 'Time Trial de 5 km', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Contrarrelógio para calibração de pace', icon: 'fa-flag-checkered', description: 'Corrida de 5 km em esforço máximo para recalibrar as zonas de treino.', whatItMeasures: 'Limiar anaeróbico funcional e velocidade de base.', physiology: 'Sustentação do limiar de lactato com tolerância à acidose metabólica.',
-          stepByStep: '1. Escolha um percurso plano e aferido (ou esteira com 1% de inclinação).\n2. Execute aquecimento progressivo de 15 minutos.\n3. Execute os 5 km focando em pacing estável (evite largar muito forte). O ideal é fazer split negativo (segunda metade mais ágil).\n4. Registre o tempo total e os splits de cada quilómetro para alimentar a plataforma.'
-        },
-        { 
-          id: 'proto-yoyo', category: 'Protocolo de Teste', title: 'Yo-Yoga Intermittent Recovery Test', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'Teste progressivo de ir e vir', icon: 'fa-arrows-left-right', description: 'Corrida de 20 metros em ida e volta acompanhando bipes sonoros com intervalos breves.', whatItMeasures: 'Capacidade de recuperação intermitente e VAM.', physiology: 'Avalia a habilidade de ressintetizar fosfocreatina rapidamente durante pausas ativas.',
-          stepByStep: '1. Marque dois cones separados por exatamente 20 metros.\n2. Conecte o áudio oficial do teste Yo-Yo.\n3. Corra 20m até a linha e toque o solo antes do sinal sonoro (bip).\n4. Retorne trotando na zona de recuperação (5 metros) em 10 segundos.\n5. O teste cessa quando o avaliado não consegue alcançar a linha antes do bip por duas vezes consecutivas.'
-        }
+        { id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos em pista aferida.', whatItMeasures: 'Capacidade aeróbica máxima, VAM e estimativa de VO2máx.', physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico durante todo o teste.', stepByStep: '1. Aquecimento leve de 5 a 10 min.\n2. Corra a maior distância possível em 12 min mantendo ritmo contínuo e forte.\n3. Anote a distância total percorrida.' },
+        { id: 'proto-tc3k', category: 'Protocolo de Teste', title: 'Teste de 3.200 Metros (2 Milhas)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Avaliação militar e de performance', icon: 'fa-person-running', description: 'Corrida cronometrada cobrindo exatamente 3.200 metros no menor tempo possível.', whatItMeasures: 'Velocidade aeróbica máxima e eficiência de ritmo.', physiology: 'Alto estresse cardiovascular com recrutamento intenso do sistema oxidativo e glicolítico.', stepByStep: '1. Aquecimento dinâmico.\n2. Execute 3.200m no menor tempo possível.\n3. Anote o tempo total final.' }
       ],
       physiology: [
-        { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) alimenta todas as contrações musculares na corrida.', whatItMeasures: 'Ressíntese de energia rápida e sustentada.', physiology: 'Sistemas ATP-CP (explosão), Glicolítico (média intensidade) e Oxidativo (endurance).' },
-        { id: 'phys-drift', category: 'Cardiovascular', title: 'Deriva Cardíaca (Cardiac Drift)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Aumento da FC em esforço constante', icon: 'fa-heart-pulse', description: 'Fenómeno onde a frequência cardíaca sobe gradativamente mesmo mantendo o pace estável.', whatItMeasures: 'Eficiência termorreguladora e hidratação.', physiology: 'Desvio associado à perda de volume plasmático, suor e desvio para circulação cutânea.' },
-        { id: 'phys-lactate', category: 'Bioenergética', title: 'Limiar de Lactato & Clearance', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'O ponto de virada metabólica', icon: 'fa-chart-area', description: 'Ponto onde a produção de lactato supera a capacidade de remoção celular.', whatItMeasures: 'Tolerância à fadiga em altas velocidades.', physiology: 'Determina o ritmo máximo sustentável sem acumulação excessiva de iões de hidrogénio.' }
+        { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) alimenta todas as contrações musculares na corrida.', whatItMeasures: 'Ressíntese de energia rápida e sustentada.', physiology: 'Sistemas ATP-CP, Glicolítico e Oxidativo.' }
       ],
       workouts: [
-        { 
-          id: 'work-fartlek', category: 'Método de Treino', title: 'Fartlek (Brincadeira de Ritmos)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Variações livres de velocidade e terreno', icon: 'fa-wind', description: 'Treino estruturado com mudanças contínuas de ritmo baseadas em tempo ou terreno, sem pausas completas.', whatItMeasures: 'Versatilidade aeróbica, mudança de limiar e recrutamento muscular dinâmico.', physiology: 'Estimula o sistema aeróbico e a tolerância ao ácido lático de forma livre e eficiente.',
-          stepByStep: '1. <strong>Aquecimento:</strong> 10 min de trote leve Z1/Z2.\n2. <strong>Bloco Principal:</strong> Alterne blocos de esforço forte com trote regenerativo sem parar.\n   • Exemplo prático: 1 min forte (ritmo de 5k) + 1 min trote leve (repetir 10 a 12 vezes) ou variação livre por marcos visuais (ex: acelerar até o próximo poste).\n3. <strong>Desaquecimento:</strong> 5 a 10 min de trote muito leve e caminhada.'
-        },
-        { 
-          id: 'work-interval', category: 'Método de Treino', title: 'Treino Intervalado (Tiros de 400m a 1000m)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Repetições de alta intensidade (VO2máx)', icon: 'fa-stopwatch-20', description: 'Esforços intensos (95-100% VAM) intercalados com recuperação ativa.', whatItMeasures: 'Potência aeróbica máxima e expansão do VO2máx.', physiology: 'Elevação rápida da frequência cardíaca próxima ao teto máximo.',
-          stepByStep: '1. <strong>Aquecimento:</strong> 15 min de trote + educativos de corrida + 3 tiros curtos de aceleração (strides).\n2. <strong>Série de Tiros:</strong>\n   • Exemplo Clássico (400m): 6 a 8 repetições de 400 metros em ritmo forte (ex: pace de prova de 5k).\n   • Exemplo Longo (1000m): 4 a 5 repetições de 1000 metros em ritmo de limiar alto.\n3. <strong>Recuperação entre Tiros:</strong> Trote leve ou caminhada pelo mesmo tempo do tiro (ou distância igual de trote).\n4. <strong>Desaquecimento:</strong> 10 min de trote leve e alongamento.'
-        },
-        { 
-          id: 'work-hills', category: 'Método de Treino', title: 'Hill Repeats (Tiros em Subida)', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'Força específica e potência de passada', icon: 'fa-mountain', description: 'Repetições de tiro curto ou médio (30s a 90s) em aclives acentuados.', whatItMeasures: 'Potência muscular, recrutamento de fibras rápidas e menor impacto articular.', physiology: 'Fortalece a cadeia posterior (glúteos, posteriores e panturrilhas) em sobrecarga.',
-          stepByStep: '1. <strong>Aquecimento:</strong> 15 min de trote em piso plano.\n2. <strong>Subida:</strong> Encontre uma subida com inclinação de 5% a 8%. Corra forte subindo por 45 a 60 segundos mantendo postura erguida e joelhos altos.\n3. <strong>Recuperação:</strong> Desça trotando ou caminhando de volta ao ponto de partida (recuperação completa).\n4. <strong>Séries:</strong> Repita de 6 a 10 vezes.'
-        },
-        { 
-          id: 'work-tempo', category: 'Método de Treino', title: 'Tempo Run (Corrida em Limiar)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Ritmo sustentável prolongado (Z4)', icon: 'fa-gauge-high', description: 'Corrida contínua num ritmo ligeiramente abaixo do limiar anaeróbico.', whatItMeasures: 'Resistência de velocidade e economia de corrida.', physiology: 'Retardamento do acúmulo de fadiga em tiros longos.',
-          stepByStep: '1. <strong>Aquecimento:</strong> 10 min de trote progressivo.\n2. <strong>Bloco em Limiar:</strong> Corra de forma contínua por 20 a 30 minutos num ritmo desafiador, porém constante (ritmo que você conseguiria sustentar por cerca de 1 hora numa prova).\n3. <strong>Desaquecimento:</strong> 10 min de trote regenerativo e retorno à calma.'
-        },
-        { 
-          id: 'work-long', category: 'Método de Treino', title: 'O Longão (Long Run)', badgeColor: 'bg-indigo-500/20 text-indigo-300', subtitle: 'Resistência aeróbica de base (Z2)', icon: 'fa-route', description: 'Sessão de longa distância em ritmo conversacional estrito.', whatItMeasures: 'Capitulação mitocondrial, densidade capilar e queima de gordura.', physiology: 'Adaptação estrutural de tendões, articulações e estoques de glicogênio.',
-          stepByStep: '1. <strong>Hidratação Prévia:</strong> Garanta boa ingestão de água e carboidratos leves antes de sair.\n2. <strong>Execução:</strong> Corra de 8 a 16 km (conforme a semana do ciclo) em ritmo totalmente conversacional (Zona 2 - sem ficar sem fôlego).\n3. <strong>Estratégia:</strong> Mantenha constância sem picos bruscos de velocidade.\n4. <strong>Pós-treino:</strong> Hidratação imediata e reposição nutricional.'
-        }
+        { id: 'work-fartlek', category: 'Método de Treino', title: 'Fartlek (Brincadeira de Ritmos)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Variações livres de velocidade e terreno', icon: 'fa-wind', description: 'Treino estruturado com mudanças contínuas de ritmo sem pausas completas.', whatItMeasures: 'Versatilidade aeróbica.', physiology: 'Tolerância ao ácido lático de forma dinâmica.', stepByStep: '1. Aquecimento 10 min.\n2. Alterne tiros de 1 min forte com 1 min trote leve.\n3. Desaquecimento 5 min.' }
       ]
     };
 
@@ -746,7 +722,7 @@
         { day: 'Segunda-feira', title: 'Corrida Contínua (Base Aeróbica)', type: 'Corrida Z2', strength: 'Força: Treino A (Superiores)', color: 'text-blue-400', detail: `${Math.round(6 * mult)}k em ritmo conversacional (Z2).` },
         { day: 'Terça-feira', title: 'Treino Fartlek (Variação de Ritmo)', type: 'Fartlek', strength: 'Descanso de Força', color: 'text-cyan-400', detail: `Aquecimento + blocos alternados de velocidade leve e forte.` },
         { day: 'Quarta-feira', title: 'Condicionamento Misto', type: 'Natação / Aeróbico', strength: 'Força: Treino B (Pernas)', color: 'text-cyan-400', detail: 'Sessão de natação ou aeróbico sem impacto.' },
-        { day: 'Quinta-feira', title: 'Treino de Ritmo (Tempo Run)', type: 'Limiar Anaeróbico', strength: 'Trote Regenerativo', color: 'text-yellow-400', detail: `Aquecimento + ${Math.round(3.5 * mult)}k em limiar.` },
+        { day: 'Quinta-feira', title: 'Treino de Ritmo (Tempo Run)', type: 'Limiar Anaeróbico', strength: 'Trote Regenerativo', color: 'text-yellow-400', detail: `${Math.round(3.5 * mult)}k em limiar.` },
         { day: 'Sexta-feira', title: 'Rodagem Regenerativa', type: 'Recuperação Ativa', strength: 'Força: Treino C (Core)', color: 'text-emerald-400', detail: '3k a 4k em ritmo leve (Z1).' },
         { day: 'Sábado', title: 'O Longão (Long Run)', type: 'Resistência', strength: 'Hidratação e Descanso', color: 'text-indigo-400', detail: `${Math.round((weekNumber >= 4 ? 8 : 10) * mult)}k contínuos.` },
         { day: 'Domingo', title: 'Descanso Ativo', type: 'Regeneração Total', strength: 'Mobilidade Leve', color: 'text-slate-400', detail: 'Descanso total de corrida.' }
@@ -928,7 +904,6 @@
       return `${m}:${s < 10 ? '0' : ''}${s} /km`;
     }
 
-    // AUTÓPSIA CIENTÍFICA COM FILTRO INTELIGENTE E CÁLCULO DE PACE IDEAL PARA O 1º KM
     function viewRunDetails(id) {
       let act = manualActivities.find(a => a.id == id);
       if (!act) return;
@@ -939,9 +914,7 @@
       let errorPlace = "Nenhum desvio drástico detetado.";
       let improvement = "Mantenha a consistência nos treinos.";
 
-      // Converter pace médio geral da atividade para segundos para usar como base/filtro
-      let avgPaceSec = parsePaceToSeconds(act.pace);
-      if (avgPaceSec === 0) avgPaceSec = 340; // fallback genérico (~5:40)
+      let avgPaceSec = parsePaceToSeconds(act.pace) || 340;
 
       if (act.splits && act.splits.includes(',')) {
         let rawSplits = act.splits.split(',').map(s => s.trim());
@@ -968,35 +941,33 @@
             </div>
           `;
 
-          // FILTRO CIENTÍFICO DE DESVIO DO 1º KM (Tolerância de 10% a 15% mais lento que a média é aceitável para aquecimento, acima disso é considerado conservador demais)
-          let idealFirstKmSec = Math.round(avgPaceSec * 1.05); // O ideal biológico seria estar a no máximo 5% da média
+          let idealFirstKmSec = Math.round(avgPaceSec * 1.05);
           let diffFromAvg = firstKmSec - avgPaceSec;
 
-          if (firstKmSec > avgPaceSec + 30) {
-            // KM 1 foi significativamente mais lento (conservador)
-            strength = "Excelente capacidade de <em>Negative Split</em> (acelerou progressivamente na segunda metade).";
-            weakness = `O 1º quilómetro (${formatSecondsToPace(firstKmSec)}) foi demasiado conservador, ficando ${Math.round(diffFromAvg)}s mais lento que a sua média global.`;
-            errorPlace = `O filtro indicou que o pace ideal para o KM 1 deveria rondar <strong>${formatSecondsToPace(idealFirstKmSec)}</strong> para evitar desperdício de potencial metabólico inicial.`;
-            improvement = "Para otimizar o rendimento, inicie o aquecimento dinâmico antes de disparar o relógio, permitindo largar mais próximo do seu ritmo alvo.";
+          if (firstKmSec > avgPaceSec + 25) {
+            strength = "Excelente capacidade de Negative Split (acelerou progressivamente na segunda metade).";
+            weakness = `O 1º quilómetro (${formatSecondsToPace(firstKmSec)}) foi ${Math.round(diffFromAvg)}s mais lento que a sua média total do treino.`;
+            errorPlace = `Pace ideal calculado para o KM 1: <strong>${formatSecondsToPace(idealFirstKmSec)}</strong>.`;
+            improvement = "Inicie aquecimento prévio antes de rodar o relógio para evitar perder tempo excessivo no KM 1.";
           } else if (secondHalf < firstHalf - 3) {
-            strength = "Excelente progressão de ritmo (Negative Split refinado).";
-            weakness = "O início foi controlado sem prejuízos graves.";
-            errorPlace = `KM 1 foi executado dentro da margem ideal de tolerância científica.`;
-            improvement = "Mantenha essa estratégia de gestão energética.";
+            strength = "Excelente progressão de ritmo (Negative Split).";
+            weakness = "Constância preservada na primeira metade.";
+            errorPlace = `KM 1 foi executado dentro da janela ideal de tolerância.`;
+            improvement = "Mantenha a mesma estratégia de dosagem de esforço.";
           } else if (secondHalf > firstHalf + 5) {
-            strength = "Início de treino forte e corajoso.";
-            weakness = "Fadiga acentuada na reta final devido a largada excessivamente rápida.";
-            errorPlace = `O erro ocorreu no KM ${slowestKm} com perda de velocidade por quebra de glicogênio.`;
-            improvement = `O pace ideal para o KM 1 neste bloco seria ${formatSecondsToPace(idealFirstKmSec)}. Tente evitar largar abaixo disso.`;
+            strength = "Largada agressiva e forte.";
+            weakness = "Perda de ritmo na metade final devido a fadiga precoce.";
+            errorPlace = `Erro de intensidade no KM 1. Ajuste a saída para <strong>${formatSecondsToPace(idealFirstKmSec)}</strong>.`;
+            improvement = "Controle o entusiasmo no início para ter gás na reta final.";
           } else {
-            strength = "Ritmo extremamente linear e constante do início ao fim.";
+            strength = "Ritmo extremamente homogêneo e linear do início ao fim.";
             weakness = "Pouca variação tática de velocidade.";
             errorPlace = "Nenhum erro de pacing relevante detetado pelos filtros.";
-            improvement = "Insira blocos intervalados para testar variações de limiar.";
+            improvement = "Insira blocos intervalados para treinar alteração de ritmo.";
           }
         }
       } else {
-        splitAnalysisHtml = `<p class="text-xs text-gray-400 italic">Nenhum split detalhado por km foi registado nesta atividade.</p>`;
+        splitAnalysisHtml = `<p class="text-xs text-gray-400 italic">Nenhum split por km registado nesta atividade.</p>`;
       }
 
       document.getElementById('modalCategoryBadge').textContent = "Autópsia Científica da Corrida";
@@ -1019,22 +990,13 @@
               <p class="text-gray-300">${weakness} <br><span class="text-amber-300 font-semibold">${errorPlace}</span></p>
             </div>
             <div class="p-3 rounded-xl bg-cyan-950/20 border border-cyan-500/30 space-y-1">
-              <strong class="text-cyan-400 block"><i class="fa-solid fa-crosshairs mr-1"></i> O Que & Como Melhorar:</strong>
+              <strong class="text-cyan-400 block"><i class="fa-solid fa-crosshairs mr-1"></i> Recomendação Técnica:</strong>
               <p class="text-gray-300">${improvement}</p>
             </div>
           </div>
         </div>
       `;
       document.getElementById('detailModal').classList.remove('hidden');
-    }
-
-    function parseTimeString(timeStr) {
-      if (!timeStr) return 0;
-      let clean = String(timeStr).toLowerCase().replace(/[^0-9:]/g, '');
-      let parts = clean.split(':').map(Number);
-      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) return (parts[0] * 60) + parts[1];
-      let numMatch = String(timeStr).match(/([0-9]+)/);
-      return numMatch ? parseInt(numMatch[1]) * 60 : 0;
     }
 
     function updateDashboardData() {
@@ -1122,7 +1084,7 @@
       return (bestPaceSec * distKm) * Math.pow(distKm / 5, 0.07);
     }
 
-    // ANÁLISE CRÍTICA MENSAL RESTAURADA E COMPLETA
+    // DIAGNÓSTICO DE CARGA REALMENTE DINÂMICO CONFORME TREINOS MENSIAIS OU COMPLETO (GERAL)
     function renderSmartComparativeFeedback(filteredActs, period, currentMonth, currentYear) {
       const container = document.getElementById('monthlyFeedbackContent');
       if (!container) return;
@@ -1130,14 +1092,50 @@
         container.innerHTML = `<span class="text-gray-500">Adicione as suas corridas neste período para gerar a análise estatística completa.</span>`;
         return;
       }
+
       let totalKm = filteredActs.reduce((acc, curr) => acc + (curr.distance || 0), 0);
       let avgDist = totalKm / filteredActs.length;
-      
+
+      // Cálculo de Pace Médio do Período Selecionado
+      let validPaces = filteredActs.map(a => parsePaceToSeconds(a.pace)).filter(p => p > 0);
+      let avgPaceSec = validPaces.length > 0 ? (validPaces.reduce((a,b)=>a+b,0) / validPaces.length) : 0;
+      let formattedAvgPace = formatSecondsToPace(avgPaceSec);
+
+      let isGeneral = (period === 'all');
+      let diagnosticTitle = isGeneral ? "Diagnóstico Histórico Geral (Carga Acumulada):" : "Diagnóstico do Treino Mensal:";
+      let diagnosticText = "";
+
+      if (isGeneral) {
+        // LÓGICA DINÂMICA DEDICADA AO GERAL (TODOS OS TREINOS)
+        let totalGlobalRuns = manualActivities.length;
+        let totalGlobalKm = manualActivities.reduce((acc, curr) => acc + (curr.distance || 0), 0);
+
+        if (totalGlobalKm > 100) {
+          diagnosticText = `Sua bagagem total acumula <strong>${totalGlobalKm.toFixed(1)} km</strong> em <strong>${totalGlobalRuns} treinos</strong>, com pace médio histórico de <strong>${formattedAvgPace}</strong>. O volume geral reflete uma sólida consolidação de base aeróbica, permitindo focar em intensidades mais altas.`;
+        } else if (totalGlobalKm > 40) {
+          diagnosticText = `Histórico acumulado em construção com <strong>${totalGlobalKm.toFixed(1)} km</strong> no total. A constância global mostra boa adaptação neuromuscular. O foco deve ser manter o volume semanal constante.`;
+        } else {
+          diagnosticText = `Início de histórico com <strong>${totalGlobalKm.toFixed(1)} km</strong> acumulados. Continue inserindo corridas semanais para calibrar a curva de evolução.`;
+        }
+      } else {
+        // LÓGICA DINÂMICA MENSAL
+        let runsCount = filteredActs.length;
+        if (runsCount >= 15) {
+          diagnosticText = `Mês de alta densidade (<strong>${runsCount} sessões</strong>, <strong>${totalKm.toFixed(1)} km</strong> total). Ritmo médio do mês fixado em <strong>${formattedAvgPace}</strong>. Excelente frequência e resistência de volume. Atente para dias de recuperação ativa para evitar sobrecarga muscular.`;
+        } else if (runsCount >= 6) {
+          diagnosticText = `Mês com bom volume de manutenção (<strong>${runsCount} sessões</strong> e <strong>${totalKm.toFixed(1)} km</strong>). Com uma média de <strong>${avgDist.toFixed(1)} km por treino</strong> e pace médio de <strong>${formattedAvgPace}</strong>, a carga está ideal para estimulação contínua sem estresse de sobretreino.`;
+        } else {
+          diagnosticText = `Volume mensal mais espaçado (<strong>${runsCount} sessões</strong>, <strong>${totalKm.toFixed(1)} km</strong>). Ritmo médio de <strong>${formattedAvgPace}</strong>. Recomendado aumentar a frequência semanal para fixar os ganhos cardiovasculares.`;
+        }
+      }
+
       container.innerHTML = `
         <p class="text-gray-300">Neste período selecionado, você registou <strong>${filteredActs.length} sessões</strong> totalizando <strong>${totalKm.toFixed(1)} km</strong>, com uma média de <strong>${avgDist.toFixed(1)} km</strong> por treino.</p>
-        <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1 mt-2">
-          <strong class="text-cyan-400 block"><i class="fa-solid fa-chart-pie mr-1"></i> Diagnóstico de Carga:</strong>
-          <p class="text-gray-300">O volume está adequado para manutenção da base aeróbica. Para saltos de performance em provas de 5k ou 10k, recomenda-se introduzir variação de ritmo estruturada (Fartlek ou Tiros) pelo menos uma vez por semana.</p>
+        <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1.5 mt-2">
+          <strong class="text-cyan-400 block flex items-center gap-1.5">
+            <i class="fa-solid fa-chart-pie"></i> ${diagnosticTitle}
+          </strong>
+          <p class="text-gray-300 leading-relaxed">${diagnosticText}</p>
         </div>
       `;
     }
@@ -1190,7 +1188,7 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="text-orange-400 font-bold">${act.distance.toFixed(1)} km</span>
-            <button onclick="viewRunDetails(${act.id})" class="p-2 bg-cyan-500/15 text-cyan-400 rounded-lg"><i class="fa-solid fa-eye text-sm"></i></button>
+            <button onclick="viewRunDetails(${act.id})" class="p-2 bg-cyan-500/15 text-cyan-400 rounded-lg" title="Ver Autópsia do KM 1"><i class="fa-solid fa-eye text-sm"></i></button>
             <button onclick="editManualRun(${act.id})" class="p-2 bg-amber-500/15 text-amber-400 rounded-lg"><i class="fa-solid fa-pen text-sm"></i></button>
             <button onclick="deleteManualRun(${act.id})" class="p-2 bg-rose-500/15 text-rose-400 rounded-lg"><i class="fa-solid fa-trash text-sm"></i></button>
           </div>
@@ -1329,7 +1327,7 @@
       for (let i = 1; i <= Math.ceil(dist); i++) {
         let pMin = Math.floor(baseSecPerKm / 60);
         let pSec = Math.round(baseSecPerKm % 60);
-        html += `<div class="p-2 bg-slate-950 rounded-xl text-xs font-mono flex justify-between"><span class="text-gray-400">KM </span><span class="text-cyan-400">Pace: ${pMin}:${pSec < 10 ? '0' : ''}${pSec}/km</span></div>`;
+        html += `<div class="p-2 bg-slate-950 rounded-xl text-xs font-mono flex justify-between"><span class="text-gray-400">KM ${i}</span><span class="text-cyan-400">Pace: ${pMin}:${pSec < 10 ? '0' : ''}${pSec}/km</span></div>`;
       }
       let res = document.getElementById('splitsResult');
       res.innerHTML = html;
