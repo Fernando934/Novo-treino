@@ -685,9 +685,45 @@
         { id: 'proto-t5k', category: 'Protocolo de Teste', title: 'Contorrida de 5 Quilómetros (5K Time Trial)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Padrão ouro de limiar e ritmo de prova', icon: 'fa-stopwatch', description: 'Corrida contínua de 5 km em esforço máximo para calibrar todas as zonas de treino.', whatItMeasures: 'VO2máx funcional e limiar anaeróbico real de prova.', physiology: 'Equilíbrio ideal entre capacidade oxidativa e tolerância ao lactato.', stepByStep: '1. Trote leve de 10 min + educativos.\n2. Largada controlada para evitar quebra no primeiro km.\n3. Ritmo progressivo até o sprint final.' }
       ],
       physiology: [
-        { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) alimenta todas as contrações musculares na corrida.', whatItMeasures: 'Ressíntese de energia rápida e sustentada.', physiology: 'Sistemas ATP-CP, Glicolítico e Oxidativo.' },
-        { id: 'phys-lactic', category: 'Fisiologia', title: 'Limiar Anaeróbico & Lactato', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'O ponto de virada metabólica', icon: 'fa-chart-area', description: 'O lactato não é um vilão, mas um importante subproduto energético e tampão.', whatItMeasures: 'Tolerância à fadiga e sustentação de pace forte.', physiology: 'Equilíbrio entre produção e remoção de lactato sanguíneo.' },
-        { id: 'phys-drift', category: 'Fisiologia', title: 'Deriva Cardíaca (Cardiovascular Drift)', badgeColor: 'bg-blue-500/20 text-blue-300', subtitle: 'Aumento da FC em treinos longos', icon: 'fa-heart-pulse', description: 'Elevação progressiva da frequência cardíaca mantendo o mesmo ritmo.', whatItMeasures: 'Eficiência termorreguladora e desidratação.', physiology: 'Desvio no volume sistólico devido à perda de líquidos e calor.' }
+        { 
+          id: 'phys-atp', 
+          category: 'Fisiologia & Bioenergética', 
+          title: 'Sistemas Energéticos & ATP', 
+          badgeColor: 'bg-rose-500/20 text-rose-300', 
+          subtitle: 'A moeda de troca celular', 
+          icon: 'fa-bolt', 
+          description: 'A Adenosina Trifosfato (ATP) alimenta todas as contrações musculares na corrida através de vias metabólicas.', 
+          whatItMeasures: 'Capacidade de ressíntese de energia rápida (ATP-CP), glicolítica e oxidativa.', 
+          physiology: 'Transição entre vias anaeróbicas e aeróbicas conforme a intensidade e duração do esforço.', 
+          howToApply: '1. Para treinar o sistema ATP-CP (explosão): faça tiros curtos de 10 a 20 segundos com repouso completo (90s).\n2. Para o sistema glicolítico (alta intensidade): faça tiros médios de 1 a 2 minutos.\n3. Para o sistema oxidativo (base): mantenha rodagens longas em ritmo conversacional (Z2).', 
+          utility: 'Ajuda a estruturar a semana de treinos equilibrando velocidade pura, tiros e resistência, garantindo que o corpo saiba gerar energia eficientemente em qualquer distância.' 
+        },
+        { 
+          id: 'phys-lactic', 
+          category: 'Fisiologia & Bioenergética', 
+          title: 'Limiar Anaeróbico & Lactato', 
+          badgeColor: 'bg-amber-500/20 text-amber-300', 
+          subtitle: 'O ponto de virada metabólica', 
+          icon: 'fa-chart-area', 
+          description: 'O lactato é um subproduto energético vital e tampão, e não um vilão causador de fadiga.', 
+          whatItMeasures: 'Tolerância à fadiga e sustentação de pace forte sem acúmulo descontrolado de metabólitos.', 
+          physiology: 'Equilíbrio exato entre a produção e a remoção de lactato sanguíneo pelos músculos ativos e fígado.', 
+          howToApply: '1. Realize treinos de "Tempo Run" ou limiar contínuo (20 a 30 min em ritmo forte sustentável).\n2. Execute blocos intervalados longos (ex: 4x 2000m) na zona de limiar (Z4).\n3. Monitore a constância da respiração (deve ser rítmica e controlada).', 
+          utility: 'Serve para elevar a velocidade que você consegue manter antes de "quebrar", permitindo correr provas de 5K, 10K e Meia Maratona em um ritmo médio muito superior.' 
+        },
+        { 
+          id: 'phys-drift', 
+          category: 'Fisiologia & Bioenergética', 
+          title: 'Deriva Cardíaca (Cardiovascular Drift)', 
+          badgeColor: 'bg-blue-500/20 text-blue-300', 
+          subtitle: 'Aumento da FC em treinos longos', 
+          icon: 'fa-heart-pulse', 
+          description: 'Elevação gradual da frequência cardíaca mantendo exatamente o mesmo ritmo constante.', 
+          whatItMeasures: 'Eficiência termorreguladora, nível de hidratação e fadiga cardiovascular.', 
+          physiology: 'Desvio no volume sistólico devido à perda de líquidos (suor) e desvio de sangue para resfriamento da pele.', 
+          howToApply: '1. Monitore a sua FC e o pace em treinos longos (> 60 minutos).\n2. Estabeleça uma rotina rigorosa de hidratação a cada 20-30 minutos durante o exercício.\n3. Realize treinos longos nos horários mais frescos do dia (manhã cedo ou fim de tarde).', 
+          utility: 'Ajuda a diferenciar se o aumento da frequência cardíaca no final de um treino longo foi fadiga aeróbica real ou apenas desidratação/calor, permitindo ajustar a estratégia nutricional e de prova.' 
+        }
       ],
       workouts: [
         { id: 'work-fartlek', category: 'Método de Treino', title: 'Fartlek (Brincadeira de Ritmos)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Variações livres de velocidade e terreno', icon: 'fa-wind', description: 'Treino estruturado com mudanças contínuas de ritmo sem pausas completas.', whatItMeasures: 'Versatilidade aeróbica.', physiology: 'Tolerância ao ácido lático de forma dinâmica.', stepByStep: '1. Aquecimento 10 min.\n2. Alterne tiros de 1 min forte com 1 min trote leve.\n3. Desaquecimento 5 min.' },
@@ -1254,8 +1290,12 @@
       }
       if (document.getElementById('physiologyContainer')) {
         document.getElementById('physiologyContainer').innerHTML = DATABASE.physiology.map(item => `
-          <div onclick="openModal('${item.id}')" class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer flex items-center justify-between">
-            <div class="flex items-center space-x-3"><div class="w-9 h-9 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-400"><i class="fa-solid ${item.icon}"></i></div><div><h4 class="text-xs font-bold text-white">${item.title}</h4><p class="text-[10px] text-gray-400">${item.subtitle}</p></div></div>
+          <div onclick="openModal('${item.id}')" class="p-4 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer space-y-2">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-400"><i class="fa-solid ${item.icon}"></i></div>
+              <div><h4 class="text-xs font-bold text-white">${item.title}</h4><p class="text-[10px] text-gray-400">${item.subtitle}</p></div>
+            </div>
+            <p class="text-[11px] text-gray-300 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 whitespace-pre-line"><strong>Como Aplicar na Prática:</strong><br>${item.howToApply}</p>
           </div>
         `).join('');
       }
@@ -1298,11 +1338,23 @@
       if (!item) return;
       document.getElementById('modalCategoryBadge').textContent = item.category || 'Detalhes';
       document.getElementById('modalTitle').textContent = item.title;
+
+      let extraHtml = '';
+      if (item.stepByStep) {
+        extraHtml += `<div class="p-3 bg-slate-950 rounded-xl border border-slate-800 whitespace-pre-line text-gray-200 text-xs"><strong>Passo a Passo Prático:</strong><br>${item.stepByStep}</div>`;
+      }
+      if (item.howToApply) {
+        extraHtml += `<div class="p-3 bg-slate-950 rounded-xl border border-slate-800 whitespace-pre-line text-gray-200 text-xs"><strong>Como Aplicar na Prática:</strong><br>${item.howToApply}</div>`;
+      }
+      if (item.utility) {
+        extraHtml += `<div class="p-3 bg-slate-950 rounded-xl border border-slate-800 text-gray-200 text-xs"><strong>Para que serve / Utilidade Prática:</strong><br>${item.utility}</div>`;
+      }
+
       document.getElementById('modalBody').innerHTML = `
         <p class="text-gray-200 text-xs">${item.description}</p>
-        ${item.stepByStep ? `<div class="p-3 bg-slate-950 rounded-xl border border-slate-800 whitespace-pre-line text-gray-200 text-xs"><strong>Passo a Passo Prático:</strong><br>${item.stepByStep}</div>` : ''}
+        ${extraHtml}
         <p class="text-gray-400 text-xs mt-2"><strong>O que mede:</strong> ${item.whatItMeasures}</p>
-        <p class="text-gray-400 text-xs mt-1"><strong>Fisiologia:</strong> ${item.physiology}</p>
+        <p class="text-gray-400 text-xs mt-1"><strong>Fisiologia / Base:</strong> ${item.physiology}</p>
       `;
       document.getElementById('detailModal').classList.remove('hidden');
     }
