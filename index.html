@@ -73,13 +73,8 @@
           <h1 class="text-base font-extrabold tracking-tight bg-gradient-to-r from-orange-400 via-emerald-400 to-amber-300 bg-clip-text text-transparent">
             StaminaLab 360°
           </h1>
-          <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Plataforma Científica & Conexão Strava</p>
+          <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Plataforma Científica & Gestão de Treinos</p>
         </div>
-      </div>
-      <div class="flex items-center space-x-2">
-        <button onclick="filterFavorites()" class="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-amber-400 hover:bg-slate-700 transition" title="Favoritos">
-          <i class="fa-solid fa-star text-sm"></i>
-        </button>
       </div>
     </div>
 
@@ -89,7 +84,7 @@
         <i class="fa-solid fa-magnifying-glass text-sm"></i>
       </div>
       <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Pesquisar protocolos, treinos, fisiologia..." 
-             class="w-full pl-10 pr-10 py-2.5 bg-slate-900/90 border border-slate-800 rounded-2xl text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 transition-all shadow-inner" />
+             class="w-full pl-10 pr-10 py-2.5 bg-slate-900/90 border border-slate-800 rounded-2xl text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/25 transition-all shadow-inner" />
       <button id="clearSearch" onclick="clearSearchInput()" class="hidden absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-gray-300">
         <i class="fa-solid fa-circle-xmark text-sm"></i>
       </button>
@@ -117,7 +112,7 @@
 
         <button onclick="switchTab('feedback')" class="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-purple-500/40 transition-all active:scale-95 group">
           <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-2 group-hover:bg-purple-500/20"><i class="fa-solid fa-chart-line text-lg"></i></div>
-          <span class="text-[11px] font-semibold text-gray-200">Strava & Gráficos</span>
+          <span class="text-[11px] font-semibold text-gray-200">Atividades & Gráficos</span>
         </button>
 
         <button onclick="switchTab('protocols')" class="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-rose-500/40 transition-all active:scale-95 group">
@@ -143,14 +138,14 @@
         <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-orange-600/10 rounded-full blur-2xl"></div>
         <div class="relative z-10 flex justify-between items-center">
           <div>
-            <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold uppercase tracking-wider">Conexão Oficial Strava</span>
+            <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold uppercase tracking-wider">Gestão de Atividades</span>
             <h3 class="text-base font-extrabold text-white mt-2">Central de Feedback e Evolução</h3>
             <p class="text-xs text-gray-300 mt-1 leading-relaxed">
-              Clique para autorizar e puxar as suas corridas reais automaticamente para os gráficos.
+              Visualize gráficos semanais, adicione corridas e analise a sua evolução com precisão.
             </p>
           </div>
           <div class="bg-orange-600 text-slate-950 p-3 rounded-2xl shrink-0 ml-3 font-bold">
-            <i class="fa-brands fa-strava text-lg"></i>
+            <i class="fa-solid fa-chart-line text-lg"></i>
           </div>
         </div>
       </div>
@@ -221,42 +216,48 @@
       <div id="bandsExercisesList" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (CONEXÃO STRAVA) -->
+    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (GESTÃO DE ATIVIDADES) -->
     <div id="tab-feedback" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
-          <h2 class="text-sm font-bold text-white">Conexão Oficial Strava</h2>
-          <p class="text-xs text-gray-400">Autorização direta para importar o seu histórico.</p>
+          <h2 class="text-sm font-bold text-white">Central de Atividades e Gráficos</h2>
+          <p class="text-xs text-gray-400">Registo e histórico completo das suas corridas.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
         </button>
       </div>
 
-      <!-- PAINEL DE LOGIN STRAVA -->
-      <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-orange-500/30 space-y-3">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-2xl bg-orange-600/20 text-orange-400 flex items-center justify-center font-bold">
-              <i class="fa-brands fa-strava text-xl"></i>
-            </div>
-            <div>
-              <h3 class="text-xs font-bold text-white" id="stravaStatusTitle">Login no Strava</h3>
-              <p class="text-[10px] text-gray-400" id="stravaStatusSubtitle">Status: Desconectado</p>
-            </div>
+      <!-- ADICIONAR NOVA CORRIDA -->
+      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+        <h3 class="font-bold text-sm text-orange-400 flex items-center gap-2"><i class="fa-solid fa-plus-circle"></i> Adicionar Nova Corrida</h3>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Título / Local</label>
+            <input type="text" id="newRunName" placeholder="ex: Rodagem Japeri" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
           </div>
-          <button onclick="redirectToStravaLogin()" id="stravaConnectBtn" class="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-orange-600/20 transition flex items-center gap-2">
-            <i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar com Strava
-          </button>
-        </div>
-
-        <div class="pt-2 border-t border-slate-800/80">
-          <label class="text-[10px] text-gray-400 font-bold block mb-1">ID do Cliente Strava API:</label>
-          <div class="flex gap-2">
-            <input type="text" id="stravaClientIdInput" value="291375" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white outline-none focus:border-orange-500" />
-            <button onclick="saveClientId()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-gray-300 rounded-xl transition">Guardar ID</button>
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Data</label>
+            <input type="date" id="newRunDate" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
           </div>
         </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Distância (km)</label>
+            <input type="number" step="0.1" id="newRunDist" placeholder="ex: 6.5" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
+          </div>
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Duração</label>
+            <input type="text" id="newRunTime" placeholder="ex: 35 min" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
+          </div>
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Pace</label>
+            <input type="text" id="newRunPace" placeholder="ex: 5:23 /km" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
+          </div>
+        </div>
+        <button onclick="addNewRunActivity()" class="w-full py-2.5 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl text-xs font-bold text-white shadow-lg shadow-orange-500/20 active:scale-95 transition">
+          Registar Corrida no Histórico
+        </button>
       </div>
 
       <!-- Seletor de Período para Análise Histórica -->
@@ -308,18 +309,18 @@
           <i class="fa-solid fa-brain"></i> Análise Científica & Feedback de Desempenho
         </h3>
         <div id="monthlyFeedbackContent" class="text-xs text-gray-300 leading-relaxed bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-          Aguardando conexão com o Strava para processar dados de corrida...
+          Adicione suas corridas acima para gerar a análise automática.
         </div>
       </div>
 
-      <!-- Histórico de Atividades Sincronizadas do Strava -->
+      <!-- Lista de Atividades -->
       <div class="space-y-3">
         <div class="flex justify-between items-center px-1">
-          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Atividades Reais do Strava</h3>
-          <button onclick="disconnectStrava()" class="text-[10px] text-rose-400 hover:underline">Desconectar / Limpar</button>
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Histórico de Atividades</h3>
+          <button onclick="resetActivitiesToDefault()" class="text-[10px] text-orange-400 hover:underline">Restaurar Padrão</button>
         </div>
         <div id="stravaActivitiesList" class="space-y-2">
-          <p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade importada. Clique em "Entrar com Strava".</p>
+          <p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade registada.</p>
         </div>
       </div>
 
@@ -491,7 +492,7 @@
         <i class="fa-solid fa-dumbbell text-base"></i><span class="text-[9px] font-medium mt-0.5">Elásticos</span>
       </button>
       <button onclick="switchTab('feedback')" id="nav-feedback" class="nav-item flex flex-col items-center p-1.5 text-gray-400 hover:text-gray-200 transition">
-        <i class="fa-solid fa-chart-line text-base"></i><span class="text-[9px] font-medium mt-0.5">Strava</span>
+        <i class="fa-solid fa-chart-line text-base"></i><span class="text-[9px] font-medium mt-0.5">Atividades</span>
       </button>
       <button onclick="switchTab('calculators')" id="nav-calculators" class="nav-item flex flex-col items-center p-1.5 text-gray-400 hover:text-gray-200 transition">
         <i class="fa-solid fa-calculator text-base"></i><span class="text-[9px] font-medium mt-0.5">Ferramentas</span>
@@ -519,9 +520,17 @@
     let postponedDays = JSON.parse(localStorage.getItem('stamina_postponed') || '{}');
     let workoutLogs = JSON.parse(localStorage.getItem('stamina_logs') || '[]');
     
-    let stravaAccessToken = localStorage.getItem('stamina_strava_access_token') || '';
-    let stravaClientId = localStorage.getItem('stamina_strava_client_id') || '291375';
-    let stravaActivities = JSON.parse(localStorage.getItem('stamina_strava_activities') || '[]');
+    let defaultActivities = [
+      { id: 1, name: "Corrida Matinal Japeri", distance: 6.5, time: "35 min", pace: "5:23 /km", start_date: "2026-10-26T07:00:00Z" },
+      { id: 2, name: "Treino Intervalado Pista", distance: 8.0, time: "42 min", pace: "5:15 /km", start_date: "2026-10-24T08:00:00Z" },
+      { id: 3, name: "Rodagem Contínua Z2", distance: 10.0, time: "52 min", pace: "5:12 /km", start_date: "2026-10-18T07:00:00Z" },
+      { id: 4, name: "Longão Japeri - Estação", distance: 14.2, time: "1h 16 min", pace: "5:21 /km", start_date: "2026-10-11T06:30:00Z" },
+      { id: 5, name: "Rodagem Setembro - Semana 4", distance: 9.5, time: "50 min", pace: "5:15 /km", start_date: "2026-09-22T07:00:00Z" },
+      { id: 6, name: "Teste Limiar 3.200m", distance: 5.0, time: "24 min", pace: "4:48 /km", start_date: "2026-09-15T07:00:00Z" },
+      { id: 7, name: "Primeira Corrida de Rua Oficial", distance: 10.0, time: "49 min", pace: "4:54 /km", start_date: "2026-08-23T08:00:00Z" }
+    ];
+
+    let stravaActivities = JSON.parse(localStorage.getItem('stamina_custom_activities') || JSON.stringify(defaultActivities));
 
     const BANDS_WORKOUTS = {
       A: [
@@ -566,56 +575,46 @@
       ]
     };
 
-    function saveClientId() {
-      const val = document.getElementById('stravaClientIdInput').value.trim();
-      if (!val) { alert("Insira o ID do cliente."); return; }
-      stravaClientId = val;
-      localStorage.setItem('stamina_strava_client_id', stravaClientId);
-      alert("ID guardado com sucesso!");
-    }
+    function addNewRunActivity() {
+      const name = document.getElementById('newRunName').value.trim() || "Corrida Registada";
+      const date = document.getElementById('newRunDate').value || new Date().toISOString();
+      const distance = parseFloat(document.getElementById('newRunDist').value);
+      const time = document.getElementById('newRunTime').value.trim() || "30 min";
+      const pace = document.getElementById('newRunPace').value.trim() || "5:00 /km";
 
-    // REDIRECIONAMENTO DIRETO NA MESMA ABA PARA CAPTURAR O AUTORIZAÇÃO INSTANTANEAMENTE
-    function redirectToStravaLogin() {
-      if (!stravaClientId) {
-        alert("Insira o ID do cliente abaixo e clique em Guardar ID.");
+      if (!distance || isNaN(distance)) {
+        alert("Insira uma distância válida.");
         return;
       }
-      const redirectUri = window.location.href.split('#')[0].split('?')[0];
-      const authUrl = `https://www.strava.com/oauth/authorize?client_id=${stravaClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&approval_prompt=auto&scope=activity:read_all`;
-      window.location.href = authUrl;
+
+      const newAct = {
+        id: Date.now(),
+        name,
+        distance,
+        time,
+        pace,
+        start_date: new Date(date).toISOString()
+      };
+
+      stravaActivities.unshift(newAct);
+      localStorage.setItem('stamina_custom_activities', JSON.stringify(stravaActivities));
+
+      document.getElementById('newRunName').value = '';
+      document.getElementById('newRunDist').value = '';
+      document.getElementById('newRunTime').value = '';
+      document.getElementById('newRunPace').value = '';
+      document.getElementById('newRunDate').value = '';
+
+      updateDashboardData();
+      alert("Atividade adicionada com sucesso!");
     }
 
-    function handleStravaTokenCallback() {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get('code');
-      if (code) {
-        window.history.replaceState({}, document.title, window.location.pathname);
-        stravaAccessToken = "connected_active_session";
-        localStorage.setItem('stamina_strava_access_token', stravaAccessToken);
-        loadSampleRealRuns();
+    function resetActivitiesToDefault() {
+      if (confirm("Deseja restaurar as atividades predefinidas?")) {
+        stravaActivities = JSON.parse(JSON.stringify(defaultActivities));
+        localStorage.setItem('stamina_custom_activities', JSON.stringify(stravaActivities));
+        updateDashboardData();
       }
-    }
-
-    function loadSampleRealRuns() {
-      stravaActivities = [
-        { id: 1, name: "Corrida Matinal Japeri", distance: 6.5, time: "35 min", pace: "5:23 /km", start_date: "2026-10-26T07:00:00Z" },
-        { id: 2, name: "Treino Intervalado Pista", distance: 8.0, time: "42 min", pace: "5:15 /km", start_date: "2026-10-24T08:00:00Z" },
-        { id: 3, name: "Rodagem Contínua Z2", distance: 10.0, time: "52 min", pace: "5:12 /km", start_date: "2026-10-18T07:00:00Z" },
-        { id: 4, name: "Longão Japeri - Estação", distance: 14.2, time: "1h 16 min", pace: "5:21 /km", start_date: "2026-10-11T06:30:00Z" },
-        { id: 5, name: "Rodagem Setembro - Semana 4", distance: 9.5, time: "50 min", pace: "5:15 /km", start_date: "2026-09-22T07:00:00Z" },
-        { id: 6, name: "Teste Limiar 3.200m", distance: 5.0, time: "24 min", pace: "4:48 /km", start_date: "2026-09-15T07:00:00Z" },
-        { id: 7, name: "Primeira Corrida de Rua Oficial", distance: 10.0, time: "49 min", pace: "4:54 /km", start_date: "2026-08-23T08:00:00Z" }
-      ];
-      localStorage.setItem('stamina_strava_activities', JSON.stringify(stravaActivities));
-      updateDashboardData();
-    }
-
-    function disconnectStrava() {
-      stravaAccessToken = '';
-      stravaActivities = [];
-      localStorage.removeItem('stamina_strava_access_token');
-      localStorage.removeItem('stamina_strava_activities');
-      updateDashboardData();
     }
 
     function updateDashboardData() {
@@ -637,7 +636,6 @@
       });
 
       document.getElementById('statRunsCount').textContent = filteredActivities.length;
-      document.getElementById('statBandsCount').textContent = completedBands.length;
 
       let totalWeekKm = 0;
       let totalPeriodKm = filteredActivities.reduce((acc, curr) => acc + (curr.distance || 0), 0);
@@ -657,18 +655,6 @@
       renderWeeklyChart();
       renderMonthlyFeedback(totalPeriodKm, filteredActivities.length, period);
       renderStravaActivitiesList(filteredActivities);
-
-      if (stravaAccessToken) {
-        document.getElementById('stravaStatusTitle').textContent = "Conectado ao Strava";
-        document.getElementById('stravaStatusSubtitle').textContent = "Status: Autenticado e Sincronizado";
-        document.getElementById('stravaConnectBtn').innerHTML = '<i class="fa-solid fa-check"></i> Sincronizado';
-        document.getElementById('stravaConnectBtn').className = "px-4 py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2";
-      } else {
-        document.getElementById('stravaStatusTitle').textContent = "Login no Strava";
-        document.getElementById('stravaStatusSubtitle').textContent = "Status: Desconectado";
-        document.getElementById('stravaConnectBtn').innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar com Strava';
-        document.getElementById('stravaConnectBtn').className = "px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-orange-600/20 transition flex items-center gap-2";
-      }
     }
 
     function renderWeeklyChart() {
@@ -709,7 +695,7 @@
       if (!container) return;
 
       if (stravaActivities.length === 0) {
-        container.innerHTML = `<span class="text-gray-500">Conecte sua conta do Strava para gerar a análise científica de desempenho com suas corridas reais.</span>`;
+        container.innerHTML = `<span class="text-gray-500">Adicione atividades para gerar a análise científica de desempenho.</span>`;
         return;
       }
 
@@ -729,7 +715,7 @@
       const container = document.getElementById('stravaActivitiesList');
       if (!container) return;
       if (listToRender.length === 0) {
-        container.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade sincronizada.</p>`;
+        container.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade registada.</p>`;
         return;
       }
       container.innerHTML = listToRender.map(act => `
@@ -973,12 +959,6 @@
       renderCategoryList('physiology', 'physiologyContainer');
       renderCategoryList('workouts', 'workoutsContainer');
       renderWorkoutLogs();
-
-      if (stravaClientId) {
-        document.getElementById('stravaClientIdInput').value = stravaClientId;
-      }
-
-      handleStravaTokenCallback();
       updateDashboardData();
     });
 
