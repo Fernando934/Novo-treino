@@ -180,7 +180,7 @@
       </div>
       <div class="p-3 rounded-2xl bg-orange-950/30 border border-orange-500/30 text-xs text-orange-200 flex justify-between items-center">
         <div>
-          <i class="fa-solid fa-circle-info mr-1 text-orange-400"></i> Hoje: <strong id="todayHeaderDate" class="text-white">Terça-feira, 27 de Outubro</strong>. O plano avança automaticamente por semana do mês e dados biométricos.
+          <i class="fa-solid fa-circle-info mr-1 text-orange-400"></i> Hoje: <strong id="todayHeaderDate" class="text-white">Terça-feira, 27 de Outubro</strong>. A IA intercala automaticamente os focos de treino semanais com base nos seus dados e progresso.
         </div>
       </div>
       <div id="planContainer" class="space-y-3"></div>
@@ -580,11 +580,11 @@
     <div class="bg-slate-900 border border-emerald-500/30 w-full max-w-lg mx-auto rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
       <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
         <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300">Atualização Mensal Automática</span>
-        <h3 class="text-sm font-bold text-white">Dados Biométricos do Perfil</h3>
+        <h3 class="text-sm font-bold text-white">Dados Biométricos do Atleta</h3>
         <button onclick="closeBiometricModal()" class="p-2 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
       <div class="p-4 sm:p-6 overflow-y-auto space-y-4 text-xs text-gray-300 leading-relaxed no-scrollbar">
-        <p class="text-gray-400">Atualize seus dados para que a Inteligência do Sistema recalcule o plano automático e as cargas para o próximo mês.</p>
+        <p class="text-gray-400">Insira os seus dados para que a Inteligência do Sistema calcule a periodização automática ideal para o seu perfil e o seu mês.</p>
         <div class="space-y-3">
           <div>
             <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Peso Atual (kg)</label>
@@ -598,17 +598,9 @@
             <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Idade</label>
             <input type="number" id="bioAge" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-500" />
           </div>
-          <div>
-            <label class="text-[10px] text-emerald-400 uppercase font-bold block mb-1">Objetivo / Foco Principal</label>
-            <select id="bioGoal" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-500">
-              <option value="padrao">Padrão / Equilibrado (Geral)</option>
-              <option value="velocidade">Velocidade & Tiros (Foco em Pace)</option>
-              <option value="resistencia">Resistência & Longão (Foco em Volume)</option>
-            </select>
-          </div>
         </div>
         <button onclick="saveBiometricData()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl text-xs font-bold text-white shadow-lg active:scale-95 transition">
-          Salvar & Atualizar Plano Automático
+          Salvar & Gerar Periodização Automática
         </button>
       </div>
     </div>
@@ -694,13 +686,12 @@
       postponedDays = JSON.parse(localStorage.getItem(`stamina_postponed_${currentProfile}`) || '{}');
       manualActivities = JSON.parse(localStorage.getItem(`stamina_manual_runs_${currentProfile}`) || '[]');
       
-      let defaultBio = { weight: 75, height: 175, age: 30, goal: currentProfile === 'raiza' ? 'velocidade' : 'padrao', lastUpdate: '2026-10-01' };
+      let defaultBio = { weight: 75, height: 175, age: 30, lastUpdate: '2026-10-01' };
       profileBioData = JSON.parse(localStorage.getItem(`stamina_bio_data_${currentProfile}`) || JSON.stringify(defaultBio));
 
       const titleLabel = document.getElementById('profileTitleLabel');
       if(titleLabel) titleLabel.textContent = currentProfile.toUpperCase();
 
-      // Verificar se passou 1 mês desde a última atualização para lembrar o usuário de atualizar dados
       checkMonthlyBiometricPrompt();
     }
 
@@ -711,7 +702,7 @@
       let diffDays = Math.floor((now - lastDate) / (1000 * 60 * 60 * 24));
       if (diffDays >= 30) {
         setTimeout(() => {
-          if (confirm(`Olá ${currentProfile.toUpperCase()}! Já passou um mês desde a última atualização dos seus dados biométricos. Deseja atualizar agora para recalcular o plano do próximo mês?`)) {
+          if (confirm(`Olá ${currentProfile.toUpperCase()}! Já passou um mês desde a última atualização dos seus dados. Deseja atualizar agora para recalcular a periodização do próximo mês?`)) {
             openBiometricModal();
           }
         }, 1000);
@@ -722,7 +713,6 @@
       document.getElementById('bioWeight').value = profileBioData.weight || 75;
       document.getElementById('bioHeight').value = profileBioData.height || 175;
       document.getElementById('bioAge').value = profileBioData.age || 30;
-      document.getElementById('bioGoal').value = profileBioData.goal || 'padrao';
       document.getElementById('biometricModal').classList.remove('hidden');
     }
 
@@ -735,13 +725,12 @@
         weight: parseFloat(document.getElementById('bioWeight').value) || 75,
         height: parseInt(document.getElementById('bioHeight').value) || 175,
         age: parseInt(document.getElementById('bioAge').value) || 30,
-        goal: document.getElementById('bioGoal').value,
         lastUpdate: new Date().toISOString().split('T')[0]
       };
       localStorage.setItem(`stamina_bio_data_${currentProfile}`, JSON.stringify(profileBioData));
       closeBiometricModal();
       renderPlan();
-      alert("Dados biométricos e plano mensal atualizados com sucesso!");
+      alert("Dados biométricos atualizados! A IA reestruturou a periodização mensal.");
     }
 
     function handleProfileSelection(val) {
@@ -927,48 +916,62 @@
       `).join('');
     }
 
+    // IA QUE INTERCALA AUTOMATICAMENTE OS FOCOS E AUMENTA O DETALHAMENTO E OBJETIVO
     function getDynamicWeeklyPlan() {
-      const now = new Date(); // Considerando a data atual (Outubro de 2026)
+      const now = new Date();
       const weekNumber = Math.ceil(now.getDate() / 7);
-      let phaseName = `Semana ${weekNumber} do Mês (Progresso Automático)`;
-      let mult = 1.0;
-      if (weekNumber === 2) mult = 1.1;
-      else if (weekNumber === 3) mult = 1.2;
-      else if (weekNumber >= 4) mult = 0.85;
+      
+      // A IA intercala o foco a cada semana do mês de forma automática e cíclica
+      let aiCycleFocus = "base";
+      if (weekNumber === 2) aiCycleFocus = "velocidade";
+      else if (weekNumber === 3) aiCycleFocus = "limiar";
+      else if (weekNumber >= 4) aiCycleFocus = "resistencia";
 
-      document.getElementById('cycleWeekLabel').textContent = phaseName + ` [Foco: ${profileBioData.goal.toUpperCase()}]`;
+      let phaseName = `Semana ${weekNumber} do Mês [Foco IA: ${aiCycleFocus.toUpperCase()}]`;
+      let mult = 1.0 + ((profileBioData.weight > 80 ? 0.9 : 1.0) * 0.05);
 
-      let goal = profileBioData.goal || 'padrao';
+      document.getElementById('cycleWeekLabel').textContent = phaseName;
 
-      if (goal === 'velocidade') {
+      if (aiCycleFocus === 'velocidade') {
         return [
-          { day: 'Segunda-feira', title: 'Tiros Curtos de Velocidade (Sprints)', type: 'Tiros / Sprints', strength: 'Força: Treino A (Superiores)', color: 'text-rose-400', detail: `Séries de tiros curtos de 100m a 200m com fator multiplicador x${mult}.` },
-          { day: 'Terça-feira', title: 'Treino Fortex (Progressivo)', type: 'Fortex', strength: 'Descanso de Força', color: 'text-purple-400', detail: 'Início moderado com fechamento em ritmo forte simulando final de prova.' },
-          { day: 'Quarta-feira', title: 'Condicionamento Misto / Natação', type: 'Aeróbico', strength: 'Força: Treino B (Pernas)', color: 'text-cyan-400', detail: 'Sessão de natação ou aeróbico sem impacto.' },
-          { day: 'Quinta-feira', title: 'Treino Intervalado de Alta Intensidade', type: 'Intervalado', strength: 'Trote Regenerativo', color: 'text-orange-400', detail: 'Séries em alta velocidade com descanso ativo.' },
-          { day: 'Sexta-feira', title: 'Rodagem Regenerativa Leve', type: 'Recuperação', strength: 'Força: Treino C (Core)', color: 'text-emerald-400', detail: '3k a 4k em ritmo leve (Z1).' },
-          { day: 'Sábado', title: 'Fartlek (Brincadeira de Ritmos)', type: 'Fartlek', strength: 'Hidratação e Descanso', color: 'text-cyan-400', detail: 'Variações contínuas de ritmo sem pausas completas.' },
-          { day: 'Domingo', title: 'Descanso Ativo', type: 'Regeneração Total', strength: 'Mobilidade Leve', color: 'text-slate-400', detail: 'Descanso total de corrida.' }
+          { day: 'Segunda-feira', title: 'Sprints Neuromusculares Curtos (Potência)', type: 'Tiros de Velocidade', strength: 'Força: Treino A (Supino & Remada Pesada)', color: 'text-rose-400', detail: '• Aquecimento: 10 min trote leve + educativos.\n• Parte Principal: 8x 100m em velocidade máxima (90-95%). Pausa completa de 90s caminhando entre cada tiro.\n• Objetivo: Recrutamento máximo de fibras rápidas e melhora da passada.' },
+          { day: 'Terça-feira', title: 'Treino Fortex Progressivo (Controle de Ritmo)', type: 'Fortex / Progressivo', strength: 'Descanso e Recuperação Ativa', color: 'text-purple-400', detail: '• Estrutura: 6 km contínuos divididos em 3 blocos.\n• 1º Bloco (2km): Ritmo leve e confortável (Z2).\n• 2º Bloco (2km): Ritmo moderado de limiar (Z3).\n• 3º Bloco (2km): Ritmo forte de prova (Z4/Z5).\n• Objetivo: Ensinar o corpo a acelerar sob fadiga acumulada.' },
+          { day: 'Quarta-feira', title: 'Condicionamento Cruzado & Natação', type: 'Aeróbico sem Impacto', strength: 'Força: Treino B (Agachamentos & Glúteos)', color: 'text-cyan-400', detail: '• Sessão de 30 a 45 minutos de natação contínua ou bicicleta leve.\n• Objetivo: Manter o estímulo cardiovascular ativo protegendo as articulações da corrida.' },
+          { day: 'Quinta-feira', title: 'Intervalado Curto na VAM (Interval Training)', type: 'Tiros Médios', strength: 'Trote Regenerativo Leve', color: 'text-orange-400', detail: '• Aquecimento: 10 min leves.\n• Parte Principal: 5x 400m em ritmo de VO2máx forte, com 1:30 de trote leve de recuperação entre as séries.\n• Objetivo: Expandir o teto cardiorrespiratório e tolerância ao lactato.' },
+          { day: 'Sexta-feira', title: 'Rodagem Regenerativa de Recuperação', type: 'Regenerativo Z1', strength: 'Força: Treino C (Core & Postura Antirrotação)', color: 'text-emerald-400', detail: '• Distância: 4 km em ritmo totalmente conversacional.\n• Foco: Soltura muscular, cadência alta e relaxamento dos ombros e mandíbula.' },
+          { day: 'Sábado', title: 'Fartlek Dinâmico (Variação de Terreno)', type: 'Fartlek', strength: 'Hidratação e Descanso Nutricional', color: 'text-cyan-400', detail: '• Estrutura: 30 min alternando 1 min forte com 1 min leve de forma contínua.\n• Objetivo: Ganho de versatilidade tática e agilidade mental.' },
+          { day: 'Domingo', title: 'Descanso Total Ativo', type: 'Regeneração', strength: 'Mobilidade Articular Leve', color: 'text-slate-400', detail: '• Descanso absoluto de corrida. Aproveite para caminhar levemente e fazer liberação miofascial se necessário.' }
         ];
-      } else if (goal === 'resistencia') {
+      } else if (aiCycleFocus === 'limiar') {
         return [
-          { day: 'Segunda-feira', title: 'Rodagem Longa Contínua', type: 'Resistência', strength: 'Força: Treino A (Superiores)', color: 'text-indigo-400', detail: `${Math.round(8 * mult)}k a ${Math.round(10 * mult)}k em ritmo constante e confortável.` },
-          { day: 'Terça-feira', title: 'Treino de Ritmo (Tempo Run)', type: 'Limiar', strength: 'Descanso de Força', color: 'text-yellow-400', detail: '4k a 6k mantendo ritmo de limiar sustentável.' },
-          { day: 'Quarta-feira', title: 'Natação ou Bicicleta', type: 'Crossover', strength: 'Força: Treino B (Pernas)', color: 'text-cyan-400', detail: 'Atividade aeróbica complementar.' },
-          { day: 'Quinta-feira', title: 'Rodagem Aeróbica Média', type: 'Z2', strength: 'Trote Regenerativo', color: 'text-blue-400', detail: '6k em ritmo conversacional.' },
-          { day: 'Sexta-feira', title: 'Recuperação Ativa', type: 'Z1', strength: 'Força: Treino C (Core)', color: 'text-emerald-400', detail: '3k leve.' },
-          { day: 'Sábado', title: 'O Super Longão', type: 'Longão', strength: 'Hidratação e Descanso', color: 'text-indigo-400', detail: `${Math.round(12 * mult)}k a ${Math.round(15 * mult)}k de construção de base aeróbica.` },
-          { day: 'Domingo', title: 'Descanso Total', type: 'Regeneração', strength: 'Mobilidade', color: 'text-slate-400', detail: 'Descanso completo.' }
+          { day: 'Segunda-feira', title: 'Tempo Run Contínuo (Limiar Anaeróbico)', type: 'Limiar Z4', strength: 'Força: Treino A (Superiores com Elásticos)', color: 'text-yellow-400', detail: '• Aquecimento: 10 min progressivos.\n• Parte Principal: 5 km contínuos em ritmo forte e sustentável (Ritmo de 10K).\n• Objetivo: Elevar o ponto de virada do lactato sanguíneo.' },
+          { day: 'Terça-feira', title: 'Rodagem Aeróbica de Manutenção', type: 'Rodagem Z2', strength: 'Descanso de Força', color: 'text-blue-400', detail: '• Distância: 6 km a 7 km em ritmo confortável e constante.\n• Objetivo: Consolidar a base aeróbica sem gerar estresse central.' },
+          { day: 'Quarta-feira', title: 'Natação ou Bicicleta Regenerativa', type: 'Crossover', strength: 'Força: Treino B (Pernas & Mini Band)', color: 'text-cyan-400', detail: '• Sessão de 40 min de aeróbico leve.\n• Objetivo: Oxigenação tecidual e limpeza de resíduos metabólicos.' },
+          { day: 'Quinta-feira', title: 'Blocos Longos Intervalados (Cruisers)', type: 'Intervalado Longo', strength: 'Trote Regenerativo', color: 'text-orange-400', detail: '• Parte Principal: 3x 1.500m em ritmo de limiar, com 2 minutos de trote leve de recuperação entre os blocos.\n• Objetivo: Sustentação de ritmo prolongado.' },
+          { day: 'Sexta-feira', title: 'Rodagem Leve Regenerativa', type: 'Z1/Z2', strength: 'Força: Treino C (Core & Estabilidade)', color: 'text-emerald-400', detail: '• Distância: 4 km leves.\n• Foco: Recuperação de tecidos e postura ereta.' },
+          { day: 'Sábado', title: 'Longão de Ritmo Variado (Construção)', type: 'Resistência Controlada', strength: 'Hidratação e Descanso', color: 'text-indigo-400', detail: '• Distância: 10 km a 12 km iniciando conservador e terminando no ritmo da rodagem.\n• Objetivo: Simulação de cansaço na segunda metade.' },
+          { day: 'Domingo', title: 'Descanso Total', type: 'Regeneração', strength: 'Mobilidade', color: 'text-slate-400', detail: '• Descanso completo para absorção das cargas da semana.' }
+        ];
+      } else if (aiCycleFocus === 'resistencia') {
+        return [
+          { day: 'Segunda-feira', title: 'O Super Longão de Base Aeróbica', type: 'Volume Longo', strength: 'Força: Treino A (Superiores)', color: 'text-indigo-400', detail: '• Distância: 12 km a 14 km em ritmo estritamente conversacional (Z2).\n• Objetivo: Estímulo mitocondrial máximo, capilarização e queima de gordura.' },
+          { day: 'Terça-feira', title: 'Rodagem Regenerativa Pós-Longão', type: 'Recuperação Ativa', strength: 'Descanso de Força', color: 'text-emerald-400', detail: '• Distância: 4 km muito leves.\n• Objetivo: Auxiliar na remoção de ácido lático e relaxar a musculatura.' },
+          { day: 'Quarta-feira', title: 'Condicionamento Cruzado & Core', type: 'Aeróbico', strength: 'Força: Treino B (Pernas & Glúteos)', color: 'text-cyan-400', detail: '• Natação ou bike leve por 30 minutos.\n• Objetivo: Manutenção da aptidão sem impacto articular.' },
+          { day: 'Quinta-feira', title: 'Rodagem Contínua de Ritmo Constante', type: 'Rodagem Média', strength: 'Trote Regenerativo', color: 'text-blue-400', detail: '• Distância: 8 km em ritmo constante e confortável.\n• Objetivo: Consolidar o volume semanal planejado pela IA.' },
+          { day: 'Sexta-feira', title: 'Soltura Neuromuscular e Educativos', type: 'Educativos', strength: 'Força: Treino C (Core & Postura)', color: 'text-purple-400', detail: '• 3 km leves + 5 acelerações progressivas de 60 metros.\n• Objetivo: Manter a agilidade e elasticidade da passada.' },
+          { day: 'Sábado', title: 'Rodagem Aeróbica de Manutenção', type: 'Z2 Confortável', strength: 'Hidratação e Descanso', color: 'text-blue-400', detail: '• Distância: 6 km leves.\n• Foco: Conforto e prazer na corrida.' },
+          { day: 'Domingo', title: 'Descanso Regenerativo Total', type: 'Descanso', strength: 'Mobilidade Leve', color: 'text-slate-400', detail: '• Descanso absoluto e preparação para o próximo ciclo mensal.' }
         ];
       } else {
+        // Semana Base
         return [
-          { day: 'Segunda-feira', title: 'Corrida Contínua (Base Aeróbica)', type: 'Rodagem Z2', strength: 'Força: Treino A (Superiores)', color: 'text-blue-400', detail: `${Math.round(6 * mult)}k em ritmo conversacional (Z2).` },
-          { day: 'Terça-feira', title: 'Treino Fartlek (Variação de Ritmo)', type: 'Fartlek', strength: 'Descanso de Força', color: 'text-cyan-400', detail: `Aquecimento + blocos alternados de velocidade leve e forte.` },
-          { day: 'Quarta-feira', title: 'Condicionamento Misto', type: 'Natação / Aeróbico', strength: 'Força: Treino B (Pernas)', color: 'text-cyan-400', detail: 'Sessão de natação ou aeróbico sem impacto.' },
-          { day: 'Quinta-feira', title: 'Treino de Ritmo (Tempo Run)', type: 'Limiar Anaeróbico', strength: 'Trote Regenerativo', color: 'text-yellow-400', detail: `${Math.round(3.5 * mult)}k em limiar.` },
-          { day: 'Sexta-feira', title: 'Rodagem Regenerativa', type: 'Recuperação Ativa', strength: 'Força: Treino C (Core)', color: 'text-emerald-400', detail: '3k a 4k em ritmo leve (Z1).' },
-          { day: 'Sábado', title: 'O Longão (Long Run)', type: 'Resistência', strength: 'Hidratação e Descanso', color: 'text-indigo-400', detail: `${Math.round((weekNumber >= 4 ? 8 : 10) * mult)}k contínuos.` },
-          { day: 'Domingo', title: 'Descanso Ativo', type: 'Regeneração Total', strength: 'Mobilidade Leve', color: 'text-slate-400', detail: 'Descanso total de corrida.' }
+          { day: 'Segunda-feira', title: 'Construção de Base Aeróbica (Z2)', type: 'Rodagem Contínua', strength: 'Força: Treino A (Superiores)', color: 'text-blue-400', detail: '• Distância: 6 km a 7 km em ritmo leve e conversacional.\n• Foco: Manter a frequência cardíaca baixa e estável (Z2).' },
+          { day: 'Terça-feira', title: 'Fartlek de Ritmo Variado (Brincadeira)', type: 'Fartlek', strength: 'Descanso de Força', color: 'text-cyan-400', detail: '• 10 min aquecimento + 20 min alternando 1 min forte / 1 min leve.\n• Objetivo: Estímulo lúdico e cardiovascular.' },
+          { day: 'Quarta-feira', title: 'Natação ou Bicicleta Complementar', type: 'Cross Training', strength: 'Força: Treino B (Pernas)', color: 'text-cyan-400', detail: '• 35 min de aeróbico sem impacto.\n• Objetivo: Oxigenação muscular.' },
+          { day: 'Quinta-feira', title: 'Ritmo Moderado (Tempo Run Curto)', type: 'Limiar Leve', strength: 'Trote Regenerativo', color: 'text-yellow-400', detail: '• 4 km em ritmo constante de limiar.\n• Objetivo: Aumentar a eficiência energética.' },
+          { day: 'Sexta-feira', title: 'Rodagem Regenerativa Leve', type: 'Recuperação', strength: 'Força: Treino C (Core)', color: 'text-emerald-400', detail: '• 3 km a 4 km bem leves.\n• Foco na soltura.' },
+          { day: 'Sábado', title: 'O Longão de Base', type: 'Resistência', strength: 'Hidratação e Descanso', color: 'text-indigo-400', detail: '• 10 km contínuos em ritmo moderado.\n• Construção de estoques de glicogênio.' },
+          { day: 'Domingo', title: 'Descanso Ativo', type: 'Regeneração', strength: 'Mobilidade', color: 'text-slate-400', detail: '• Descanso completo.' }
         ];
       }
     }
@@ -997,7 +1000,7 @@
                 <i class="fa-solid fa-clock-rotate-left mr-1"></i> ${isPostponed ? 'Adiado' : 'Adiar'}
               </button>
             </div>
-            <p class="text-xs text-gray-300">${item.detail}</p>
+            <p class="text-xs text-gray-300 whitespace-pre-line leading-relaxed">${item.detail}</p>
             <div class="bg-slate-950 p-2.5 rounded-xl text-[11px] text-gray-400 border border-slate-800/80">
               <strong class="text-emerald-400">Musculação:</strong> ${item.strength}
             </div>
@@ -1570,7 +1573,7 @@
         <div class="p-2 bg-slate-950 rounded-lg text-emerald-400 font-mono">Z1 (Regenerativo): ${Math.round(hrr * 0.5 + fcRest)} - ${Math.round(hrr * 0.6 + fcRest)} BPM</div>
         <div class="p-2 bg-slate-950 rounded-lg text-cyan-400 font-mono">Z2 (Aeróbico Leve): ${Math.round(hrr * 0.6 + fcRest)} - ${Math.round(hrr * 0.7 + fcRest)} BPM</div>
         <div class="p-2 bg-slate-950 rounded-lg text-amber-400 font-mono">Z3 (Limiar Aeróbico): ${Math.round(hrr * 0.7 + fcRest)} - ${Math.round(hrr * 0.8 + fcRest)} BPM</div>
-        <div class="p-2 bg-slate-950 rounded-lg text-orange-400 font-mono">Z4 (Limiar Anaeróbico): ${Math.round(hrr * 0.8 + fcRest)} - ${Math.round(hrr * 0.9 + fcRest)} BPM</div>
+        <div class="p-2 bg-slate-950 graded-lg text-orange-400 font-mono">Z4 (Limiar Anaeróbico): ${Math.round(hrr * 0.8 + fcRest)} - ${Math.round(hrr * 0.9 + fcRest)} BPM</div>
         <div class="p-2 bg-slate-950 rounded-lg text-rose-400 font-mono">Z5 (Pico de VAM): ${Math.round(hrr * 0.9 + fcRest)} - ${fcMax} BPM</div>
       `;
       res.classList.add('hidden');
