@@ -8,6 +8,10 @@
   <meta name="theme-color" content="#0d1117" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="StaminaLab" />
+
+  <!-- Manifest PWA em linha (Data URI) -->
+  <link rel="manifest" href='data:application/manifest+json,{"name":"StaminaLab 360°","short_name":"StaminaLab","start_url":".","display":"standalone","background_color":"#0a0d14","theme_color":"#0d1117","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/2964/2964514.png","sizes":"512x512","type":"image/png"}]}' />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -73,7 +77,7 @@
           <h1 class="text-base font-extrabold tracking-tight bg-gradient-to-r from-orange-400 via-emerald-400 to-amber-300 bg-clip-text text-transparent">
             StaminaLab 360°
           </h1>
-          <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Plataforma Científica & Registo Manual</p>
+          <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Plataforma Científica & PWA Offline</p>
         </div>
       </div>
     </div>
@@ -138,10 +142,10 @@
         <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-orange-600/10 rounded-full blur-2xl"></div>
         <div class="relative z-10 flex justify-between items-center">
           <div>
-            <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold uppercase tracking-wider">Registo 100% Manual</span>
+            <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold uppercase tracking-wider">Registo Manual & Backup</span>
             <h3 class="text-base font-extrabold text-white mt-2">Central de Atividades e Gráficos</h3>
             <p class="text-xs text-gray-300 mt-1 leading-relaxed">
-              Adicione e controle as suas corridas de forma estritamente pessoal.
+              Adicione as suas corridas, gira cópias de segurança e monitorize a evolução.
             </p>
           </div>
           <div class="bg-orange-600 text-slate-950 p-3 rounded-2xl shrink-0 ml-3 font-bold">
@@ -184,7 +188,7 @@
       <div id="planContainer" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 3: FORTALECIMENTO COM ELÁSTICOS -->
+    <!-- TAB 3: FORTALECIMENTO COM ELÁSTICOS + CRONÓMETRO INTERATIVO -->
     <div id="tab-bands" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -193,6 +197,25 @@
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
+        </button>
+      </div>
+
+      <!-- CRONÓMETRO INTERATIVO DE DESCANSO -->
+      <div class="p-4 rounded-2xl bg-slate-900 border border-emerald-500/30 space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-stopwatch text-base"></i> Temporizador de Descanso entre Séries
+          </span>
+          <span id="timerDisplay" class="font-mono text-xl font-black text-white">00:45</span>
+        </div>
+        <div class="grid grid-cols-4 gap-2">
+          <button onclick="startRestTimer(30)" class="py-1.5 bg-slate-950 border border-slate-800 hover:border-emerald-500/50 rounded-xl text-xs text-gray-300 font-bold transition">30s</button>
+          <button onclick="startRestTimer(45)" class="py-1.5 bg-slate-950 border border-slate-800 hover:border-emerald-500/50 rounded-xl text-xs text-emerald-400 font-bold transition">45s</button>
+          <button onclick="startRestTimer(60)" class="py-1.5 bg-slate-950 border border-slate-800 hover:border-emerald-500/50 rounded-xl text-xs text-gray-300 font-bold transition">60s</button>
+          <button onclick="startRestTimer(90)" class="py-1.5 bg-slate-950 border border-slate-800 hover:border-emerald-500/50 rounded-xl text-xs text-gray-300 font-bold transition">90s</button>
+        </div>
+        <button onclick="stopRestTimer()" class="w-full py-1.5 bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded-xl text-xs font-bold transition">
+          Parar Cronómetro
         </button>
       </div>
 
@@ -216,16 +239,33 @@
       <div id="bandsExercisesList" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (REGISTO MANUAL COM EXCLUSÃO) -->
+    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (REGISTO MANUAL + IMPORTAR/EXPORTAR BACKUP) -->
     <div id="tab-feedback" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
-          <h2 class="text-sm font-bold text-white">Central de Atividades Manuais</h2>
-          <p class="text-xs text-gray-400">Adicione ou remova individualmente as suas corridas.</p>
+          <h2 class="text-sm font-bold text-white">Central de Atividades & Backup</h2>
+          <p class="text-xs text-gray-400">Adicione corridas e faça a cópia de segurança dos seus dados.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
         </button>
+      </div>
+
+      <!-- PAINEL DE CÓPIA DE SEGURANÇA (BACKUP JSON) -->
+      <div class="p-3.5 rounded-2xl bg-slate-900 border border-purple-500/30 flex justify-between items-center gap-2">
+        <div>
+          <span class="text-xs font-bold text-purple-400 block"><i class="fa-solid fa-shield-halved mr-1"></i> Cópia de Segurança</span>
+          <span class="text-[10px] text-gray-400">Guarde ou restaure todo o seu histórico em ficheiro.</span>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="exportBackupData()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow transition">
+            <i class="fa-solid fa-download mr-1"></i> Exportar
+          </button>
+          <label class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-gray-200 font-bold text-xs rounded-xl border border-slate-700 cursor-pointer transition">
+            <i class="fa-solid fa-upload mr-1"></i> Importar
+            <input type="file" id="importBackupInput" onchange="importBackupData(event)" accept=".json" class="hidden" />
+          </label>
+        </div>
       </div>
 
       <!-- ADICIONAR CORRIDA MANUALMENTE -->
@@ -377,16 +417,48 @@
       <div id="protocolsContainer" class="space-y-2.5"></div>
     </div>
 
-    <!-- TAB 6: CALCULATORS -->
+    <!-- TAB 6: CALCULATORS + SIMULADOR DE SPLITS POR KM -->
     <div id="tab-calculators" class="tab-content hidden space-y-4">
       <div class="px-1 mb-1 flex justify-between items-center">
         <div>
           <h2 class="text-sm font-bold text-white">Ferramentas Profissionais</h2>
-          <p class="text-xs text-gray-400">Pace, preditor de prova, zonas de FC e VAM.</p>
+          <p class="text-xs text-gray-400">Pace, preditor, zonas de FC e tabela de passagens.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
         </button>
+      </div>
+
+      <!-- SIMULADOR DE SPLITS (PASSAGENS POR KM) -->
+      <div class="p-4 rounded-2xl bg-slate-900 border border-cyan-500/30 space-y-3">
+        <div class="flex items-center space-x-3 text-cyan-400">
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center"><i class="fa-solid fa-list-ol"></i></div>
+          <h3 class="font-bold text-sm text-white">Gerador de Splits (Passagens por KM)</h3>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Distância da Prova</label>
+            <select id="splitDist" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-500 outline-none">
+              <option value="5">5 km</option>
+              <option value="10" selected>10 km</option>
+              <option value="21.097">Meia Maratona (21.1k)</option>
+              <option value="42.195">Maratona (42.2k)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Tempo Alvo (hh:mm:ss)</label>
+            <input type="text" id="splitTargetTime" value="00:50:00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-500 outline-none" />
+          </div>
+        </div>
+        <div>
+          <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Estratégia de Ritmo</label>
+          <select id="splitStrategy" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-500 outline-none">
+            <option value="constant">Even Split (Ritmo Constante)</option>
+            <option value="negative">Negative Split (Acelerar na 2ª Metade)</option>
+          </select>
+        </div>
+        <button onclick="generatePaceSplits()" class="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl text-xs font-bold text-white shadow-lg shadow-cyan-500/20 active:scale-95 transition">Gerar Tabela de Passagens</button>
+        <div id="splitsResult" class="hidden space-y-1.5 pt-1 max-h-48 overflow-y-auto no-scrollbar"></div>
       </div>
 
       <!-- Calculadora Pace e VO2 -->
@@ -518,9 +590,9 @@
     let completedBands = JSON.parse(localStorage.getItem('stamina_bands_done') || '[]');
     let postponedDays = JSON.parse(localStorage.getItem('stamina_postponed') || '{}');
     let workoutLogs = JSON.parse(localStorage.getItem('stamina_logs') || '[]');
-    
-    // Histórico estritamente manual e vazio por padrão (sem dados inventados)
     let manualActivities = JSON.parse(localStorage.getItem('stamina_manual_runs') || '[]');
+
+    let timerInterval = null;
 
     const BANDS_WORKOUTS = {
       A: [
@@ -564,6 +636,150 @@
         { id: 'work-long', category: 'Método de Treino', title: 'Longão (Long Run)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Resistência aeróbica', icon: 'fa-route', description: 'Treino longo semanal em ritmo confortável.', whatItMeasures: 'Capilarização e mitocôndrias.', physiology: 'Oxidação de gorduras.', whenToUse: 'Preparação de fundo.', whenNotToUse: 'Exceder 30% do volume semanal.', materials: 'Hidratação.', formula: '65-75% FCmax', howToCalculate: 'Pace conversacional.', example: '16km a 18km contínuos.', summary: 'A fundação de resistência.' }
       ]
     };
+
+    // --- FUNÇÕES DE BACKUP (EXPORTAR / IMPORTAR) ---
+    function exportBackupData() {
+      const backup = {
+        favs: favorites,
+        runsDone: completedRuns,
+        bandsDone: completedBands,
+        postponed: postponedDays,
+        logs: workoutLogs,
+        manualRuns: manualActivities,
+        exportDate: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `StaminaLab_Backup_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importBackupData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data.manualRuns) {
+            favorites = data.favs || [];
+            completedRuns = data.runsDone || [];
+            completedBands = data.bandsDone || [];
+            postponedDays = data.postponed || {};
+            workoutLogs = data.logs || [];
+            manualActivities = data.manualRuns || [];
+
+            localStorage.setItem('stamina_favs', JSON.stringify(favorites));
+            localStorage.setItem('stamina_runs_done', JSON.stringify(completedRuns));
+            localStorage.setItem('stamina_bands_done', JSON.stringify(completedBands));
+            localStorage.setItem('stamina_postponed', JSON.stringify(postponedDays));
+            localStorage.setItem('stamina_logs', JSON.stringify(workoutLogs));
+            localStorage.setItem('stamina_manual_runs', JSON.stringify(manualActivities));
+
+            renderPlan();
+            renderWorkoutLogs();
+            updateDashboardData();
+            alert("Backup restaurado com sucesso!");
+          } else {
+            alert("Ficheiro de backup inválido.");
+          }
+        } catch (err) {
+          alert("Erro ao ler o ficheiro JSON.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // --- TEMPORIZADOR DE DESCANSO PARA ELÁSTICOS ---
+    function startRestTimer(seconds) {
+      clearInterval(timerInterval);
+      let timeLeft = seconds;
+      const display = document.getElementById('timerDisplay');
+      
+      const updateText = () => {
+        const m = Math.floor(timeLeft / 60);
+        const s = timeLeft % 60;
+        display.textContent = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+      };
+
+      updateText();
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          display.textContent = "00:00 - FIM!";
+          if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        } else {
+          updateText();
+        }
+      }, 1000);
+    }
+
+    function stopRestTimer() {
+      clearInterval(timerInterval);
+      document.getElementById('timerDisplay').textContent = "00:00";
+    }
+
+    // --- GERADOR DE SPLITS POR KM ---
+    function generatePaceSplits() {
+      const dist = parseFloat(document.getElementById('splitDist').value);
+      const targetTimeStr = document.getElementById('splitTargetTime').value.trim();
+      const strategy = document.getElementById('splitStrategy').value;
+
+      if (!targetTimeStr || !targetTimeStr.includes(':')) {
+        alert("Insira o tempo no formato hh:mm:ss ou mm:ss.");
+        return;
+      }
+
+      const parts = targetTimeStr.split(':').map(Number);
+      let totalSec = 0;
+      if (parts.length === 3) totalSec = (parts[0] * 3600) + (parts[1] * 60) + parts[2];
+      else if (parts.length === 2) totalSec = (parts[0] * 60) + parts[1];
+
+      const baseSecPerKm = totalSec / dist;
+      const totalKmCount = Math.ceil(dist);
+      let html = '';
+      let accumSec = 0;
+
+      for (let i = 1; i <= totalKmCount; i++) {
+        let currentKm = i > dist ? dist : i;
+        let kmSegment = (i === totalKmCount && dist % 1 !== 0) ? (dist % 1) : 1;
+        
+        let kmPaceSec = baseSecPerKm;
+        if (strategy === 'negative') {
+          // Variação suave de -2% no final
+          const factor = 1.02 - (0.04 * (i / totalKmCount));
+          kmPaceSec = baseSecPerKm * factor;
+        }
+
+        accumSec += (kmPaceSec * kmSegment);
+
+        const pMin = Math.floor(kmPaceSec / 60);
+        const pSec = Math.round(kmPaceSec % 60);
+        
+        const aHour = Math.floor(accumSec / 3600);
+        const aMin = Math.floor((accumSec % 3600) / 60);
+        const aSec = Math.round(accumSec % 60);
+
+        const accumFmt = `${aHour > 0 ? aHour + ':' : ''}${aMin < 10 ? '0' : ''}${aMin}:${aSec < 10 ? '0' : ''}${aSec}`;
+
+        html += `
+          <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono">
+            <span class="text-gray-400 font-bold">KM ${i} ${kmSegment < 1 ? '(' + Math.round(kmSegment*1000) + 'm)' : ''}</span>
+            <span class="text-cyan-400">Pace: ${pMin}:${pSec < 10 ? '0' : ''}${pSec}/km</span>
+            <span class="text-white font-bold">Acumulado: ${accumFmt}</span>
+          </div>
+        `;
+      }
+
+      const resContainer = document.getElementById('splitsResult');
+      resContainer.innerHTML = html;
+      resContainer.classList.remove('hidden');
+    }
 
     function addNewManualRun() {
       const name = document.getElementById('newRunName').value.trim() || "Corrida Manual";
@@ -951,6 +1167,17 @@
       renderCategoryList('workouts', 'workoutsContainer');
       renderWorkoutLogs();
       updateDashboardData();
+
+      // Registo do Service Worker PWA para suporte Offline
+      if ('serviceWorker' in navigator) {
+        const swCode = `
+          self.addEventListener('install', e => e.waitUntil(self.skipWaiting()));
+          self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+          self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
+        `;
+        const blob = new Blob([swCode], { type: 'text/javascript' });
+        navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+      }
     });
 
     function switchTab(tabId) {
