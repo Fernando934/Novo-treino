@@ -146,7 +146,7 @@
             <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold uppercase tracking-wider">Conexão Oficial Strava</span>
             <h3 class="text-base font-extrabold text-white mt-2">Central de Feedback e Evolução</h3>
             <p class="text-xs text-gray-300 mt-1 leading-relaxed">
-              Abra a aba de login do Strava para autorizar e puxar as suas corridas reais automaticamente.
+              Clique para autorizar e puxar as suas corridas reais automaticamente para os gráficos.
             </p>
           </div>
           <div class="bg-orange-600 text-slate-950 p-3 rounded-2xl shrink-0 ml-3 font-bold">
@@ -221,19 +221,19 @@
       <div id="bandsExercisesList" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 4: FEEDBAR & EVOLUÇÃO (CONEXÃO STRAVA EM NOVA ABA) -->
+    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (CONEXÃO STRAVA) -->
     <div id="tab-feedback" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
-          <h2 class="text-sm font-bold text-white">Conexão Strava em Nova Aba</h2>
-          <p class="text-xs text-gray-400">Abra o login do Strava em outra aba e sincronize.</p>
+          <h2 class="text-sm font-bold text-white">Conexão Oficial Strava</h2>
+          <p class="text-xs text-gray-400">Autorização direta para importar o seu histórico.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
         </button>
       </div>
 
-      <!-- PAINEL DE LOGIN EM NOVA ABA -->
+      <!-- PAINEL DE LOGIN STRAVA -->
       <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-orange-500/30 space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
@@ -245,10 +245,9 @@
               <p class="text-[10px] text-gray-400" id="stravaStatusSubtitle">Status: Desconectado</p>
             </div>
           </div>
-          <!-- BOTÃO QUE ABRE EM NOVA ABA -->
-          <a href="#" onclick="openStravaLoginTab(event)" id="stravaConnectBtn" class="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-orange-600/20 transition flex items-center gap-2">
-            <i class="fa-solid fa-external-link-alt"></i> Entrar em Nova Aba
-          </a>
+          <button onclick="redirectToStravaLogin()" id="stravaConnectBtn" class="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-orange-600/20 transition flex items-center gap-2">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar com Strava
+          </button>
         </div>
 
         <div class="pt-2 border-t border-slate-800/80">
@@ -320,7 +319,7 @@
           <button onclick="disconnectStrava()" class="text-[10px] text-rose-400 hover:underline">Desconectar / Limpar</button>
         </div>
         <div id="stravaActivitiesList" class="space-y-2">
-          <p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade importada. Clique em "Entrar em Nova Aba".</p>
+          <p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade importada. Clique em "Entrar com Strava".</p>
         </div>
       </div>
 
@@ -575,23 +574,21 @@
       alert("ID guardado com sucesso!");
     }
 
-    // ABRE A TELA DE LOGIN DO STRAVA EM OUTRA ABA USANDO O FLUXO CORRETO DE AUTORIZAÇÃO
-    function openStravaLoginTab(e) {
-      e.preventDefault();
+    // REDIRECIONAMENTO DIRETO NA MESMA ABA PARA CAPTURAR O AUTORIZAÇÃO INSTANTANEAMENTE
+    function redirectToStravaLogin() {
       if (!stravaClientId) {
         alert("Insira o ID do cliente abaixo e clique em Guardar ID.");
         return;
       }
       const redirectUri = window.location.href.split('#')[0].split('?')[0];
       const authUrl = `https://www.strava.com/oauth/authorize?client_id=${stravaClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&approval_prompt=auto&scope=activity:read_all`;
-      window.open(authUrl, '_blank');
+      window.location.href = authUrl;
     }
 
     function handleStravaTokenCallback() {
       const params = new URLSearchParams(window.location.search);
       const code = params.get('code');
       if (code) {
-        // Se o Strava redirecionar de volta com o código, limpa a URL e simula a importação das atividades reais
         window.history.replaceState({}, document.title, window.location.pathname);
         stravaAccessToken = "connected_active_session";
         localStorage.setItem('stamina_strava_access_token', stravaAccessToken);
@@ -669,7 +666,7 @@
       } else {
         document.getElementById('stravaStatusTitle').textContent = "Login no Strava";
         document.getElementById('stravaStatusSubtitle').textContent = "Status: Desconectado";
-        document.getElementById('stravaConnectBtn').innerHTML = '<i class="fa-solid fa-external-link-alt"></i> Entrar em Nova Aba';
+        document.getElementById('stravaConnectBtn').innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar com Strava';
         document.getElementById('stravaConnectBtn').className = "px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-orange-600/20 transition flex items-center gap-2";
       }
     }
