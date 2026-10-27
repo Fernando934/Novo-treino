@@ -5,16 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>StaminaLab 360° - Plataforma Científica de Corrida & Força</title>
 
-  <!-- PWA Meta Tags -->
   <meta name="theme-color" content="#0d1117" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <!-- Google Fonts: Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <script>
@@ -150,7 +146,7 @@
             <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold uppercase tracking-wider">Conexão Oficial Strava</span>
             <h3 class="text-base font-extrabold text-white mt-2">Central de Feedback e Evolução</h3>
             <p class="text-xs text-gray-300 mt-1 leading-relaxed">
-              Conecte sua conta do Strava diretamente pelo navegador (com login do Google) para puxar seu histórico real de corridas.
+              Ligue a sua conta do Strava diretamente para importar todo o seu histórico real de corridas.
             </p>
           </div>
           <div class="bg-orange-600 text-slate-950 p-3 rounded-2xl shrink-0 ml-3 font-bold">
@@ -225,12 +221,12 @@
       <div id="bandsExercisesList" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (CONEXÃO DIRETA STRAVA + GOOGLE LOG-IN) -->
+    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (CONEXÃO DIRETA STRAVA) -->
     <div id="tab-feedback" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
           <h2 class="text-sm font-bold text-white">Conexão Direta Strava</h2>
-          <p class="text-xs text-gray-400">Autorização oficial para importar suas corridas reais.</p>
+          <p class="text-xs text-gray-400">Importação oficial do seu histórico de corridas.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
@@ -255,12 +251,11 @@
         </div>
 
         <div class="pt-2 border-t border-slate-800/80">
-          <label class="text-[10px] text-gray-400 font-bold block mb-1">Seu Client ID do Strava API:</label>
+          <label class="text-[10px] text-gray-400 font-bold block mb-1">ID do Cliente Strava API:</label>
           <div class="flex gap-2">
-            <input type="text" id="stravaClientIdInput" placeholder="Ex: 123456" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white outline-none focus:border-orange-500" />
-            <button onclick="saveClientId()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-gray-300 rounded-xl transition">Salvar</button>
+            <input type="text" id="stravaClientIdInput" value="291375" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white outline-none focus:border-orange-500" />
+            <button onclick="saveClientId()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-gray-300 rounded-xl transition">Guardar ID</button>
           </div>
-          <p class="text-[9px] text-gray-500 mt-1">Obtenha seu ID em <a href="https://www.strava.com/settings/api" target="_blank" class="text-orange-400 underline">strava.com/settings/api</a>. É preciso configurar apenas 1 vez.</p>
         </div>
       </div>
 
@@ -516,7 +511,6 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT APP LOGIC -->
   <script>
     let currentModalItem = null;
     let favorites = JSON.parse(localStorage.getItem('stamina_favs') || '[]');
@@ -526,7 +520,7 @@
     let workoutLogs = JSON.parse(localStorage.getItem('stamina_logs') || '[]');
     
     let stravaAccessToken = localStorage.getItem('stamina_strava_access_token') || '';
-    let stravaClientId = localStorage.getItem('stamina_strava_client_id') || '';
+    let stravaClientId = localStorage.getItem('stamina_strava_client_id') || '291375';
     let stravaActivities = JSON.parse(localStorage.getItem('stamina_strava_activities') || '[]');
 
     const BANDS_WORKOUTS = {
@@ -559,7 +553,7 @@
         { id: 'proto-cs', category: 'Protocolo de Teste', title: 'Critical Speed (Velocidade Crítica)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Modelo Matemático de Dois Pontos', icon: 'fa-calculator', description: 'Combina tempos de duas distâncias máximas distintas (ex: 800m e 3000m).', whatItMeasures: 'Velocidade crítica e reserva anaeróbica (D\').', physiology: 'Separa o domínio de intensidade pesada do severo.', whenToUse: 'Atletas de alta performance.', whenNotToUse: 'Iniciantes.', materials: 'Cronômetro e pista.', formula: 'CS = (D2 - D1) / (T2 - T1)', howToCalculate: 'Divida a variação de distância pela variação de tempo.', example: 'CS calculada em 16.8 km/h.', summary: 'Fórmula matemática precisa sem laboratório.' }
       ],
       physiology: [
-        { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) é a molécula de energia direta.', whatItMeasures: 'Ressíntese de energia muscular.', physiology: 'ATP-CP, Glicolítico e Oxidativo.', whenToUse: 'Estruturação de pausas.', whenNotToUse: 'N/A', materials: 'N/A', formula: 'ATP → ADP + Pi + Energia', howToCalculate: 'Baseado na duração do effort.', example: 'Sprints usam ATP-CP; maratona usa sistema oxidativo.', summary: 'A base da bioenergética humana.' },
+        { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) é a molécula de energia direta.', whatItMeasures: 'Ressíntese de energia muscular.', physiology: 'ATP-CP, Glicolítico e Oxidativo.', whenToUse: 'Estruturação de pausas.', whenNotToUse: 'N/A', materials: 'N/A', formula: 'ATP → ADP + Pi + Energia', howToCalculate: 'Baseado na duração do esforço.', example: 'Sprints usam ATP-CP; maratona usa sistema oxidativo.', summary: 'A base da bioenergética humana.' },
         { id: 'phys-vo2', category: 'Consumo de Oxigênio', title: 'VO2 e VO2 Máximo', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'O teto aeróbico', icon: 'fa-lung', description: 'Volume máximo de oxigênio captado por minuto.', whatItMeasures: 'Potência aeróbica máxima.', physiology: 'Limitado pelo débito cardíaco e extração muscular.', whenToUse: 'Avaliação biológica do corredor.', whenNotToUse: 'N/A', materials: 'Ergoespirometria.', formula: 'Débito cardíaco x Diferença a-vO2', howToCalculate: 'ml/kg/min.', example: 'Elite: 70-85 ml/kg/min.', summary: 'O tamanho do motor aeróbico.' },
         { id: 'phys-lactate', category: 'Cinética Metabólica', title: 'Cinética e Depuração de Lactato', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'O lactato como combustível', icon: 'fa-fire', description: 'O lactato não é apenas lixo metabólico; é reaproveitado como substrato energético pelas fibras lentas e pelo coração.', whatItMeasures: 'Capacidade de tamponamento e depuração.', physiology: 'Produção nas fibras rápidas e oxidação nas fibras lentas.', whenToUse: 'Prescrição de treinos de limiar.', whenNotToUse: 'N/A', materials: 'Lactatímetro portátil.', formula: 'Taxa de Produção vs Taxa de Depuração', howToCalculate: 'Medição pós-esforço em minutos 1, 3 e 5.', example: 'Treinos de Tempo Run melhoram a densidade de transportadores MCT.', summary: 'O lactato é amigo do corredor, não vilão.' },
         { id: 'phys-fibers', category: 'Morfologia Muscular', title: 'Tipos de Fibras Musculares (I, IIa, IIx)', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A composição do músculo', icon: 'fa-dna', description: 'Fibras Tipo I (contrações lentas, altamente oxidativas) e Tipo II (rápidas, glicolíticas).', whatItMeasures: 'Predisposição a velocidade ou resistência.', physiology: 'Recrutamento ordenado pelo Princípio de Henneman.', whenToUse: 'Definição de perfil de atleta (fundista vs sprinter).', whenNotToUse: 'N/A', materials: 'Biópsia ou testes de campo.', formula: 'Princípio de Henneman (Recrutamento de menor para maior)', howToCalculate: 'Testes de potência vs testes de tempo limite.', example: 'Fundistas possuem alta densidade de Fibras Tipo I.', summary: 'A genética e o treino moldam a capacidade contrátil.' },
@@ -574,16 +568,15 @@
 
     function saveClientId() {
       const val = document.getElementById('stravaClientIdInput').value.trim();
-      if (!val) { alert("Insira seu Client ID."); return; }
+      if (!val) { alert("Insira o seu ID do cliente."); return; }
       stravaClientId = val;
       localStorage.setItem('stamina_strava_client_id', stravaClientId);
-      alert("Client ID salvo com sucesso!");
+      alert("ID guardado com sucesso!");
     }
 
-    // REDIRECIONA PARA A PÁGINA OFICIAL DO STRAVA (COM BOTÃO DE LOG-IN DO GOOGLE)
     function redirectToStravaLogin() {
       if (!stravaClientId) {
-        alert("Por favor, insira o seu Client ID do Strava abaixo e clique em Salvar.");
+        alert("Insira o ID do cliente abaixo e clique em Guardar ID.");
         return;
       }
       const redirectUri = window.location.href.split('#')[0].split('?')[0];
@@ -591,7 +584,6 @@
       window.location.href = authUrl;
     }
 
-    // CAPTURA O TOKEN RETORNADO NA URL APÓS O LOGIN NO STRAVA
     function handleStravaTokenCallback() {
       const hash = window.location.hash;
       if (hash && hash.includes('access_token=')) {
@@ -608,7 +600,6 @@
       }
     }
 
-    // REQUISIÇÃO DIRETA À API DO STRAVA PARA BUSCAR AS CORRIDAS REAIS
     async function fetchRealStravaRuns() {
       if (!stravaAccessToken) return;
       try {
@@ -617,7 +608,6 @@
         });
         if (response.ok) {
           const acts = await response.json();
-          // Filtra apenas atividades de Corrida (Run)
           stravaActivities = acts.filter(a => a.type === 'Run').map(a => {
             const distKm = a.distance / 1000;
             const timeMin = Math.round(a.moving_time / 60);
@@ -666,7 +656,7 @@
         if (period === 'current_month') return month === currentMonth && year === currentYear;
         if (period === 'september') return month === currentMonth - 1 && year === currentYear;
         if (period === 'august') return month === currentMonth - 2 && year === currentYear;
-        return true; // 'all'
+        return true;
       });
 
       document.getElementById('statRunsCount').textContent = filteredActivities.length;
