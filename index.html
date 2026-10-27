@@ -211,7 +211,7 @@
       <div id="bandsExercisesList" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (HISTÓRICO COM ANÁLISE COMPLETA RESTAURADA) -->
+    <!-- TAB 4: FEEDBACK & EVOLUÇÃO -->
     <div id="tab-feedback" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -359,7 +359,7 @@
         </div>
       </div>
 
-      <!-- ANÁLISE CRÍTICA MENSAL / GERAL (EXATAMENTE COMO NA IMAGEM) -->
+      <!-- MOTOR INTELIGENTE: COMPARATIVO NOS MESES E LEVANTAMENTO PURAMENTE TÉCNICO NO GERAL -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
           <i class="fa-solid fa-brain"></i> ANÁLISE CRÍTICA DE DESEMPENHO & EVOLUÇÃO
@@ -598,7 +598,6 @@
       `).join('');
     }
 
-    // PLANO DINÂMICO ORIGINAL
     function getDynamicWeeklyPlan() {
       const now = new Date();
       const weekNumber = Math.ceil(now.getDate() / 7);
@@ -795,7 +794,6 @@
       return `${m}:${s < 10 ? '0' : ''}${s} /km`;
     }
 
-    // AUTÓPSIA CIENTÍFICA INDIVIDUAL POR CORRIDA (AO CLICAR NO OLHO)
     function viewRunDetails(id) {
       let act = manualActivities.find(a => a.id == id);
       if (!act) return;
@@ -926,13 +924,13 @@
       document.getElementById('statMonthKm').textContent = `${totalPeriodKm.toFixed(1)} km`;
 
       renderWeeklyChart();
-      renderGeneralFeedbackEngine(filteredActivities, period, currentMonth, currentYear);
+      renderSmartComparativeFeedback(filteredActivities, period, currentMonth, currentYear);
       renderManualActivitiesList(filteredActivities);
       updatePerformancePredictions(filteredActivities);
     }
 
-    // ANÁLISE CRÍTICA MENSAL E GERAL RESTAURADA EXATAMENTE COMO NA SUA IMAGEM
-    function renderGeneralFeedbackEngine(filteredActs, period, currentMonth, currentYear) {
+    // MOTOR INTELIGENTE: COMPARATIVO EM MESES E LEVANTAMENTO GERAL DETALHADO PURO
+    function renderSmartComparativeFeedback(filteredActs, period, currentMonth, currentYear) {
       const container = document.getElementById('monthlyFeedbackContent');
       if (!container) return;
 
@@ -955,43 +953,135 @@
         return `${m}:${s < 10 ? '0' : ''}${s} /km`;
       };
 
+      const formatTotalTime = (sec) => {
+        let h = Math.floor(sec / 3600);
+        let m = Math.floor((sec % 3600) / 60);
+        if (h > 0) return `${h}h ${m}min`;
+        return `${m} minutos`;
+      };
+
+      // RELATÓRIO GERAL: LEVANTAMENTO DETALHADO PURO (SEM COMPARAÇÃO ENTRE MESES)
       if (period === 'all') {
         container.innerHTML = `
           <div class="space-y-2 border-b border-slate-800/80 pb-3">
-            <span class="text-amber-400 font-bold block"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Diagnóstico de Carga & Volume (Geral)</span>
-            <p class="text-gray-300">• <strong>Volume Total:</strong> Você acumulou <strong>${totalKm.toFixed(1)} km</strong> divididos em <strong>${totalSessions} sessões</strong> no histórico completo (Média de ${avgDist.toFixed(1)} km por treino).</p>
-            <p class="text-gray-300">• <strong>Maior Estímulo:</strong> O seu treino mais longo registado foi de <strong>${maxDist.toFixed(1)} km</strong>.</p>
+            <span class="text-amber-400 font-bold block"><i class="fa-solid fa-chart-pie mr-1"></i> Levantamento Geral de Carga & Volume</span>
+            <p class="text-gray-300">• <strong>Volume Histórico Total:</strong> Acumulado de <strong>${totalKm.toFixed(1)} km</strong> executados em <strong>${totalSessions} sessões</strong> de treino (Média de ${avgDist.toFixed(1)} km por sessão).</p>
+            <p class="text-gray-300">• <strong>Maior Desafio Registado:</strong> O seu treino mais longo alcançou <strong>${maxDist.toFixed(1)} km</strong>.</p>
+            <p class="text-gray-300">• <strong>Tempo Total em Movimento:</strong> ${formatTotalTime(totalSec)} dedicados à corrida.</p>
           </div>
           <div class="space-y-2 border-b border-slate-800/80 pb-3">
-            <span class="text-emerald-400 font-bold block"><i class="fa-solid fa-circle-check mr-1"></i> Pontos de Evolução (Onde você melhorou)</span>
-            <p class="text-gray-300">• <strong>Manutenção do ritmo aeróbico:</strong> O pace médio consolidado fixou-se em <strong>${formatPace(avgPaceSec)}</strong>, garantindo estagnação zero e controlo de carga contínuo.</p>
-            <p class="text-gray-300">• <strong>Consistência de volume:</strong> Distribuída de forma equilibrada para favorecer a resistência muscular sem sobrecarga articular.</p>
+            <span class="text-emerald-400 font-bold block"><i class="fa-solid fa-circle-check mr-1"></i> Indicadores de Evolução & Desempenho</span>
+            <p class="text-gray-300">• <strong>Pace Médio Consolidado:</strong> <strong>${formatPace(avgPaceSec)}</strong> em toda a base de dados, refletindo a consolidação do limiar aeróbico e constância de passada.</p>
+            <p class="text-gray-300">• <strong>Consistência Estrutural:</strong> Distribuição equilibrada de treinos que favorece a adaptação tendinosa e musculoesquelética.</p>
           </div>
           <div class="space-y-2">
-            <span class="text-rose-400 font-bold block"><i class="fa-solid fa-compass mr-1"></i> Alertas & Onde Você Pode Melhorar (Próximos Passos)</span>
-            <p class="text-gray-300">• <strong>Distribuição de Esforço:</strong> Mantenha a maioria das rodagens num ritmo confortável (Z2) para evitar fadiga acumulada antes dos treinos de tiros ou longões.</p>
-            <p class="text-gray-300">• <strong>Consistência Semanal:</strong> Espalhe os estímulos de corrida intercalados com os treinos de força (elásticos) para proteger as articulações dos joelhos e tornozelos.</p>
+            <span class="text-cyan-400 font-bold block"><i class="fa-solid fa-crosshairs mr-1"></i> Diretrizes para Próximos Ciclos</span>
+            <p class="text-gray-300">• Mantenha a sinergia entre os treinos de corrida contínua e as sessões de força com elásticos para blindar os joelhos contra impactos.</p>
+            <p class="text-gray-300">• Utilize o seletor de meses para auditar o progresso específico entre períodos fechados.</p>
           </div>
         `;
+        return;
+      }
+
+      // ANÁLISE MENSAL COM CRUZAMENTO MATEMÁTICO PRECISO (Ex: 55km vs 55km com menos tempo/pace menor)
+      let targetMonth = currentMonth;
+      let monthNameCurrent = "Outubro";
+      let monthNamePrev = "Setembro";
+
+      if (period === 'september') {
+        targetMonth = currentMonth - 2;
+        monthNameCurrent = "Setembro";
+        monthNamePrev = "Agosto";
+      } else if (period === 'august') {
+        targetMonth = currentMonth - 3;
+        monthNameCurrent = "Agosto";
+        monthNamePrev = "Julho";
       } else {
+        targetMonth = currentMonth - 1;
+      }
+
+      let prevActs = manualActivities.filter(act => {
+        if (!act.start_date) return false;
+        let d = new Date(act.start_date);
+        return d.getMonth() === targetMonth && d.getFullYear() === currentYear;
+      });
+
+      if (prevActs.length === 0) {
         container.innerHTML = `
           <div class="space-y-2 border-b border-slate-800/80 pb-3">
-            <span class="text-amber-400 font-bold block"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Diagnóstico de Carga & Volume</span>
-            <p class="text-gray-300">• <strong>Volume Total:</strong> Você acumulou <strong>${totalKm.toFixed(1)} km</strong> divididos em <strong>${totalSessions} sessões</strong> neste período (Média de ${avgDist.toFixed(1)} km por treino).</p>
-            <p class="text-gray-300">• <strong>Maior Estímulo:</strong> O seu treino mais longo registado foi de <strong>${maxDist.toFixed(1)} km</strong> (Corrida Manual).</p>
-          </div>
-          <div class="space-y-2 border-b border-slate-800/80 pb-3">
-            <span class="text-emerald-400 font-bold block"><i class="fa-solid fa-circle-check mr-1"></i> Pontos de Evolução (Onde você melhorou)</span>
-            <p class="text-gray-300">• <strong>Manutenção excelente do ritmo aeróbico:</strong> O pace médio fixou-se em <strong>${formatPace(avgPaceSec)}</strong>, garantindo estagnação zero e controlo de carga contínuo.</p>
-            <p class="text-gray-300">• <strong>Consistência de volume:</strong> Mantida de forma equilibrada (${totalKm.toFixed(1)} km distribuídos em ${totalSessions} sessões), favorecendo a resistência muscular sem sobrecarga.</p>
+            <span class="text-amber-400 font-bold block"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Diagnóstico de Carga (${monthNameCurrent})</span>
+            <p class="text-gray-300">• Volume de <strong>${totalKm.toFixed(1)} km</strong> registados em <strong>${totalSessions} sessões</strong> (Média de ${avgDist.toFixed(1)} km por treino a ${formatPace(avgPaceSec)}).</p>
+            <p class="text-gray-300">• Maior estímulo único: <strong>${maxDist.toFixed(1)} km</strong>.</p>
           </div>
           <div class="space-y-2">
-            <span class="text-rose-400 font-bold block"><i class="fa-solid fa-compass mr-1"></i> Alertas & Onde Você Pode Melhorar (Próximos Passos)</span>
-            <p class="text-gray-300">• <strong>Distribuição de Esforço:</strong> Mantenha a maioria das rodagens num ritmo confortável (Z2) para evitar fadiga acumulada antes dos treinos de tiros ou longões.</p>
-            <p class="text-gray-300">• <strong>Consistência Semanal:</strong> Espalhe os estímulos de corrida intercalados com os treinos de força (elásticos) para proteger as articulações dos joelhos e tornozelos.</p>
+            <span class="text-cyan-400 font-bold block"><i class="fa-solid fa-circle-info mr-1"></i> Nota Comparativa:</span>
+            <p class="text-gray-400 italic">Sem registos suficientes no mês anterior (${monthNamePrev}) para cruzamento de métricas.</p>
           </div>
         `;
+        return;
       }
+
+      let prevKm = prevActs.reduce((acc, curr) => acc + (curr.distance || 0), 0);
+      let prevSec = prevActs.reduce((acc, curr) => acc + parseTimeString(curr.time), 0);
+      let avgPacePrev = prevKm > 0 ? (prevSec / prevKm) : 0;
+      let paceDiff = avgPaceSec - avgPacePrev; // Negativo = mais rápido
+      let kmDiff = totalKm - prevKm;
+
+      let evolutionTitle = "Avaliação de Desempenho";
+      let evolutionColor = "text-amber-400";
+      let evolutionText = "";
+      let trainingTips = "";
+
+      // Cruzamento cirúrgico de dados (ex: mesmo volume ou volume similar, mas em menos tempo / pace menor)
+      if (Math.abs(kmDiff) <= 4 && paceDiff < -2) {
+        evolutionTitle = `🚀 Evolução Comprovada (${monthNameCurrent} vs ${monthNamePrev})`;
+        evolutionColor = "text-emerald-400";
+        evolutionText = `Você correu um volume equivalente ao mês anterior (~${totalKm.toFixed(1)} km vs ${prevKm.toFixed(1)} km em ${monthNamePrev}), mas concluiu os percursos em <strong>tempo menor</strong> e com <strong>pace mais ágil</strong> (${formatPace(avgPaceSec)} contra ${formatPace(avgPacePrev)} anterior). Isso demonstra uma <strong>evolução nítida na economia de corrida e eficiência cardiorrespiratória</strong>, evidenciando que o seu corpo gasta menos energia para render o mesmo esforço.`;
+        trainingTips = `
+          • <strong>Como Prosseguir:</strong> Como a aptidão aeróbica melhorou, preserve a maioria das rodagens em ritmo confortável para evitar sobrecarga mecânica.<br>
+          • <strong>Próximo Estímulo:</strong> Insira variações de ritmo (fartlek) nas terças-feiras para explorar ainda mais essa nova capacidade de VAM.
+        `;
+      } else if (totalKm > prevKm + 4 && paceDiff <= 1) {
+        evolutionTitle = `📈 Expansão de Carga & Volume Sólida`;
+        evolutionColor = "text-emerald-400";
+        evolutionText = `Houve um aumento produtivo de volume (+${kmDiff.toFixed(1)} km em relação a ${monthNamePrev}) mantendo a consistência de ritmo (${formatPace(avgPaceSec)}). O organismo adaptou-se muito bem ao estresse progressivo.`;
+        trainingTips = `
+          • <strong>Controle de Fadiga:</strong> Fique atento a rigores na panturrilha.<br>
+          • <strong>Ajuste de Ciclo:</strong> Respeite uma semana de polimento a cada ciclo longo para assimilação completa.
+        `;
+      } else if (paceDiff > 3) {
+        evolutionTitle = `⚠️ Alerta de Queda de Rendimento / Fadiga`;
+        evolutionColor = "text-rose-400";
+        evolutionText = `Comparado a ${monthNamePrev}, o seu pace médio aumentou (${formatPace(avgPaceSec)} vs ${formatPace(avgPacePrev)}), indicando que demorou mais tempo para cumprir a distância. Isso aponta para <strong>fadiga acumulada, recuperação insuficiente ou excesso de treinos intensos sem descanso adequado</strong>.`;
+        trainingTips = `
+          • <strong>Estratégia de Alívio:</strong> Alivie o pé nas próximas sessões e reduza o ritmo para a Zona 2 pura.<br>
+          • <strong>Recuperação:</strong> Priorize o sono e utilize os treinos de força com elásticos para restaurar a rigidez dos membros inferiores.
+        `;
+      } else {
+        evolutionTitle = `⚖️ Manutenção e Estabilidade de Ritmo`;
+        evolutionColor = "text-cyan-400";
+        evolutionText = `Volume e ritmos mantidos em patamares muito próximos aos de ${monthNamePrev} (~${totalKm.toFixed(1)} km a ${formatPace(avgPaceSec)}). O treino encontra-se em fase de estabilização fisiológica.`;
+        trainingTips = `
+          • <strong>Quebra de Platô:</strong> Para gerar novos estímulos de adaptação, adicione blocos de ritmo controlado nas rodagens de fim de semana.
+        `;
+      }
+
+      container.innerHTML = `
+        <div class="space-y-2 border-b border-slate-800/80 pb-3">
+          <span class="text-amber-400 font-bold block"><i class="fa-solid fa-scale-balanced mr-1"></i> Comparativo Direto (${monthNameCurrent} vs ${monthNamePrev})</span>
+          <p class="text-gray-300">• <strong>Volume:</strong> ${totalKm.toFixed(1)} km (${monthNameCurrent}) vs ${prevKm.toFixed(1)} km (${monthNamePrev}).</p>
+          <p class="text-gray-300">• <strong>Pace Médio:</strong> <strong>${formatPace(avgPaceSec)}</strong> (Anterior: ${formatPace(avgPacePrev)}).</p>
+          <p class="text-gray-300">• <strong>Tempo Total:</strong> ${formatTotalTime(totalSec)} vs ${formatTotalTime(prevSec)} anterior.</p>
+        </div>
+        <div class="space-y-2 border-b border-slate-800/80 pb-3">
+          <span class="${evolutionColor} font-bold block"><i class="fa-solid fa-bolt mr-1"></i> ${evolutionTitle}</span>
+          <p class="text-gray-300">${evolutionText}</p>
+        </div>
+        <div class="space-y-2">
+          <span class="text-cyan-400 font-bold block"><i class="fa-solid fa-crosshairs mr-1"></i> Recomendações Técnicas & Dicas</span>
+          <p class="text-gray-300">${trainingTips}</p>
+        </div>
+      `;
     }
 
     function renderWeeklyChart() {
