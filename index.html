@@ -155,7 +155,7 @@
       </section>
     </div>
 
-    <!-- TAB 2: PLANO SEMANAL AUTOMÁTICO (ORIGINAL COMO ANTES) -->
+    <!-- TAB 2: PLANO SEMANAL AUTOMÁTICO (ORIGINAL) -->
     <div id="tab-plan" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -211,7 +211,7 @@
       <div id="bandsExercisesList" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 4: FEEDBACK & EVOLUÇÃO -->
+    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (HISTÓRICO COM ANÁLISE DETALHADA POR KM) -->
     <div id="tab-feedback" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -223,7 +223,7 @@
         </button>
       </div>
 
-      <!-- PAINEL DE PREVISÕES DE DESEMPENHO -->
+      <!-- PREVISÕES DE DESEMPENHO -->
       <div class="p-4 rounded-3xl bg-slate-900 border border-orange-500/30 space-y-4 relative overflow-hidden">
         <div class="flex justify-between items-center">
           <div>
@@ -259,7 +259,7 @@
         </div>
       </div>
 
-      <!-- PAINEL DE CÓPIA DE SEGURANÇA -->
+      <!-- BACKUP -->
       <div class="p-3.5 rounded-2xl bg-slate-900 border border-purple-500/30 flex justify-between items-center gap-2">
         <div>
           <span class="text-xs font-bold text-purple-400 block"><i class="fa-solid fa-shield-halved mr-1"></i> Cópia de Segurança</span>
@@ -276,7 +276,7 @@
         </div>
       </div>
 
-      <!-- ADICIONAR / EDITAR CORRIDA MANUALMENTE -->
+      <!-- ADICIONAR CORRIDA MANUALMENTE -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <h3 class="font-bold text-sm text-orange-400 flex items-center gap-2" id="formRunTitle"><i class="fa-solid fa-plus-circle"></i> Registar Nova Corrida</h3>
         <input type="hidden" id="editRunId" value="" />
@@ -318,7 +318,7 @@
         </div>
       </div>
 
-      <!-- Seletor de Período para Análise Histórica -->
+      <!-- PERÍODO DE ANÁLISE -->
       <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-3 rounded-2xl">
         <span class="text-xs font-bold text-gray-300">Período de Análise:</span>
         <select id="periodFilter" onchange="updateDashboardData()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-orange-400 font-bold outline-none">
@@ -329,7 +329,7 @@
         </select>
       </div>
 
-      <!-- Resumo Estatístico -->
+      <!-- ESTATÍSTICAS -->
       <div class="grid grid-cols-3 gap-2.5">
         <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-center">
           <span class="text-[9px] text-gray-400 uppercase font-bold block">Sessões</span>
@@ -345,7 +345,7 @@
         </div>
       </div>
 
-      <!-- GRÁFICO SEMANAL DE CORRIDA -->
+      <!-- GRÁFICO SEMANAL -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <div class="flex justify-between items-center">
           <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
@@ -353,15 +353,13 @@
           </h3>
           <span class="text-[10px] text-gray-400 font-mono" id="weeklyTotalKmLabel">Total: 0 km</span>
         </div>
-
         <div class="h-32 flex items-end justify-between gap-2 pt-4 px-2 border-b border-slate-800" id="weeklyChartContainer"></div>
-
         <div class="flex justify-between text-[9px] text-gray-400 font-bold px-1 uppercase">
           <span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span><span>Dom</span>
         </div>
       </div>
 
-      <!-- ANÁLISE CRÍTICA MENSAL / GERAL -->
+      <!-- ANÁLISE CRÍTICA MENSAL / GERAL (PADRÃO ANTERIOR MANTIDO) -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2.5">
         <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
           <i class="fa-solid fa-brain"></i> ANÁLISE CRÍTICA DE DESEMPENHO & EVOLUÇÃO
@@ -369,10 +367,10 @@
         <div id="monthlyFeedbackContent" class="space-y-3 text-xs leading-relaxed"></div>
       </div>
 
-      <!-- Lista de Atividades com Opção de Editar e Ver Detalhes -->
+      <!-- HISTÓRICO COM ÍCONE DE OLHO PARA AUTÓPSIA DE RITMO POR KM -->
       <div class="space-y-3">
         <div class="flex justify-between items-center px-1">
-          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Histórico de Corridas (Clique no Olho para Autópsia Científica)</h3>
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Histórico de Corridas (Clique no Olho para Autópsia por KM)</h3>
         </div>
         <div id="manualActivitiesList" class="space-y-2">
           <p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade registada ainda.</p>
@@ -394,7 +392,7 @@
       <div id="protocolsContainer" class="space-y-2.5"></div>
     </div>
 
-    <!-- TAB 6: CALCULATORS -->
+    <!-- TAB 6: CALCULATORS & TOOLS -->
     <div id="tab-calculators" class="tab-content hidden space-y-4">
       <div class="px-1 mb-1 flex justify-between items-center">
         <div>
@@ -428,6 +426,29 @@
         </div>
         <button onclick="generatePaceSplits()" class="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl text-xs font-bold text-white shadow-lg shadow-cyan-500/20 active:scale-95 transition">Gerar Tabela de Passagens</button>
         <div id="splitsResult" class="hidden space-y-1.5 pt-1 max-h-48 overflow-y-auto no-scrollbar"></div>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+        <div class="flex items-center space-x-3 text-orange-400">
+          <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center"><i class="fa-solid fa-gauge-high"></i></div>
+          <h3 class="font-bold text-sm text-white">Calculadora de Pace e VO2 Máx</h3>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Distância (m)</label>
+            <input type="number" id="calcDist" value="3000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
+          </div>
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Tempo (mm:ss)</label>
+            <input type="text" id="calcTime" value="12:30" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
+          </div>
+        </div>
+        <button onclick="calculatePace()" class="w-full py-2.5 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl text-xs font-bold text-white shadow-lg shadow-orange-500/20 active:scale-95 transition">Calcular Pace & VO2</button>
+        <div id="paceResult" class="hidden p-3 rounded-xl bg-slate-950/80 border border-slate-800/80 grid grid-cols-3 gap-2 text-center">
+          <div><span class="text-[9px] text-gray-400 uppercase font-bold">Pace Médio</span><div id="resPace" class="text-sm font-black text-orange-400">--:--</div></div>
+          <div><span class="text-[9px] text-gray-400 uppercase font-bold">Velocidade</span><div id="resSpeed" class="text-sm font-black text-purple-400">-- km/h</div></div>
+          <div><span class="text-[9px] text-gray-400 uppercase font-bold">Est. VO2máx</span><div id="resVo2" class="text-sm font-black text-emerald-400">-- ml/kg</div></div>
+        </div>
       </div>
     </div>
 
@@ -482,7 +503,7 @@
     </div>
   </nav>
 
-  <!-- MODAL FOR DETAILED VIEWS & AUTÓPSIA INDIVIDUAL -->
+  <!-- MODAL FOR DETAILED VIEWS & AUTÓPSIA DE RITMO POR KM -->
   <div id="detailModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex flex-col justify-end sm:justify-center p-0 sm:p-4">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl mx-auto rounded-t-3xl sm:rounded-3xl max-h-[88vh] flex flex-col overflow-hidden shadow-2xl">
       <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
@@ -519,10 +540,16 @@
 
     const DATABASE = {
       protocols: [
-        { id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos.', whatItMeasures: 'Capacidade aeróbica máxima e estimativa do VO2 máx.', physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico e VAM.' }
+        { id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos.', whatItMeasures: 'Capacidade aeróbica máxima e estimativa do VO2 máx.', physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico e VAM.' },
+        { id: 'proto-tc3k', category: 'Protocolo de Teste', title: 'Teste de 3.200 Metros (2 Milhas)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Avaliação militar de corrida', icon: 'fa-person-running', description: 'Corrida cronometrada em pista ou terreno plano por exatos 3.200 metros.', whatItMeasures: 'Velocidade aeróbica máxima e limiar anaeróbico.', physiology: 'Estresse cardiovascular elevado com predominância do sistema glicolítico oxidativo.' }
       ],
       physiology: [
-        { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) é a molécula de energia direta.', whatItMeasures: 'Ressíntese de energia muscular.', physiology: 'ATP-CP, Glicolítico e Oxidativo.' }
+        { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) é a molécula de energia direta.', whatItMeasures: 'Ressíntese de energia muscular.', physiology: 'ATP-CP, Glicolítico e Oxidativo.' },
+        { id: 'phys-drift', category: 'Cardiovascular', title: 'Deriva Cardíaca (Cardiac Drift)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Aumento da FC em esforço constante', icon: 'fa-heart-pulse', description: 'Fenómeno onde a frequência cardíaca sobe progressivamente mesmo mantendo o pace estável.', whatItMeasures: 'Eficiência termorreguladora e desidratação.', physiology: 'Desvio associado à perda de volume plasmático e vasodilatação cutânea.' }
+      ],
+      workouts: [
+        { id: 'work-interval', category: 'Método de Treino', title: 'Treino Intervalado (VO2máx)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Repetições de 400m a 1000m', icon: 'fa-stopwatch-20', description: 'Esforços intensos (95-100% VAM) com recuperação incompleta.', whatItMeasures: 'Potência aeróbica e VO2máx.', physiology: 'Elevação do batimento cardíaco próximo ao teto.' },
+        { id: 'work-tempo', category: 'Método de Treino', title: 'Tempo Run (Limiar)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Ritmo sustentável prolongado', icon: 'fa-gauge-high', description: 'Corrida contínua num ritmo ligeiramente abaixo do limiar anaeróbico.', whatItMeasures: 'Tolerância ao lactato e endurance de velocidade.', physiology: 'Retardamento do acúmulo de iões de hidrogénio no sangue.' }
       ]
     };
 
@@ -571,7 +598,7 @@
       `).join('');
     }
 
-    // PLANO SEMANAL DINÂMICO ORIGINAL
+    // PLANO DINÂMICO ORIGINAL
     function getDynamicWeeklyPlan() {
       const now = new Date();
       const weekNumber = Math.ceil(now.getDate() / 7);
@@ -768,14 +795,15 @@
       return `${m}:${s < 10 ? '0' : ''}${s} /km`;
     }
 
-    // AUTÓPSIA CIENTÍFICA INDIVIDUAL (AO CLICAR NO OLHO NO HISTÓRICO)
+    // AUTÓPSIA CIENTÍFICA INDIVIDUAL POR CORRIDA (AO CLICAR NO OLHO NO HISTÓRICO)
     function viewRunDetails(id) {
       let act = manualActivities.find(a => a.id == id);
       if (!act) return;
 
       let splitAnalysisHtml = "";
       let strength = "Bom controlo geral da distância planeada.";
-      let weakness = "Sem desvios críticos aparentes.";
+      let weakness = "Sem desvios críticos aparentes nos ritmos parciais.";
+      let errorPlace = "Nenhum erro grave detetado nos parciais.";
       let improvement = "Mantenha a consistência e faça aquecimento adequado.";
 
       if (act.splits && act.splits.includes(',')) {
@@ -785,6 +813,9 @@
         if (splitSecs.length >= 2) {
           let fastest = Math.min(...splitSecs);
           let slowest = Math.max(...splitSecs);
+          let fastestKm = splitSecs.indexOf(fastest) + 1;
+          let slowestKm = splitSecs.indexOf(slowest) + 1;
+
           let firstHalf = splitSecs.slice(0, Math.floor(splitSecs.length / 2)).reduce((a,b)=>a+b,0) / Math.floor(splitSecs.length / 2);
           let secondHalf = splitSecs.slice(Math.floor(splitSecs.length / 2)).reduce((a,b)=>a+b,0) / (splitSecs.length - Math.floor(splitSecs.length / 2));
 
@@ -793,23 +824,26 @@
               <span class="text-cyan-400 font-bold block"><i class="fa-solid fa-stopwatch mr-1"></i> Leituras de Splits por KM:</span>
               <p class="font-mono text-gray-200 text-xs">${rawSplits.join(' ➔ ')}</p>
               <div class="text-[11px] text-gray-400 mt-1 flex justify-between">
-                <span>Mais rápido: <strong class="text-emerald-400">${formatSecondsToPace(fastest)}</strong></span>
-                <span>Mais lento: <strong class="text-rose-400">${formatSecondsToPace(slowest)}</strong></span>
+                <span>Mais rápido: <strong class="text-emerald-400">KM ${fastestKm} (${formatSecondsToPace(fastest)})</strong></span>
+                <span>Mais lento: <strong class="text-rose-400">KM ${slowestKm} (${formatSecondsToPace(slowest)})</strong></span>
               </div>
             </div>
           `;
 
           if (secondHalf < firstHalf - 3) {
-            strength = "Excelente capacidade de <em>Negative Split</em> (acelerou na segunda metade da prova, demonstrando ótima reserva energética e gestão de ritmo).";
-            weakness = "O primeiro quilómetro pode ter sido excessivamente conservador.";
-            improvement = "Para buscar recordes pessoais, tente arriscar um ritmo ligeiramente mais ágil nos primeiros 20% do percurso.";
+            strength = "Excelente capacidade de <em>Negative Split</em> (acelerou na segunda metade, demonstrando ótima reserva energética e gestão de ritmo).";
+            weakness = "O primeiro quilómetro foi conservador demais.";
+            errorPlace = `KM ${fastestKm} foi o pico de esforço tardio.`;
+            improvement = "Para buscar recordes pessoais, tente arriscar um ritmo ligeiramente mais ágil nos primeiros 20% sem estourar.";
           } else if (secondHalf > firstHalf + 5) {
             strength = "Início de treino forte e corajoso.";
             weakness = "Fadiga acentuada na reta final (quebra de ritmo nos últimos quilómetros).";
-            improvement = "Trabalhe melhor o pacing inicial (evite sair muito rápido) e adicione treinos de limiar.";
+            errorPlace = `O erro ocorreu no KM ${slowestKm} com perda severa de velocidade por desgaste antecipado.`;
+            improvement = "Trabalhe melhor o pacing inicial (evite sair muito rápido) e adicione treinos de limiar para resistir à fadiga.";
           } else {
             strength = "Ritmo extremamente linear e constante do início ao fim (pacing estável).";
             weakness = "Pouca variação de intensidade para testar picos de velocidade.";
+            errorPlace = "Nenhum erro de pacing relevante (ritmo constante mantido).";
             improvement = "Para evoluir o VO2máx, insira tiros intervalados ou oscilações controladas de ritmo nas próximas sessões.";
           }
         }
@@ -835,11 +869,11 @@
               <p class="text-gray-300">${strength}</p>
             </div>
             <div class="p-3 rounded-xl bg-amber-950/20 border border-amber-500/30 space-y-1">
-              <strong class="text-amber-400 block"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Ponto Fraco / Gargalo:</strong>
-              <p class="text-gray-300">${weakness}</p>
+              <strong class="text-amber-400 block"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Ponto Fraco & Onde foi o Erro:</strong>
+              <p class="text-gray-300">${weakness} <br><span class="text-amber-300 font-semibold">${errorPlace}</span></p>
             </div>
             <div class="p-3 rounded-xl bg-cyan-950/20 border border-cyan-500/30 space-y-1">
-              <strong class="text-cyan-400 block"><i class="fa-solid fa-crosshairs mr-1"></i> O Que Melhorar no Próximo Treino:</strong>
+              <strong class="text-cyan-400 block"><i class="fa-solid fa-crosshairs mr-1"></i> O Que & Como Melhorar no Próximo Treino:</strong>
               <p class="text-gray-300">${improvement}</p>
             </div>
           </div>
@@ -897,7 +931,7 @@
       updatePerformancePredictions(filteredActivities);
     }
 
-    // ANÁLISE MENSAL / GERAL COM O PADRÃO ANTERIOR
+    // ANÁLISE MENSAL / GERAL COM AS INFORMAÇÕES ANTERIORES PRESERVADAS
     function renderGeneralFeedbackEngine(filteredActs, period, currentMonth, currentYear) {
       const container = document.getElementById('monthlyFeedbackContent');
       if (!container) return;
@@ -1031,7 +1065,7 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="text-orange-400 font-bold">${act.distance.toFixed(1)} km</span>
-            <button onclick="viewRunDetails(${act.id})" class="p-2 bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-400 rounded-lg transition" title="Ver Análise Detalhada (Autópsia)"><i class="fa-solid fa-eye text-sm"></i></button>
+            <button onclick="viewRunDetails(${act.id})" class="p-2 bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-400 rounded-lg transition" title="Ver Autópsia Detalhada"><i class="fa-solid fa-eye text-sm"></i></button>
             <button onclick="editManualRun(${act.id})" class="p-2 bg-amber-500/15 hover:bg-amber-500/30 text-amber-400 rounded-lg transition" title="Editar Corrida"><i class="fa-solid fa-pen text-sm"></i></button>
             <button onclick="deleteManualRun(${act.id})" class="p-2 bg-rose-500/15 hover:bg-rose-500/30 text-rose-400 rounded-lg transition" title="Apagar Atividade"><i class="fa-solid fa-trash text-sm"></i></button>
           </div>
@@ -1093,6 +1127,27 @@
           <div onclick="openModal('${item.id}')" class="p-3 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer"><h4 class="text-xs font-bold text-white">${item.title}</h4><p class="text-[10px] text-gray-400">${item.subtitle}</p></div>
         `).join('');
       }
+      if (document.getElementById('protocolsContainer')) {
+        document.getElementById('protocolsContainer').innerHTML = DATABASE.protocols.map(item => `
+          <div onclick="openModal('${item.id}')" class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer flex items-center justify-between">
+            <div class="flex items-center space-x-3"><div class="w-9 h-9 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400"><i class="fa-solid ${item.icon}"></i></div><div><h4 class="text-xs font-bold text-white">${item.title}</h4><p class="text-[10px] text-gray-400">${item.subtitle}</p></div></div>
+          </div>
+        `).join('');
+      }
+      if (document.getElementById('physiologyContainer')) {
+        document.getElementById('physiologyContainer').innerHTML = DATABASE.physiology.map(item => `
+          <div onclick="openModal('${item.id}')" class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer flex items-center justify-between">
+            <div class="flex items-center space-x-3"><div class="w-9 h-9 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-400"><i class="fa-solid ${item.icon}"></i></div><div><h4 class="text-xs font-bold text-white">${item.title}</h4><p class="text-[10px] text-gray-400">${item.subtitle}</p></div></div>
+          </div>
+        `).join('');
+      }
+      if (document.getElementById('workoutsContainer')) {
+        document.getElementById('workoutsContainer').innerHTML = DATABASE.workouts.map(item => `
+          <div onclick="openModal('${item.id}')" class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer flex items-center justify-between">
+            <div class="flex items-center space-x-3"><div class="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400"><i class="fa-solid ${item.icon}"></i></div><div><h4 class="text-xs font-bold text-white">${item.title}</h4><p class="text-[10px] text-gray-400">${item.subtitle}</p></div></div>
+          </div>
+        `).join('');
+      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -1115,7 +1170,7 @@
     }
 
     function openModal(itemId) {
-      let all = [...DATABASE.protocols, ...DATABASE.physiology];
+      let all = [...DATABASE.protocols, ...DATABASE.physiology, ...DATABASE.workouts];
       let item = all.find(i => i.id === itemId);
       if (!item) return;
       document.getElementById('modalCategoryBadge').textContent = item.category;
@@ -1129,6 +1184,39 @@
     }
 
     function closeModal() { document.getElementById('detailModal').classList.add('hidden'); }
+
+    function calculatePace() {
+      const dist = parseFloat(document.getElementById('calcDist').value);
+      const timeStr = document.getElementById('calcTime').value.trim();
+      if (!dist || !timeStr || !timeStr.includes(':')) { alert("Insira distância e tempo."); return; }
+      const [min, sec] = timeStr.split(':').map(Number);
+      const totalSeconds = (min * 60) + (sec || 0);
+      const distKm = dist / 1000;
+      const paceSecPerKm = totalSeconds / distKm;
+      const paceMin = Math.floor(paceSecPerKm / 60);
+      const paceSec = Math.round(paceSecPerKm % 60);
+      document.getElementById('resPace').textContent = `${paceMin}:${paceSec < 10 ? '0' : ''}${paceSec} /km`;
+      document.getElementById('resSpeed').textContent = `${(distKm / (totalSeconds / 3600)).toFixed(2)} km/h`;
+      document.getElementById('resVo2').textContent = dist >= 1000 ? `${((dist - 504.9) / 44.73).toFixed(1)} ml/kg` : "--";
+      document.getElementById('paceResult').classList.remove('hidden');
+    }
+
+    function generatePaceSplits() {
+      const dist = parseFloat(document.getElementById('splitDist').value);
+      const targetTimeStr = document.getElementById('splitTargetTime').value.trim();
+      const parts = targetTimeStr.split(':').map(Number);
+      let totalSec = parts.length === 3 ? (parts[0] * 3600) + (parts[1] * 60) + parts[2] : (parts[0] * 60) + parts[1];
+      let baseSecPerKm = totalSec / dist;
+      let html = '';
+      for (let i = 1; i <= Math.ceil(dist); i++) {
+        let pMin = Math.floor(baseSecPerKm / 60);
+        let pSec = Math.round(baseSecPerKm % 60);
+        html += `<div class="p-2 bg-slate-950 rounded-xl text-xs font-mono flex justify-between"><span class="text-gray-400">KM ${i}</span><span class="text-cyan-400">Pace: ${pMin}:${pSec < 10 ? '0' : ''}${pSec}/km</span></div>`;
+      }
+      let res = document.getElementById('splitsResult');
+      res.innerHTML = html;
+      res.classList.remove('hidden');
+    }
   </script>
 </body>
 </html>
