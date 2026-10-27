@@ -166,18 +166,22 @@
     <div id="tab-plan" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
-          <h2 class="text-sm font-bold text-white">Plano Semanal Dinâmico (<span id="profileTitleLabel" class="text-orange-400 uppercase">Perfil</span>)</h2>
+          <h2 class="text-sm font-bold text-white">Plano Semanal Automático (<span id="profileTitleLabel" class="text-orange-400 uppercase">Perfil</span>)</h2>
           <p id="cycleWeekLabel" class="text-xs text-orange-400 font-semibold">Semana do Ciclo: Calculando...</p>
         </div>
-        <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
-          <i class="fa-solid fa-arrow-left"></i> Voltar
-        </button>
-      </div>
-      <div class="p-3 rounded-2xl bg-orange-950/30 border border-orange-500/30 text-xs text-orange-200 leading-relaxed flex justify-between items-center">
-        <div>
-          <i class="fa-solid fa-circle-info mr-1 text-orange-400"></i> Plano específico para o perfil atual. Deseja alternar o tipo de foco deste perfil?
+        <div class="flex gap-2">
+          <button onclick="openBiometricModal()" class="text-xs text-emerald-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800" title="Atualizar Dados Biométricos Mensais">
+            <i class="fa-solid fa-user-gear"></i> Dados
+          </button>
+          <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
+            <i class="fa-solid fa-arrow-left"></i> Voltar
+          </button>
         </div>
-        <button onclick="changeProfilePlanFocusPrompt()" class="px-2.5 py-1 bg-orange-600 text-slate-950 font-bold rounded-lg text-[10px] shrink-0 ml-2">Alterar Foco</button>
+      </div>
+      <div class="p-3 rounded-2xl bg-orange-950/30 border border-orange-500/30 text-xs text-orange-200 flex justify-between items-center">
+        <div>
+          <i class="fa-solid fa-circle-info mr-1 text-orange-400"></i> Hoje: <strong id="todayHeaderDate" class="text-white">Terça-feira, 27 de Outubro</strong>. O plano avança automaticamente por semana do mês e dados biométricos.
+        </div>
       </div>
       <div id="planContainer" class="space-y-3"></div>
     </div>
@@ -571,6 +575,45 @@
     </div>
   </div>
 
+  <!-- MODAL DE DADOS BIOMÉTRICOS MENSAIS -->
+  <div id="biometricModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex flex-col justify-end sm:justify-center p-0 sm:p-4">
+    <div class="bg-slate-900 border border-emerald-500/30 w-full max-w-lg mx-auto rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300">Atualização Mensal Automática</span>
+        <h3 class="text-sm font-bold text-white">Dados Biométricos do Perfil</h3>
+        <button onclick="closeBiometricModal()" class="p-2 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <div class="p-4 sm:p-6 overflow-y-auto space-y-4 text-xs text-gray-300 leading-relaxed no-scrollbar">
+        <p class="text-gray-400">Atualize seus dados para que a Inteligência do Sistema recalcule o plano automático e as cargas para o próximo mês.</p>
+        <div class="space-y-3">
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Peso Atual (kg)</label>
+            <input type="number" step="0.1" id="bioWeight" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-500" />
+          </div>
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Altura (cm)</label>
+            <input type="number" id="bioHeight" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-500" />
+          </div>
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Idade</label>
+            <input type="number" id="bioAge" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-500" />
+          </div>
+          <div>
+            <label class="text-[10px] text-emerald-400 uppercase font-bold block mb-1">Objetivo / Foco Principal</label>
+            <select id="bioGoal" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-500">
+              <option value="padrao">Padrão / Equilibrado (Geral)</option>
+              <option value="velocidade">Velocidade & Tiros (Foco em Pace)</option>
+              <option value="resistencia">Resistência & Longão (Foco em Volume)</option>
+            </select>
+          </div>
+        </div>
+        <button onclick="saveBiometricData()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl text-xs font-bold text-white shadow-lg active:scale-95 transition">
+          Salvar & Atualizar Plano Automático
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     let currentProfile = urlParams.get('perfil') || localStorage.getItem('stamina_active_profile') || 'fernando';
@@ -582,7 +625,7 @@
     let completedBands = [];
     let postponedDays = {};
     let manualActivities = [];
-    let profilePlanFocus = {}; // Guarda o foco do plano por perfil (ex: 'padrao', 'avancado', 'velocidade')
+    let profileBioData = {}; 
     let timerInterval = null;
 
     function initProfileSelector() {
@@ -629,7 +672,7 @@
         localStorage.removeItem(`stamina_bands_done_${profileToDelete}`);
         localStorage.removeItem(`stamina_postponed_${profileToDelete}`);
         localStorage.removeItem(`stamina_manual_runs_${profileToDelete}`);
-        localStorage.removeItem(`stamina_plan_focus_${profileToDelete}`);
+        localStorage.removeItem(`stamina_bio_data_${profileToDelete}`);
 
         profilesList = profilesList.filter(p => p !== profileToDelete);
         localStorage.setItem('stamina_profiles_list', JSON.stringify(profilesList));
@@ -650,9 +693,55 @@
       completedBands = JSON.parse(localStorage.getItem(`stamina_bands_done_${currentProfile}`) || '[]');
       postponedDays = JSON.parse(localStorage.getItem(`stamina_postponed_${currentProfile}`) || '{}');
       manualActivities = JSON.parse(localStorage.getItem(`stamina_manual_runs_${currentProfile}`) || '[]');
-      profilePlanFocus = JSON.parse(localStorage.getItem(`stamina_plan_focus_${currentProfile}`) || '{"mode": "padrao"}');
+      
+      let defaultBio = { weight: 75, height: 175, age: 30, goal: currentProfile === 'raiza' ? 'velocidade' : 'padrao', lastUpdate: '2026-10-01' };
+      profileBioData = JSON.parse(localStorage.getItem(`stamina_bio_data_${currentProfile}`) || JSON.stringify(defaultBio));
+
       const titleLabel = document.getElementById('profileTitleLabel');
       if(titleLabel) titleLabel.textContent = currentProfile.toUpperCase();
+
+      // Verificar se passou 1 mês desde a última atualização para lembrar o usuário de atualizar dados
+      checkMonthlyBiometricPrompt();
+    }
+
+    function checkMonthlyBiometricPrompt() {
+      if (!profileBioData.lastUpdate) return;
+      let lastDate = new Date(profileBioData.lastUpdate);
+      let now = new Date();
+      let diffDays = Math.floor((now - lastDate) / (1000 * 60 * 60 * 24));
+      if (diffDays >= 30) {
+        setTimeout(() => {
+          if (confirm(`Olá ${currentProfile.toUpperCase()}! Já passou um mês desde a última atualização dos seus dados biométricos. Deseja atualizar agora para recalcular o plano do próximo mês?`)) {
+            openBiometricModal();
+          }
+        }, 1000);
+      }
+    }
+
+    function openBiometricModal() {
+      document.getElementById('bioWeight').value = profileBioData.weight || 75;
+      document.getElementById('bioHeight').value = profileBioData.height || 175;
+      document.getElementById('bioAge').value = profileBioData.age || 30;
+      document.getElementById('bioGoal').value = profileBioData.goal || 'padrao';
+      document.getElementById('biometricModal').classList.remove('hidden');
+    }
+
+    function closeBiometricModal() {
+      document.getElementById('biometricModal').classList.add('hidden');
+    }
+
+    function saveBiometricData() {
+      profileBioData = {
+        weight: parseFloat(document.getElementById('bioWeight').value) || 75,
+        height: parseInt(document.getElementById('bioHeight').value) || 175,
+        age: parseInt(document.getElementById('bioAge').value) || 30,
+        goal: document.getElementById('bioGoal').value,
+        lastUpdate: new Date().toISOString().split('T')[0]
+      };
+      localStorage.setItem(`stamina_bio_data_${currentProfile}`, JSON.stringify(profileBioData));
+      closeBiometricModal();
+      renderPlan();
+      alert("Dados biométricos e plano mensal atualizados com sucesso!");
     }
 
     function handleProfileSelection(val) {
@@ -661,19 +750,6 @@
       loadProfileData();
       renderPlan();
       updateDashboardData();
-    }
-
-    function changeProfilePlanFocusPrompt() {
-      let escolha = prompt("Escolha o foco do treino para o perfil " + currentProfile.toUpperCase() + ":\n1 - Padrão (Equilibrado)\n2 - Velocidade & Tiros (Ex: Raiza)\n3 - Foco em Resistência & Longão", "1");
-      if (!escolha) return;
-      let mode = "padrao";
-      if (escolha.trim() === "2") mode = "velocidade";
-      else if (escolha.trim() === "3") mode = "resistencia";
-
-      profilePlanFocus = { mode };
-      localStorage.setItem(`stamina_plan_focus_${currentProfile}`, JSON.stringify(profilePlanFocus));
-      renderPlan();
-      alert(`Foco do plano atualizado para o perfil ${currentProfile.toUpperCase()}!`);
     }
 
     const BANDS_WORKOUTS = {
@@ -852,19 +928,21 @@
     }
 
     function getDynamicWeeklyPlan() {
-      const now = new Date();
+      const now = new Date(); // Considerando a data atual (Outubro de 2026)
       const weekNumber = Math.ceil(now.getDate() / 7);
-      let phaseName = "Semana 1: Base Aeróbica & Volume";
+      let phaseName = `Semana ${weekNumber} do Mês (Progresso Automático)`;
       let mult = 1.0;
-      if (weekNumber === 2) { phaseName = "Semana 2: Intensidade & Limiar"; mult = 1.1; }
-      else if (weekNumber === 3) { phaseName = "Semana 3: Pico de Carga & VAM"; mult = 1.2; }
-      else if (weekNumber >= 4) { phaseName = "Semana 4: Polimento & Descarga (Taper)"; mult = 0.8; }
-      document.getElementById('cycleWeekLabel').textContent = phaseName + ` [Foco: ${profilePlanFocus.mode.toUpperCase()}]`;
+      if (weekNumber === 2) mult = 1.1;
+      else if (weekNumber === 3) mult = 1.2;
+      else if (weekNumber >= 4) mult = 0.85;
 
-      // PLANO DIFERENCIADO POR PERFIL / MODO
-      if (profilePlanFocus.mode === 'velocidade') {
+      document.getElementById('cycleWeekLabel').textContent = phaseName + ` [Foco: ${profileBioData.goal.toUpperCase()}]`;
+
+      let goal = profileBioData.goal || 'padrao';
+
+      if (goal === 'velocidade') {
         return [
-          { day: 'Segunda-feira', title: 'Tiros Curtos de Velocidade (Sprints)', type: 'Tiros / Sprints', strength: 'Força: Treino A (Superiores)', color: 'text-rose-400', detail: 'Séries de tiros curtos de 100m a 200m com pausa completa.' },
+          { day: 'Segunda-feira', title: 'Tiros Curtos de Velocidade (Sprints)', type: 'Tiros / Sprints', strength: 'Força: Treino A (Superiores)', color: 'text-rose-400', detail: `Séries de tiros curtos de 100m a 200m com fator multiplicador x${mult}.` },
           { day: 'Terça-feira', title: 'Treino Fortex (Progressivo)', type: 'Fortex', strength: 'Descanso de Força', color: 'text-purple-400', detail: 'Início moderado com fechamento em ritmo forte simulando final de prova.' },
           { day: 'Quarta-feira', title: 'Condicionamento Misto / Natação', type: 'Aeróbico', strength: 'Força: Treino B (Pernas)', color: 'text-cyan-400', detail: 'Sessão de natação ou aeróbico sem impacto.' },
           { day: 'Quinta-feira', title: 'Treino Intervalado de Alta Intensidade', type: 'Intervalado', strength: 'Trote Regenerativo', color: 'text-orange-400', detail: 'Séries em alta velocidade com descanso ativo.' },
@@ -872,18 +950,17 @@
           { day: 'Sábado', title: 'Fartlek (Brincadeira de Ritmos)', type: 'Fartlek', strength: 'Hidratação e Descanso', color: 'text-cyan-400', detail: 'Variações contínuas de ritmo sem pausas completas.' },
           { day: 'Domingo', title: 'Descanso Ativo', type: 'Regeneração Total', strength: 'Mobilidade Leve', color: 'text-slate-400', detail: 'Descanso total de corrida.' }
         ];
-      } else if (profilePlanFocus.mode === 'resistencia') {
+      } else if (goal === 'resistencia') {
         return [
-          { day: 'Segunda-feira', title: 'Rodagem Longa Contínua', type: 'Resistência', strength: 'Força: Treino A (Superiores)', color: 'text-indigo-400', detail: '8k a 10k em ritmo constante e confortável.' },
+          { day: 'Segunda-feira', title: 'Rodagem Longa Contínua', type: 'Resistência', strength: 'Força: Treino A (Superiores)', color: 'text-indigo-400', detail: `${Math.round(8 * mult)}k a ${Math.round(10 * mult)}k em ritmo constante e confortável.` },
           { day: 'Terça-feira', title: 'Treino de Ritmo (Tempo Run)', type: 'Limiar', strength: 'Descanso de Força', color: 'text-yellow-400', detail: '4k a 6k mantendo ritmo de limiar sustentável.' },
           { day: 'Quarta-feira', title: 'Natação ou Bicicleta', type: 'Crossover', strength: 'Força: Treino B (Pernas)', color: 'text-cyan-400', detail: 'Atividade aeróbica complementar.' },
           { day: 'Quinta-feira', title: 'Rodagem Aeróbica Média', type: 'Z2', strength: 'Trote Regenerativo', color: 'text-blue-400', detail: '6k em ritmo conversacional.' },
           { day: 'Sexta-feira', title: 'Recuperação Ativa', type: 'Z1', strength: 'Força: Treino C (Core)', color: 'text-emerald-400', detail: '3k leve.' },
-          { day: 'Sábado', title: 'O Super Longão', type: 'Longão', strength: 'Hidratação e Descanso', color: 'text-indigo-400', detail: '12k a 15k de construção de base aeróbica.' },
+          { day: 'Sábado', title: 'O Super Longão', type: 'Longão', strength: 'Hidratação e Descanso', color: 'text-indigo-400', detail: `${Math.round(12 * mult)}k a ${Math.round(15 * mult)}k de construção de base aeróbica.` },
           { day: 'Domingo', title: 'Descanso Total', type: 'Regeneração', strength: 'Mobilidade', color: 'text-slate-400', detail: 'Descanso completo.' }
         ];
       } else {
-        // Padrão
         return [
           { day: 'Segunda-feira', title: 'Corrida Contínua (Base Aeróbica)', type: 'Rodagem Z2', strength: 'Força: Treino A (Superiores)', color: 'text-blue-400', detail: `${Math.round(6 * mult)}k em ritmo conversacional (Z2).` },
           { day: 'Terça-feira', title: 'Treino Fartlek (Variação de Ritmo)', type: 'Fartlek', strength: 'Descanso de Força', color: 'text-cyan-400', detail: `Aquecimento + blocos alternados de velocidade leve e forte.` },
@@ -901,16 +978,19 @@
       if (!container) return;
       const dynamicPlan = getDynamicWeeklyPlan();
 
+      const todayDayIndex = 1; // Terça-feira (Seg=0, Ter=1, Qua=2...)
+
       container.innerHTML = dynamicPlan.map((item, index) => {
         const isRunDone = completedRuns.includes(index);
         const isBandDone = completedBands.includes(index);
         const isPostponed = postponedDays[index] || false;
+        const isToday = (index === todayDayIndex);
 
         return `
-          <div class="p-4 rounded-2xl bg-slate-900 border ${isPostponed ? 'border-amber-500/50 bg-amber-950/10' : 'border-slate-800'} space-y-2.5 transition">
+          <div class="p-4 rounded-2xl bg-slate-900 border ${isToday ? 'border-orange-500 shadow-lg shadow-orange-500/10' : (isPostponed ? 'border-amber-500/50 bg-amber-950/10' : 'border-slate-800')} space-y-2.5 transition">
             <div class="flex justify-between items-start">
               <div>
-                <span class="text-[10px] font-bold uppercase tracking-wider ${item.color}">${item.day} • ${item.type}</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider ${item.color}">${item.day} ${isToday ? '• (HOJE)' : ''} • ${item.type}</span>
                 <h4 class="text-xs font-bold text-white mt-0.5 ${isRunDone ? 'line-through text-gray-400' : ''}">${item.title}</h4>
               </div>
               <button onclick="togglePostpone(${index})" class="text-[10px] bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-lg text-amber-400 hover:bg-slate-700 transition">
@@ -955,7 +1035,7 @@
     }
 
     function exportBackupData() {
-      const backup = { profile: currentProfile, manualRuns: manualActivities, focus: profilePlanFocus, exportDate: new Date().toISOString() };
+      const backup = { profile: currentProfile, manualRuns: manualActivities, bio: profileBioData, exportDate: new Date().toISOString() };
       const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -976,9 +1056,9 @@
             manualActivities = data.manualRuns;
             localStorage.setItem(`stamina_manual_runs_${currentProfile}`, JSON.stringify(manualActivities));
           }
-          if (data.focus) {
-            profilePlanFocus = data.focus;
-            localStorage.setItem(`stamina_plan_focus_${currentProfile}`, JSON.stringify(profilePlanFocus));
+          if (data.bio) {
+            profileBioData = data.bio;
+            localStorage.setItem(`stamina_bio_data_${currentProfile}`, JSON.stringify(profileBioData));
           }
           updateDashboardData();
           renderPlan();
