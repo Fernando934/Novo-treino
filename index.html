@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="StaminaLab" />
 
-  <!-- Manifest PWA em linha (Data URI) -->
+  <!-- Manifest PWA -->
   <link rel="manifest" href='data:application/manifest+json,{"name":"StaminaLab 360°","short_name":"StaminaLab","start_url":".","display":"standalone","background_color":"#0a0d14","theme_color":"#0d1117","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/2964/2964514.png","sizes":"512x512","type":"image/png"}]}' />
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -77,7 +77,7 @@
           <h1 class="text-base font-extrabold tracking-tight bg-gradient-to-r from-orange-400 via-emerald-400 to-amber-300 bg-clip-text text-transparent">
             StaminaLab 360°
           </h1>
-          <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Plataforma Científica & PWA Offline</p>
+          <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Plataforma Científica & PWA Ativo</p>
         </div>
       </div>
     </div>
@@ -188,7 +188,7 @@
       <div id="planContainer" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 3: FORTALECIMENTO COM ELÁSTICOS + CRONÓMETRO INTERATIVO -->
+    <!-- TAB 3: FORTALECIMENTO COM ELÁSTICOS + CRONÓMETRO -->
     <div id="tab-bands" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -239,7 +239,7 @@
       <div id="bandsExercisesList" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (REGISTO MANUAL + IMPORTAR/EXPORTAR BACKUP) -->
+    <!-- TAB 4: FEEDBACK & EVOLUÇÃO -->
     <div id="tab-feedback" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -251,7 +251,7 @@
         </button>
       </div>
 
-      <!-- PAINEL DE CÓPIA DE SEGURANÇA (BACKUP JSON) -->
+      <!-- PAINEL DE CÓPIA DE SEGURANÇA -->
       <div class="p-3.5 rounded-2xl bg-slate-900 border border-purple-500/30 flex justify-between items-center gap-2">
         <div>
           <span class="text-xs font-bold text-purple-400 block"><i class="fa-solid fa-shield-halved mr-1"></i> Cópia de Segurança</span>
@@ -417,7 +417,7 @@
       <div id="protocolsContainer" class="space-y-2.5"></div>
     </div>
 
-    <!-- TAB 6: CALCULATORS + SIMULADOR DE SPLITS POR KM -->
+    <!-- TAB 6: CALCULATORS -->
     <div id="tab-calculators" class="tab-content hidden space-y-4">
       <div class="px-1 mb-1 flex justify-between items-center">
         <div>
@@ -637,7 +637,6 @@
       ]
     };
 
-    // --- FUNÇÕES DE BACKUP (EXPORTAR / IMPORTAR) ---
     function exportBackupData() {
       const backup = {
         favs: favorites,
@@ -693,7 +692,6 @@
       reader.readAsText(file);
     }
 
-    // --- TEMPORIZADOR DE DESCANSO PARA ELÁSTICOS ---
     function startRestTimer(seconds) {
       clearInterval(timerInterval);
       let timeLeft = seconds;
@@ -724,7 +722,6 @@
       document.getElementById('timerDisplay').textContent = "00:00";
     }
 
-    // --- GERADOR DE SPLITS POR KM ---
     function generatePaceSplits() {
       const dist = parseFloat(document.getElementById('splitDist').value);
       const targetTimeStr = document.getElementById('splitTargetTime').value.trim();
@@ -746,12 +743,10 @@
       let accumSec = 0;
 
       for (let i = 1; i <= totalKmCount; i++) {
-        let currentKm = i > dist ? dist : i;
         let kmSegment = (i === totalKmCount && dist % 1 !== 0) ? (dist % 1) : 1;
         
         let kmPaceSec = baseSecPerKm;
         if (strategy === 'negative') {
-          // Variação suave de -2% no final
           const factor = 1.02 - (0.04 * (i / totalKmCount));
           kmPaceSec = baseSecPerKm * factor;
         }
@@ -1167,17 +1162,6 @@
       renderCategoryList('workouts', 'workoutsContainer');
       renderWorkoutLogs();
       updateDashboardData();
-
-      // Registo do Service Worker PWA para suporte Offline
-      if ('serviceWorker' in navigator) {
-        const swCode = `
-          self.addEventListener('install', e => e.waitUntil(self.skipWaiting()));
-          self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
-          self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
-        `;
-        const blob = new Blob([swCode], { type: 'text/javascript' });
-        navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
-      }
     });
 
     function switchTab(tabId) {
