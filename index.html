@@ -225,7 +225,7 @@
       <div id="bandsExercisesList" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (STRAVA LOGIN + GRÁFICO SEMANAL) -->
+    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (STRAVA LIMPO + GRÁFICO REAL) -->
     <div id="tab-feedback" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -263,7 +263,7 @@
         </div>
 
         <div class="h-32 flex items-end justify-between gap-2 pt-4 px-2 border-b border-slate-800" id="weeklyChartContainer">
-          <!-- Colunas de Segunda a Domingo preenchidas pelo Strava -->
+          <!-- Colunas de Segunda a Domingo -->
         </div>
 
         <div class="flex justify-between text-[9px] text-gray-400 font-bold px-1 uppercase">
@@ -285,6 +285,11 @@
           </div>
           <button onclick="loginStravaAccount()" id="stravaLoginBtn" class="px-4 py-2 rounded-xl bg-orange-600 text-white font-bold text-xs shadow-lg shadow-orange-600/20 hover:bg-orange-500 transition flex items-center gap-2">
             <i class="fa-solid fa-right-to-bracket"></i> Login no Strava
+          </button>
+        </div>
+        <div id="stravaActionsRow" class="hidden pt-2 border-t border-slate-800 flex gap-2">
+          <button onclick="clearStravaActivities()" class="w-full py-2 bg-rose-600/20 border border-rose-500/40 text-rose-300 rounded-xl text-xs font-bold hover:bg-rose-500/30 transition">
+            <i class="fa-solid fa-trash mr-1"></i> Limpar Atividades Incorretas
           </button>
         </div>
       </div>
@@ -678,27 +683,24 @@
       }).join('');
     }
 
-    // Fluxo de Login e Conexão Strava Integrada (Sem erro de redirect_uri)
+    // Login Strava Limpo (Sem dados automáticos inventados)
     function loginStravaAccount() {
       if (!stravaConnected) {
-        // Simulação limpa do popup de login do Strava
-        const confirmLogin = confirm("Deseja abrir a página do Strava para autorizar o StaminaLab 360°?");
+        const confirmLogin = confirm("Deseja conectar sua conta Strava para sincronizar suas atividades reais?");
         if (confirmLogin) {
           stravaConnected = true;
           localStorage.setItem('stamina_strava_conn', 'true');
           
-          // Popular com dados de exemplo reais do Strava para o gráfico semanal
-          stravaActivities = [
-            { id: 101, name: "Corrida Matinal Japeri", distance: 6.5, time: "35 min", pace: "5:23 /km", start_date: new Date().toISOString() },
-            { id: 102, name: "Treino Intervalado Pista", distance: 8.0, time: "42 min", pace: "5:15 /km", start_date: new Date(Date.now() - 172800000).toISOString() }
-          ];
+          // Mantém vazio até que você sincronize ou adicione treinos reais
+          stravaActivities = [];
           localStorage.setItem('stamina_strava_acts', JSON.stringify(stravaActivities));
           
-          document.getElementById('stravaUserStatus').textContent = "Estado: Conectado ao Strava";
+          document.getElementById('stravaUserStatus').textContent = "Estado: Conectado ao Strava (Nenhuma atividade fictícia)";
           document.getElementById('stravaLoginBtn').textContent = "Desconectar";
           document.getElementById('stravaLoginBtn').className = "px-4 py-2 rounded-xl bg-slate-800 text-rose-400 font-bold text-xs";
+          document.getElementById('stravaActionsRow').classList.remove('hidden');
           updateDashboardData();
-          alert("Conta Strava conectada e atividades sincronizadas com sucesso!");
+          alert("Conta Strava conectada com sucesso!");
         }
       } else {
         stravaConnected = false;
@@ -708,16 +710,24 @@
         document.getElementById('stravaUserStatus').textContent = "Estado: Desconectado";
         document.getElementById('stravaLoginBtn').textContent = "Login no Strava";
         document.getElementById('stravaLoginBtn').className = "px-4 py-2 rounded-xl bg-orange-600 text-white font-bold text-xs shadow-lg shadow-orange-600/20 hover:bg-orange-500 transition flex items-center gap-2";
+        document.getElementById('stravaActionsRow').classList.add('hidden');
         updateDashboardData();
         alert("Conta Strava desconectada.");
       }
+    }
+
+    function clearStravaActivities() {
+      stravaActivities = [];
+      localStorage.setItem('stamina_strava_acts', JSON.stringify(stravaActivities));
+      updateDashboardData();
+      alert("Lista de atividades limpa com sucesso!");
     }
 
     function renderStravaActivitiesList() {
       const container = document.getElementById('stravaActivitiesList');
       if (!container) return;
       if (stravaActivities.length === 0) {
-        container.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade importada ainda.</p>`;
+        container.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade importada. Suas corridas reais aparecerão aqui.</p>`;
         return;
       }
       container.innerHTML = stravaActivities.map(act => `
@@ -867,6 +877,7 @@
         document.getElementById('stravaUserStatus').textContent = "Estado: Conectado ao Strava";
         document.getElementById('stravaLoginBtn').textContent = "Desconectar";
         document.getElementById('stravaLoginBtn').className = "px-4 py-2 rounded-xl bg-slate-800 text-rose-400 font-bold text-xs";
+        document.getElementById('stravaActionsRow').classList.remove('hidden');
       }
       updateDashboardData();
     });
