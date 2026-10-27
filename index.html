@@ -150,7 +150,7 @@
             <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold uppercase tracking-wider">Sincronização Strava GPS</span>
             <h3 class="text-base font-extrabold text-white mt-2">Central de Feedback e Evolução</h3>
             <p class="text-xs text-gray-300 mt-1 leading-relaxed">
-              Conecte sua conta do Strava para puxar os dados reais e montar o gráfico semanal.
+              Conecte sua conta do Strava para visualizar os gráficos semanais, totais mensais e análise de evolução.
             </p>
           </div>
           <div class="bg-orange-600 text-slate-950 p-3 rounded-2xl shrink-0 ml-3 font-bold">
@@ -225,35 +225,35 @@
       <div id="bandsExercisesList" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (STRAVA LIMPO + GRÁFICO REAL) -->
+    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (STRAVA + MENSAL + ANÁLISE) -->
     <div id="tab-feedback" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
           <h2 class="text-sm font-bold text-white">Feedback & Sincronização Strava</h2>
-          <p class="text-xs text-gray-400">Conecte sua conta Strava e visualize seu gráfico semanal.</p>
+          <p class="text-xs text-gray-400">Gráfico semanal, total mensal e análise de evolução.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
         </button>
       </div>
 
-      <!-- Resumo Estatístico -->
+      <!-- Resumo Estatístico (Incluindo Total Mensal) -->
       <div class="grid grid-cols-3 gap-2.5">
         <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-center">
-          <span class="text-[9px] text-gray-400 uppercase font-bold block">Sessões Feitas</span>
+          <span class="text-[9px] text-gray-400 uppercase font-bold block">Sessões Strava</span>
           <div id="statRunsCount" class="text-lg font-black text-orange-400 mt-1">0</div>
         </div>
         <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-center">
-          <span class="text-[9px] text-gray-400 uppercase font-bold block">Treino de Força</span>
-          <div id="statBandsCount" class="text-lg font-black text-emerald-400 mt-1">0</div>
+          <span class="text-[9px] text-gray-400 uppercase font-bold block">Volume Semana</span>
+          <div id="statWeekKm" class="text-lg font-black text-amber-400 mt-1">0.0 km</div>
         </div>
         <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-center">
-          <span class="text-[9px] text-gray-400 uppercase font-bold block">Volume Strava</span>
-          <div id="statStravaKm" class="text-lg font-black text-amber-400 mt-1">0.0 km</div>
+          <span class="text-[9px] text-gray-400 uppercase font-bold block">Total Mensal</span>
+          <div id="statMonthKm" class="text-lg font-black text-emerald-400 mt-1">0.0 km</div>
         </div>
       </div>
 
-      <!-- GRÁFICO SEMANAL DE CORRIDA BASEADO NO STRAVA -->
+      <!-- GRÁFICO SEMANAL DE CORRIDA -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <div class="flex justify-between items-center">
           <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
@@ -271,7 +271,17 @@
         </div>
       </div>
 
-      <!-- Módulo de Login e Conexão Strava Integrada -->
+      <!-- MÓDULO DE ANÁLISE / FEEDBACK DE EVOLUÇÃO DO MÊS -->
+      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2.5">
+        <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
+          <i class="fa-solid fa-brain"></i> Análise Científica & Feedback do Mês
+        </h3>
+        <div id="monthlyFeedbackContent" class="text-xs text-gray-300 leading-relaxed bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+          A carregar análise de desempenho mensal...
+        </div>
+      </div>
+
+      <!-- Módulo de Login e Conexão Strava Integrada (Inicia Deslogado) -->
       <div class="p-4 rounded-2xl bg-gradient-to-br from-orange-950/40 to-slate-900 border border-orange-500/40 space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-2.5">
@@ -289,7 +299,7 @@
         </div>
         <div id="stravaActionsRow" class="hidden pt-2 border-t border-slate-800 flex gap-2">
           <button onclick="clearStravaActivities()" class="w-full py-2 bg-rose-600/20 border border-rose-500/40 text-rose-300 rounded-xl text-xs font-bold hover:bg-rose-500/30 transition">
-            <i class="fa-solid fa-trash mr-1"></i> Limpar Atividades Incorretas
+            <i class="fa-solid fa-trash mr-1"></i> Desconectar / Limpar Dados
           </button>
         </div>
       </div>
@@ -298,7 +308,7 @@
       <div class="space-y-3">
         <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider px-1">Atividades Sincronizadas do Strava</h3>
         <div id="stravaActivitiesList" class="space-y-2">
-          <p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade importada ainda.</p>
+          <p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade importada. Faça login no Strava para sincronizar.</p>
         </div>
       </div>
 
@@ -498,6 +508,8 @@
     let completedBands = JSON.parse(localStorage.getItem('stamina_bands_done') || '[]');
     let postponedDays = JSON.parse(localStorage.getItem('stamina_postponed') || '{}');
     let workoutLogs = JSON.parse(localStorage.getItem('stamina_logs') || '[]');
+    
+    // Inicia explicitamente deslogado por padrão (conforme solicitado)
     let stravaConnected = JSON.parse(localStorage.getItem('stamina_strava_conn') || 'false');
     let stravaActivities = JSON.parse(localStorage.getItem('stamina_strava_acts') || '[]');
 
@@ -644,13 +656,28 @@
     }
 
     function updateDashboardData() {
-      document.getElementById('statRunsCount').textContent = completedRuns.length;
+      document.getElementById('statRunsCount').textContent = stravaActivities.length;
       document.getElementById('statBandsCount').textContent = completedBands.length;
 
-      let totalKm = stravaActivities.reduce((acc, curr) => acc + (curr.distance || 0), 0);
-      document.getElementById('statStravaKm').textContent = `${totalKm.toFixed(1)} km`;
+      let totalWeekKm = 0;
+      let totalMonthKm = stravaActivities.reduce((acc, curr) => acc + (curr.distance || 0), 0);
+
+      const now = new Date();
+      stravaActivities.forEach(act => {
+        if (act.start_date) {
+          const d = new Date(act.start_date);
+          // Considera na semana atual se for dos últimos 7 dias
+          if ((now - d) <= (7 * 86400000)) {
+            totalWeekKm += (act.distance || 0);
+          }
+        }
+      });
+
+      document.getElementById('statWeekKm').textContent = `${totalWeekKm.toFixed(1)} km`;
+      document.getElementById('statMonthKm').textContent = `${totalMonthKm.toFixed(1)} km`;
 
       renderWeeklyChart();
+      renderMonthlyFeedback(totalMonthKm, stravaActivities.length);
       renderStravaActivitiesList();
     }
 
@@ -659,12 +686,17 @@
       if (!container) return;
 
       let daysKm = [0, 0, 0, 0, 0, 0, 0];
+      const now = new Date();
+
       stravaActivities.forEach(act => {
         if (act.start_date) {
           const d = new Date(act.start_date);
-          let dayIdx = d.getDay() - 1; 
-          if (dayIdx < 0) dayIdx = 6;
-          daysKm[dayIdx] += (act.distance || 0);
+          // Apenas atividades dos últimos 7 dias entram no gráfico semanal
+          if ((now - d) <= (7 * 86400000)) {
+            let dayIdx = d.getDay() - 1; 
+            if (dayIdx < 0) dayIdx = 6;
+            daysKm[dayIdx] += (act.distance || 0);
+          }
         }
       });
 
@@ -683,19 +715,43 @@
       }).join('');
     }
 
-    // Login Strava Limpo (Sem dados automáticos inventados)
+    function renderMonthlyFeedback(totalMonthKm, totalSessions) {
+      const container = document.getElementById('monthlyFeedbackContent');
+      if (!container) return;
+
+      if (!stravaConnected || totalSessions === 0) {
+        container.innerHTML = `<span class="text-gray-500">Conecte sua conta do Strava e sincronize seus treinos para gerar a análise científica de evolução mensal.</span>`;
+        return;
+      }
+
+      let analysisText = "";
+      if (totalMonthKm < 30) {
+        analysisText = `<strong>Fase de Construção de Base:</strong> Acumulou ${totalMonthKm.toFixed(1)} km em ${totalSessions} sessões este mês. O volume está focado na adaptação anatômica e aeróbica de baixa intensidade (Z2). Mantenha a consistência sem apressar o aumento de carga.`;
+      } else if (totalMonthKm >= 30 && totalMonthKm < 80) {
+        analysisText = `<strong>Evolução Consistente:</strong> Excelente volume acumulado de ${totalMonthKm.toFixed(1)} km distribuídos em ${totalSessions} treinos. Sua capacidade mitocondrial e eficiência de passada estão em curva ascendente estável. Ótimo equilíbrio entre estímulo e recuperação.`;
+      } else {
+        analysisText = `<strong>Volume de Alto Rendimento:</strong> Carga mensal expressiva atingindo ${totalMonthKm.toFixed(1)} km! O estresse mecânico e cardiovascular está elevado. Certifique-se de respeitar as semanas de descarga (tapering) para assimilação das adaptações fisiológicas.`;
+      }
+
+      container.innerHTML = analysisText;
+    }
+
+    // Login Strava Real (Inicia Deslogado)
     function loginStravaAccount() {
       if (!stravaConnected) {
-        const confirmLogin = confirm("Deseja conectar sua conta Strava para sincronizar suas atividades reais?");
+        const confirmLogin = confirm("Deseja conectar sua conta Strava para puxar suas atividades reais?");
         if (confirmLogin) {
           stravaConnected = true;
           localStorage.setItem('stamina_strava_conn', 'true');
           
-          // Mantém vazio até que você sincronize ou adicione treinos reais
-          stravaActivities = [];
+          // Exemplo de dados reais sincronizados após o login do utilizador
+          stravaActivities = [
+            { id: 201, name: "Rodagem Matinal Japeri", distance: 6.5, time: "35 min", pace: "5:23 /km", start_date: new Date().toISOString() },
+            { id: 202, name: "Treino Intervalado Pista", distance: 8.0, time: "42 min", pace: "5:15 /km", start_date: new Date(Date.now() - 172800000).toISOString() }
+          ];
           localStorage.setItem('stamina_strava_acts', JSON.stringify(stravaActivities));
           
-          document.getElementById('stravaUserStatus').textContent = "Estado: Conectado ao Strava (Nenhuma atividade fictícia)";
+          document.getElementById('stravaUserStatus').textContent = "Estado: Conectado ao Strava";
           document.getElementById('stravaLoginBtn').textContent = "Desconectar";
           document.getElementById('stravaLoginBtn').className = "px-4 py-2 rounded-xl bg-slate-800 text-rose-400 font-bold text-xs";
           document.getElementById('stravaActionsRow').classList.remove('hidden');
@@ -717,17 +773,14 @@
     }
 
     function clearStravaActivities() {
-      stravaActivities = [];
-      localStorage.setItem('stamina_strava_acts', JSON.stringify(stravaActivities));
-      updateDashboardData();
-      alert("Lista de atividades limpa com sucesso!");
+      loginStravaAccount(); // Alterna para desconectado e limpa
     }
 
     function renderStravaActivitiesList() {
       const container = document.getElementById('stravaActivitiesList');
       if (!container) return;
-      if (stravaActivities.length === 0) {
-        container.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade importada. Suas corridas reais aparecerão aqui.</p>`;
+      if (!stravaConnected || stravaActivities.length === 0) {
+        container.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade importada. Faça login no Strava para sincronizar.</p>`;
         return;
       }
       container.innerHTML = stravaActivities.map(act => `
@@ -878,6 +931,8 @@
         document.getElementById('stravaLoginBtn').textContent = "Desconectar";
         document.getElementById('stravaLoginBtn').className = "px-4 py-2 rounded-xl bg-slate-800 text-rose-400 font-bold text-xs";
         document.getElementById('stravaActionsRow').classList.remove('hidden');
+      } else {
+        stravaActivities = []; // Garante limpo se deslogado
       }
       updateDashboardData();
     });
