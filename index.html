@@ -378,21 +378,21 @@
       </div>
     </div>
 
-    <!-- TAB 5: PROTOCOLS -->
+    <!-- TAB 5: PROTOCOLS (PASSO A PASSO DETALHADO) -->
     <div id="tab-protocols" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
           <h2 class="text-sm font-bold text-white">Protocolos de Teste de Corrida</h2>
-          <p class="text-xs text-gray-400">Avaliações científicas e testes de campo.</p>
+          <p class="text-xs text-gray-400">Passo a passo de como executar cada avaliação física.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
         </button>
       </div>
-      <div id="protocolsContainer" class="space-y-2.5"></div>
+      <div id="protocolsContainer" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 6: CALCULATORS & TOOLS (EXPANDIDO) -->
+    <!-- TAB 6: CALCULATORS & TOOLS -->
     <div id="tab-calculators" class="tab-content hidden space-y-4">
       <div class="px-1 mb-1 flex justify-between items-center">
         <div>
@@ -489,7 +489,7 @@
             <input type="number" step="0.1" id="calDist" value="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none" />
           </div>
           <div>
-            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Tempo (min)</label>
+            <label class="text-[10px] text-gray-400 uppercase font-jobs uppercase font-bold block mb-1">Tempo (min)</label>
             <input type="number" id="calTime" value="25" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none" />
           </div>
         </div>
@@ -512,18 +512,18 @@
       <div id="physiologyContainer" class="space-y-2.5"></div>
     </div>
 
-    <!-- TAB 8: WORKOUTS (MÉTODOS DE TREINAMENTO COMPLETOS COM FARTLEK, HILL REPEATS, ETC.) -->
+    <!-- TAB 8: WORKOUTS (MÉTODOS DE TREINAMENTO COM PASSO A PASSO EXATO) -->
     <div id="tab-workouts" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
           <h2 class="text-sm font-bold text-white">Métodos de Treinamento Profissional</h2>
-          <p class="text-xs text-gray-400">Catálogo completo com Fartlek, Tiros, Subidas e Longão.</p>
+          <p class="text-xs text-gray-400">Passo a passo exato de tiros, intervalos e blocos.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
         </button>
       </div>
-      <div id="workoutsContainer" class="space-y-2.5"></div>
+      <div id="workoutsContainer" class="space-y-3"></div>
     </div>
 
   </main>
@@ -594,28 +594,124 @@
       ]
     };
 
-    // BASE DE DADOS AMPLIADA (PROTOCOLOS, FISIOLOGIA E MÉTODOS DE TREINO COMPLETOS)
+    // BASE DE DADOS COMPLETA COM PASSO A PASSO DETALHADO (PROTOCOLOS E TREINOS)
     const DATABASE = {
       protocols: [
-        { id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos em pista aferida.', whatItMeasures: 'Capacidade aeróbica máxima, VAM e estimativa de VO2máx.', physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico durante todo o teste.' },
-        { id: 'proto-tc3k', category: 'Protocolo de Teste', title: 'Teste de 3.200 Metros (2 Milhas)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Avaliação militar e de performance', icon: 'fa-person-running', description: 'Corrida cronometrada cobrindo exatamente 3.200 metros no menor tempo possível.', whatItMeasures: 'Velocidade aeróbica máxima e eficiência de ritmo.', physiology: 'Alto estresse cardiovascular com recrutamento intenso do sistema oxidativo e glicolítico.' },
-        { id: 'proto-time-trial', category: 'Protocolo de Teste', title: 'Time Trial de 5 km', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Contrarrelógio para calibração de pace', icon: 'fa-flag-checkered', description: 'Corrida de 5 km em esforço máximo para recalibrar as zonas de treino.', whatItMeasures: 'Limiar anaeróbico funcional e velocidade de base.', physiology: 'Sustentação do limiar de lactato com tolerância à acidose metabólica.' },
-        { id: 'proto-yoyo', category: 'Protocolo de Teste', title: 'Yo-Yo Intermittent Recovery Test', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'Teste progressivo de ir e vir', icon: 'fa-arrows-left-right', description: 'Corrida de 20 metros em ida e volta acompanhando bipes sonoros com intervalos breves.', whatItMeasures: 'Capacidade de recuperação intermitente e VAM.', physiology: 'Avalia a habilidade de ressintetizar fosfocreatina rapidamente durante pausas ativas.' },
-        { id: 'proto-vameval', category: 'Protocolo de Teste', title: 'Protocolo VAM-Eval (Pista)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Teste incremental contínuo', icon: 'fa-chart-line', description: 'Incremento de 0.5 km/h a cada minuto em pistas marcadas com cones a cada 20m.', whatItMeasures: 'Velocidade Aeróbica Máxima (VAM) com altíssima precisão.', physiology: 'Determina exatamente o ponto em que o VO2máx atinge seu teto funcional.' }
+        { 
+          id: 'proto-cooper', 
+          category: 'Protocolo de Teste', 
+          title: 'Teste de Cooper (12 Minutos)', 
+          badgeColor: 'bg-purple-500/20 text-purple-300', 
+          subtitle: 'Estimativa prática do VO2 Máximo', 
+          icon: 'fa-stopwatch', 
+          description: 'Mede a maior distância possível percorrida em 12 minutos contínuos em pista aferida.', 
+          whatItMeasures: 'Capacidade aeróbica máxima, VAM e estimativa de VO2máx.', 
+          physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico durante todo o teste.',
+          stepByStep: '1. Faça um aquecimento leve de 5 a 10 minutos (trote e educativos).\n2. Posicione-se na linha de partida de uma pista de atletismo ou percurso com marcação métrica.\n3. Ao sinal de partida, inicie o cronómetro e corra a maior distância possível mantendo ritmo constante e forte, sem estourar no primeiro minuto.\n4. Ao completar exatamente 12 minutos, pare e marque a distância exata percorrida (voltas completas + metros adicionais).'
+        },
+        { 
+          id: 'proto-tc3k', 
+          category: 'Protocolo de Teste', 
+          title: 'Teste de 3.200 Metros (2 Milhas)', 
+          badgeColor: 'bg-cyan-500/20 text-cyan-300', 
+          subtitle: 'Avaliação militar e de performance', 
+          icon: 'fa-person-running', 
+          description: 'Corrida cronometrada cobrindo exatamente 3.200 metros no menor tempo possível.', 
+          whatItMeasures: 'Velocidade aeróbica máxima e eficiência de ritmo.', 
+          physiology: 'Alto estresse cardiovascular com recrutamento intenso do sistema oxidativo e glicolítico.',
+          stepByStep: '1. Realize aquecimento dinâmico e ativação articular.\n2. Alinhe-se na marca de partida para cobrir 3.200 metros (ex: 8 voltas completas em pista oficial de 400 metros).\n3. O objetivo é cruzar a linha de chegada no menor tempo cronometrado possível.\n4. Anote o tempo final total e calcule o pace médio por quilómetro.'
+        },
+        { 
+          id: 'proto-time-trial', 
+          category: 'Protocolo de Teste', 
+          title: 'Time Trial de 5 km', 
+          badgeColor: 'bg-amber-500/20 text-amber-300', 
+          subtitle: 'Contrarrelógio para calibração de pace', 
+          icon: 'fa-flag-checkered', 
+          description: 'Corrida de 5 km em esforço máximo para recalibrar as zonas de treino.', 
+          whatItMeasures: 'Limiar anaeróbico funcional e velocidade de base.', 
+          physiology: 'Sustentação do limiar de lactato com tolerância à acidose metabólica.',
+          stepByStep: '1. Escolha um percurso plano e aferido (ou esteira com 1% de inclinação).\n2. Execute aquecimento progressivo de 15 minutos.\n3. Execute os 5 km focando em pacing estável (evite largar muito forte). O ideal é fazer split negativo (segunda metade mais ágil).\n4. Registre o tempo total e os splits de cada quilómetro para alimentar a plataforma.'
+        },
+        { 
+          id: 'proto-yoyo', 
+          category: 'Protocolo de Teste', 
+          title: 'Yo-Yo Intermittent Recovery Test', 
+          badgeColor: 'bg-rose-500/20 text-rose-300', 
+          subtitle: 'Teste progressivo de ir e vir', 
+          icon: 'fa-arrows-left-right', 
+          description: 'Corrida de 20 metros em ida e volta acompanhando bipes sonoros com intervalos breves.', 
+          whatItMeasures: 'Capacidade de recuperação intermitente e VAM.', 
+          physiology: 'Avalia a habilidade de ressintetizar fosfocreatina rapidamente durante pausas ativas.',
+          stepByStep: '1. Marque dois cones separados por exatamente 20 metros.\n2. Conecte o áudio oficial do teste Yo-Yo.\n3. Corra 20m até a linha e toque o solo antes do sinal sonoro (bip).\n4. Retorne trotando na zona de recuperação (5 metros) em 10 segundos.\n5. O teste cessa quando o avaliado não consegue alcançar a linha antes do bip por duas vezes consecutivas.'
+        }
       ],
       physiology: [
         { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) alimenta todas as contrações musculares na corrida.', whatItMeasures: 'Ressíntese de energia rápida e sustentada.', physiology: 'Sistemas ATP-CP (explosão), Glicolítico (média intensidade) e Oxidativo (endurance).' },
         { id: 'phys-drift', category: 'Cardiovascular', title: 'Deriva Cardíaca (Cardiac Drift)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Aumento da FC em esforço constante', icon: 'fa-heart-pulse', description: 'Fenómeno onde a frequência cardíaca sobe gradativamente mesmo mantendo o pace estável.', whatItMeasures: 'Eficiência termorreguladora e hidratação.', physiology: 'Desvio associado à perda de volume plasmático, suor e desvio para circulação cutânea.' },
-        { id: 'phys-lactate', category: 'Bioenergética', title: 'Limiar de Lactato & Clearance', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'O ponto de virada metabólica', icon: 'fa-chart-area', description: 'Ponto onde a produção de lactato supera a capacidade de remoção celular.', whatItMeasures: 'Tolerância à fadiga em altas velocidades.', physiology: 'Determina o ritmo máximo sustentável sem acumulação excessiva de iões de hidrogénio.' },
-        { id: 'phys-economy', category: 'Biomecânica', title: 'Economia de Corrida (Running Economy)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Consumo de O2 por metro percorrido', icon: 'fa-person-running', description: 'Mede o custo de oxigênio para manter uma dada velocidade submáxima.', whatItMeasures: 'Eficiência de passada e rigidez tendínea.', physiology: 'Influenciada pela biomecânica, técnica de apoio do pé e rigidez do complexo tendão de Aquiles.' }
+        { id: 'phys-lactate', category: 'Bioenergética', title: 'Limiar de Lactato & Clearance', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'O ponto de virada metabólica', icon: 'fa-chart-area', description: 'Ponto onde a produção de lactato supera a capacidade de remoção celular.', whatItMeasures: 'Tolerância à fadiga em altas velocidades.', physiology: 'Determina o ritmo máximo sustentável sem acumulação excessiva de iões de hidrogénio.' }
       ],
       workouts: [
-        { id: 'work-fartlek', category: 'Método de Treino', title: 'Fartlek (Brincadeira de Ritmos)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Variações livres de velocidade e terreno', icon: 'fa-wind', description: 'Treino estruturado com mudanças contínuas de ritmo baseadas em tempo ou terreno, sem pausas completas.', whatItMeasures: 'Versatilidade aeróbica, mudança de limiar e recrutamento muscular dinâmico.', physiology: 'Estimula o sistema aeróbico e a tolerância ao ácido lático de forma livre e eficiente.' },
-        { id: 'work-interval', category: 'Método de Treino', title: 'Treino Intervalado (Tiros/VO2máx)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Repetições de 400m a 1000m', icon: 'fa-stopwatch-20', description: 'Esforços intensos (95-100% VAM) intercalados com recuperação ativa.', whatItMeasures: 'Potência aeróbica máxima e expansão do VO2máx.', physiology: 'Elevação rápida da frequência cardíaca próxima ao teto máximo.' },
-        { id: 'work-hills', category: 'Método de Treino', title: 'Hill Repeats (Tiros em Subida)', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'Força específica e potência', icon: 'fa-mountain', description: 'Repetições de tiro curto ou médio (30s a 2min) em aclives com descida leve para recuperar.', whatItMeasures: 'Potência muscular, técnica de passada e menor impacto articular.', physiology: 'Fortalece glúteos e panturrilhas enquanto exige pico metabólico de alta frequência.' },
-        { id: 'work-tempo', category: 'Método de Treino', title: 'Tempo Run (Corrida em Limiar)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Ritmo sustentável prolongado', icon: 'fa-gauge-high', description: 'Corrida contínua num ritmo ligeiramente abaixo do limiar anaeróbico.', whatItMeasures: 'Resistência de velocidade e economia de corrida.', physiology: 'Retardamento do acúmulo de fadiga em tiros longos.' },
-        { id: 'work-long', category: 'Método de Treino', title: 'O Longão (Long Run)', badgeColor: 'bg-indigo-500/20 text-indigo-300', subtitle: 'Resistência aeróbica de base', icon: 'fa-route', description: 'Sessão de longa distância em ritmo conversacional (Z2).', whatItMeasures: 'Capitulação mitocondrial, densidade capilar e queima de gordura.', physiology: 'Adaptação estrutural de tendões, articulações e estoques de glicogênio.' },
-        { id: 'work-recovery', category: 'Método de Treino', title: 'Rodagem Regenerativa (Z1)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Recuperação ativa leve', icon: 'fa-leaf', description: 'Corrida curta e muito leve para descompressão muscular.', whatItMeasures: 'Fluxo sanguíneo e remoção de metabólitos.', physiology: 'Aceleração da recuperação sem causar microlesões adicionais.' }
+        { 
+          id: 'work-fartlek', 
+          category: 'Método de Treino', 
+          title: 'Fartlek (Brincadeira de Ritmos)', 
+          badgeColor: 'bg-cyan-500/20 text-cyan-300', 
+          subtitle: 'Variações livres de velocidade e terreno', 
+          icon: 'fa-wind', 
+          description: 'Treino estruturado com mudanças contínuas de ritmo baseadas em tempo ou terreno, sem pausas completas.', 
+          whatItMeasures: 'Versatilidade aeróbica, mudança de limiar e recrutamento muscular dinâmico.', 
+          physiology: 'Estimula o sistema aeróbico e a tolerância ao ácido lático de forma livre e eficiente.',
+          stepByStep: '1. <strong>Aquecimento:</strong> 10 min de trote leve Z1/Z2.\n2. <strong>Bloco Principal:</strong> Alterne blocos de esforço forte com trote regenerativo sem parar.\n   • Exemplo prático: 1 min forte (ritmo de 5k) + 1 min trote leve (repetir 10 a 12 vezes) ou variação livre por marcos visuais (ex: acelerar até o próximo poste).\n3. <strong>Desaquecimento:</strong> 5 a 10 min de trote muito leve e caminhada.'
+        },
+        { 
+          id: 'work-interval', 
+          category: 'Método de Treino', 
+          title: 'Treino Intervalado (Tiros de 400m a 1000m)', 
+          badgeColor: 'bg-amber-500/20 text-amber-300', 
+          subtitle: 'Repetições de alta intensidade (VO2máx)', 
+          icon: 'fa-stopwatch-20', 
+          description: 'Esforços intensos (95-100% VAM) intercalados com recuperação ativa.', 
+          whatItMeasures: 'Potência aeróbica máxima e expansão do VO2máx.', 
+          physiology: 'Elevação rápida da frequência cardíaca próxima ao teto máximo.',
+          stepByStep: '1. <strong>Aquecimento:</strong> 15 min de trote + educativos de corrida + 3 tiros curtos de aceleração (strides).\n2. <strong>Série de Tiros:</strong>\n   • Exemplo Clássico (400m): 6 a 8 repetições de 400 metros em ritmo forte (ex: pace de prova de 5k).\n   • Exemplo Longo (1000m): 4 a 5 repetições de 1000 metros em ritmo de limiar alto.\n3. <strong>Recuperação entre Tiros:</strong> Trote leve ou caminhada pelo mesmo tempo do tiro (ou distância igual de trote).\n4. <strong>Desaquecimento:</strong> 10 min de trote leve e alongamento.'
+        },
+        { 
+          id: 'work-hills', 
+          category: 'Método de Treino', 
+          title: 'Hill Repeats (Tiros em Subida)', 
+          badgeColor: 'bg-rose-500/20 text-rose-300', 
+          subtitle: 'Força específica e potência de passada', 
+          icon: 'fa-mountain', 
+          description: 'Repetições de tiro curto ou médio (30s a 90s) em aclives acentuados.', 
+          whatItMeasures: 'Potência muscular, recrutamento de fibras rápidas e menor impacto articular.', 
+          physiology: 'Fortalece a cadeia posterior (glúteos, posteriores e panturrilhas) em sobrecarga.',
+          stepByStep: '1. <strong>Aquecimento:</strong> 15 min de trote em piso plano.\n2. <strong>Subida:</strong> Encontre uma subida com inclinação de 5% a 8%. Corra forte subindo por 45 a 60 segundos mantendo postura erguida e joelhos altos.\n3. <strong>Recuperação:</strong> Desça trotando ou caminhando de volta ao ponto de partida (recuperação completa).\n4. <strong>Séries:</strong> Repita de 6 a 10 vezes.'
+        },
+        { 
+          id: 'work-tempo', 
+          category: 'Método de Treino', 
+          title: 'Tempo Run (Corrida em Limiar)', 
+          badgeColor: 'bg-emerald-500/20 text-emerald-300', 
+          subtitle: 'Ritmo sustentável prolongado (Z4)', 
+          icon: 'fa-gauge-high', 
+          description: 'Corrida contínua num ritmo ligeiramente abaixo do limiar anaeróbico.', 
+          whatItMeasures: 'Resistência de velocidade e economia de corrida.', 
+          physiology: 'Retardamento do acúmulo de fadiga em tiros longos.',
+          stepByStep: '1. <strong>Aquecimento:</strong> 10 min de trote progressivo.\n2. <strong>Bloco em Limiar:</strong> Corra de forma contínua por 20 a 30 minutos num ritmo desafiador, porém constante (ritmo que você conseguiria sustentar por cerca de 1 hora numa prova).\n3. <strong>Desaquecimento:</strong> 10 min de trote regenerativo e retorno à calma.'
+        },
+        { 
+          id: 'work-long', 
+          category: 'Método de Treino', 
+          title: 'O Longão (Long Run)', 
+          badgeColor: 'bg-indigo-500/20 text-indigo-300', 
+          subtitle: 'Resistência aeróbica de base (Z2)', 
+          icon: 'fa-route', 
+          description: 'Sessão de longa distância em ritmo conversacional estrito.', 
+          whatItMeasures: 'Capitulação mitocondrial, densidade capilar e queima de gordura.', 
+          physiology: 'Adaptação estrutural de tendões, articulações e estoques de glicogênio.',
+          stepByStep: '1. <strong>Hidratação Prévia:</strong> Garanta boa ingestão de água e carboidratos leves antes de sair.\n2. <strong>Execução:</strong> Corra de 8 a 16 km (conforme a semana do ciclo) em ritmo totalmente conversacional (Zona 2 - sem ficar sem fôlego).\n3. <strong>Estratégia:</strong> Mantenha constância sem picos bruscos de velocidade.\n4. <strong>Pós-treino:</strong> Hidratação imediata e reposição nutricional.'
+        }
       ]
     };
 
@@ -995,7 +1091,6 @@
       updatePerformancePredictions();
     }
 
-    // MOTOR DE PREVISÕES ESTILO STRAVA (BASEADO EM HISTÓRICO REAL COM FATOR RIEGEL ROBUSTO)
     function updatePerformancePredictions() {
       let bestPaceSec = 300;
       if (manualActivities.length > 0) {
@@ -1251,8 +1346,12 @@
       }
       if (document.getElementById('protocolsContainer')) {
         document.getElementById('protocolsContainer').innerHTML = DATABASE.protocols.map(item => `
-          <div onclick="openModal('${item.id}')" class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer flex items-center justify-between">
-            <div class="flex items-center space-x-3"><div class="w-9 h-9 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400"><i class="fa-solid ${item.icon}"></i></div><div><h4 class="text-xs font-bold text-white">${item.title}</h4><p class="text-[10px] text-gray-400">${item.subtitle}</p></div></div>
+          <div onclick="openModal('${item.id}')" class="p-4 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer space-y-2">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400"><i class="fa-solid ${item.icon}"></i></div>
+              <div><h4 class="text-xs font-bold text-white">${item.title}</h4><p class="text-[10px] text-gray-400">${item.subtitle}</p></div>
+            </div>
+            <p class="text-[11px] text-gray-300 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 whitespace-pre-line"><strong>Como Fazer:</strong><br>${item.stepByStep}</p>
           </div>
         `).join('');
       }
@@ -1265,8 +1364,12 @@
       }
       if (document.getElementById('workoutsContainer')) {
         document.getElementById('workoutsContainer').innerHTML = DATABASE.workouts.map(item => `
-          <div onclick="openModal('${item.id}')" class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer flex items-center justify-between">
-            <div class="flex items-center space-x-3"><div class="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400"><i class="fa-solid ${item.icon}"></i></div><div><h4 class="text-xs font-bold text-white">${item.title}</h4><p class="text-[10px] text-gray-400">${item.subtitle}</p></div></div>
+          <div onclick="openModal('${item.id}')" class="p-4 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer space-y-2">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400"><i class="fa-solid ${item.icon}"></i></div>
+              <div><h4 class="text-xs font-bold text-white">${item.title}</h4><p class="text-[10px] text-gray-400">${item.subtitle}</p></div>
+            </div>
+            <p class="text-[11px] text-gray-300 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 whitespace-pre-line"><strong>Passo a Passo:</strong><br>${item.stepByStep}</p>
           </div>
         `).join('');
       }
@@ -1299,6 +1402,7 @@
       document.getElementById('modalTitle').textContent = item.title;
       document.getElementById('modalBody').innerHTML = `
         <p class="text-gray-200 text-xs">${item.description}</p>
+        ${item.stepByStep ? `<div class="p-3 bg-slate-950 rounded-xl border border-slate-800 whitespace-pre-line text-gray-200 text-xs"><strong>Passo a Passo Prático:</strong><br>${item.stepByStep}</div>` : ''}
         <p class="text-gray-400 text-xs mt-2"><strong>O que mede:</strong> ${item.whatItMeasures}</p>
         <p class="text-gray-400 text-xs mt-1"><strong>Fisiologia:</strong> ${item.physiology}</p>
       `;
@@ -1350,7 +1454,6 @@
       const weight = parseFloat(document.getElementById('calWeight').value);
       const dist = parseFloat(document.getElementById('calDist').value);
       if (!weight || !dist) { alert("Insira peso e distância."); return; }
-      // Estimativa direta para corrida (~1.03 kcal por kg por km)
       const cal = Math.round(weight * dist * 1.03);
       let res = document.getElementById('calResult');
       res.textContent = `Gasto Estimado: ~${cal} kcal`;
