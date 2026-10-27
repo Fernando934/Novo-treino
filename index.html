@@ -1343,7 +1343,7 @@
     function generatePaceSplits() {
       const dist = parseFloat(document.getElementById('splitDist').value);
       const targetTimeStr = document.getElementById('splitTargetTime').value.trim();
-      const parts = targetTestStr = targetTimeStr.split(':').map(Number);
+      const parts = targetTimeStr.split(':').map(Number);
       let totalSec = parts.length === 3 ? (parts[0] * 3600) + (parts[1] * 60) + parts[2] : (parts[0] * 60) + parts[1];
       let baseSecPerKm = totalSec / dist;
       let html = '';
