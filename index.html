@@ -70,7 +70,7 @@
         </div>
       </div>
 
-      <!-- SELETOR E BOTÃO DE ADICIONAR PERFIL CORRIGIDOS -->
+      <!-- SELETOR E BOTÕES DE ADICIONAR / EXCLUIR PERFIL -->
       <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5">
         <i class="fa-solid fa-user-shield text-orange-400 text-xs"></i>
         <select id="activeProfileSelect" onchange="handleProfileSelection(this.value)" class="bg-transparent text-xs font-bold text-white outline-none cursor-pointer">
@@ -78,6 +78,9 @@
         </select>
         <button onclick="createNewProfilePrompt()" class="text-xs text-orange-400 hover:text-orange-300 px-1 py-0.5 border-l border-slate-700 ml-1" title="Adicionar Novo Perfil">
           <i class="fa-solid fa-plus"></i>
+        </button>
+        <button onclick="deleteCurrentProfilePrompt()" class="text-xs text-rose-400 hover:text-rose-300 px-1 py-0.5 border-l border-slate-700 ml-0.5" title="Excluir Perfil Atual">
+          <i class="fa-solid fa-trash-can"></i>
         </button>
       </div>
     </div>
@@ -578,7 +581,6 @@
     let manualActivities = [];
     let timerInterval = null;
 
-    // POPULAR E ATUALIZAR O SELETOR DE PERFIL SEMPRE QUE MUDAR
     function initProfileSelector() {
       const select = document.getElementById('activeProfileSelect');
       if (!select) return;
@@ -590,7 +592,6 @@
       select.value = currentProfile;
     }
 
-    // CRIAR E SELECIONAR AUTOMATICAMENTE O NOVO PERFIL
     function createNewProfilePrompt() {
       let nome = prompt("Digite o nome do novo atleta/perfil:");
       if (!nome) return;
@@ -602,13 +603,43 @@
         localStorage.setItem('stamina_profiles_list', JSON.stringify(profilesList));
       }
       
-      // Seleciona imediatamente o perfil criado
       currentProfile = key;
       localStorage.setItem('stamina_active_profile', currentProfile);
       initProfileSelector();
       loadProfileData();
       renderPlan();
       updateDashboardData();
+    }
+
+    // FUNÇÃO PARA EXCLUIR O PERFIL ATUAL COM SEGURANÇA
+    function deleteCurrentProfilePrompt() {
+      if (profilesList.length <= 1) {
+        alert("Não é possível excluir o último perfil restante na aplicação.");
+        return;
+      }
+      if (confirm(`Tem certeza de que deseja excluir o perfil '${currentProfile}' e todos os seus registos salvos?`)) {
+        let profileToDelete = currentProfile;
+
+        // Remove do localStorage os dados específicos deste perfil
+        localStorage.removeItem(`stamina_runs_done_${profileToDelete}`);
+        localStorage.removeItem(`stamina_bands_done_${profileToDelete}`);
+        localStorage.removeItem(`stamina_postponed_${profileToDelete}`);
+        localStorage.removeItem(`stamina_manual_runs_${profileToDelete}`);
+
+        // Atualiza a lista de perfis
+        profilesList = profilesList.filter(p => p !== profileToDelete);
+        localStorage.setItem('stamina_profiles_list', JSON.stringify(profilesList));
+
+        // Seleciona o primeiro perfil remanescente
+        currentProfile = profilesList[0];
+        localStorage.setItem('stamina_active_profile', currentProfile);
+
+        initProfileSelector();
+        loadProfileData();
+        renderPlan();
+        updateDashboardData();
+        alert(`Perfil '${profileToDelete}' excluído com sucesso.`);
+      }
     }
 
     function loadProfileData() {
@@ -1084,7 +1115,6 @@
       return (bestPaceSec * distKm) * Math.pow(distKm / 5, 0.07);
     }
 
-    // DIAGNÓSTICO DE CARGA REALMENTE DINÂMICO CONFORME TREINOS MENSIAIS OU COMPLETO (GERAL)
     function renderSmartComparativeFeedback(filteredActs, period, currentMonth, currentYear) {
       const container = document.getElementById('monthlyFeedbackContent');
       if (!container) return;
@@ -1096,7 +1126,6 @@
       let totalKm = filteredActs.reduce((acc, curr) => acc + (curr.distance || 0), 0);
       let avgDist = totalKm / filteredActs.length;
 
-      // Cálculo de Pace Médio do Período Selecionado
       let validPaces = filteredActs.map(a => parsePaceToSeconds(a.pace)).filter(p => p > 0);
       let avgPaceSec = validPaces.length > 0 ? (validPaces.reduce((a,b)=>a+b,0) / validPaces.length) : 0;
       let formattedAvgPace = formatSecondsToPace(avgPaceSec);
@@ -1106,7 +1135,6 @@
       let diagnosticText = "";
 
       if (isGeneral) {
-        // LÓGICA DINÂMICA DEDICADA AO GERAL (TODOS OS TREINOS)
         let totalGlobalRuns = manualActivities.length;
         let totalGlobalKm = manualActivities.reduce((acc, curr) => acc + (curr.distance || 0), 0);
 
@@ -1118,7 +1146,6 @@
           diagnosticText = `Início de histórico com <strong>${totalGlobalKm.toFixed(1)} km</strong> acumulados. Continue inserindo corridas semanais para calibrar a curva de evolução.`;
         }
       } else {
-        // LÓGICA DINÂMICA MENSAL
         let runsCount = filteredActs.length;
         if (runsCount >= 15) {
           diagnosticText = `Mês de alta densidade (<strong>${runsCount} sessões</strong>, <strong>${totalKm.toFixed(1)} km</strong> total). Ritmo médio do mês fixado em <strong>${formattedAvgPace}</strong>. Excelente frequência e resistência de volume. Atente para dias de recuperação ativa para evitar sobrecarga muscular.`;
