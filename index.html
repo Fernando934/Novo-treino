@@ -180,7 +180,7 @@
       </div>
       <div class="p-3 rounded-2xl bg-orange-950/30 border border-orange-500/30 text-xs text-orange-200 flex justify-between items-center">
         <div>
-          <i class="fa-solid fa-circle-info mr-1 text-orange-400"></i> IA Adaptativa Real: Este plano cruza o seu histórico real de corridas, peso, idade e nível de experiência para sugerir volumes seguros e realistas.
+          <i class="fa-solid fa-circle-info mr-1 text-orange-400"></i> IA Adaptativa Inteligente: Cada treino agora inclui uma <strong>Opção Alternativa (Plano B)</strong> com fracionamento e caminhada para dias de fadiga ou sobrecarga.
         </div>
       </div>
       <div id="planContainer" class="space-y-3"></div>
@@ -916,33 +916,28 @@
       `).join('');
     }
 
-    // IA ADAPTATIVA REAL: CRUZANDO HISTÓRICO DE CORRIDAS, PESO E EXPERIÊNCIA
+    // IA ADAPTATIVA COM PLANO B (OPÇÃO ALTERNATIVA / FRACIONADA)
     function getDynamicWeeklyPlan() {
       let w = profileBioData.weight || 75;
       let age = profileBioData.age || 30;
 
-      // Analisa o histórico real de corridas cadastradas para este perfil
       let maxDistRecorded = 0;
-      let totalRunsCount = manualActivities.length;
-      if (totalRunsCount > 0) {
+      if (manualActivities.length > 0) {
         maxDistRecorded = Math.max(...manualActivities.map(a => a.distance || 0));
       }
 
-      // Determina o teto seguro de longão com base estrita no histórico e no peso (>100kg exige cautela extrema)
       let suggestedLongRun = 5.0;
       let experienceLevel = "Iniciante / Retomada";
 
       if (w >= 130) {
-        // Perfil com peso muito elevado (ex: 150kg): foco total em baixo impacto e progressão milimétrica
         if (maxDistRecorded > 4) {
           suggestedLongRun = Math.min(Math.round((maxDistRecorded * 1.1) * 10) / 10, 6.0);
           experienceLevel = "Em progressão assistida";
         } else {
-          suggestedLongRun = 3.5; // Começo seguro com trote e caminhada
+          suggestedLongRun = 3.5;
           experienceLevel = "Iniciante Absoluto (Foco Articular)";
         }
       } else {
-        // Perfil padrão/intermediário (ex: 94kg)
         if (maxDistRecorded >= 8) {
           suggestedLongRun = Math.min(Math.round((maxDistRecorded * 1.1) * 10) / 10, 12.0);
           experienceLevel = "Corredor Intermediário";
@@ -950,52 +945,60 @@
           suggestedLongRun = Math.min(Math.round((maxDistRecorded * 1.1) * 10) / 10, 8.0);
           experienceLevel = "Em Construção de Base";
         } else {
-          suggestedLongRun = 5.0; // Padrão seguro para quem tem pouco registro
+          suggestedLongRun = 5.0;
           experienceLevel = "Base Inicial";
         }
       }
 
-      document.getElementById('cycleWeekLabel').textContent = `Perfil: ${currentProfile.toUpperCase()} (${w}kg, ${age} anos) | Nível: ${experienceLevel} | Máx Histórico: ${maxDistRecorded}km`;
+      document.getElementById('cycleWeekLabel').textContent = `Perfil: ${currentProfile.toUpperCase()} (${w}kg, ${age} anos) | Nível: ${experienceLevel} | Teto: ${maxDistRecorded}km`;
 
-      // Se for peso muito alto (>130kg), o treino de segunda é focado em caminhada rápida progressiva ou trote leve seguro
+      // Criação de opções alternativas inteligentes baseadas no fracionamento do longão
+      let halfLong = Math.round((suggestedLongRun / 2) * 10) / 10;
+      let altPlanText = `• Se não conseguir correr direto: Fracione o treino em 2 blocos de ${halfLong} km (com 3 minutos de caminhada leve de intervalo entre eles) OU reduza para ${Math.max(suggestedLongRun - 1.5, 2.5).toFixed(1)} km completando o restante com caminhada firme.`;
+
       if (w >= 130) {
         return [
           { 
             day: 'Segunda-feira', 
-            title: `Caminhada Ativa & Trote Leve de Base (${suggestedLongRun} km)`, 
+            title: `Caminhada Ativa & Trote Leve (${suggestedLongRun} km)`, 
             type: 'Base Articular Segura', 
+            altPlan: `• Plano B (Se houver sobrecarga): Faça apenas 2.5 km de caminhada forte contínua e finalize com liberação e alongamento.`,
             strength: 'Força: Treino C (Core & Postura Antirrotação)', 
             color: 'text-emerald-400', 
-            detail: `• Histórico detetado: ${maxDistRecorded} km máximos.\n• Estrutura: ${suggestedLongRun} km alternando blocos de 3 min de caminhada forte com 1 min de trote leve.\n• Foco: Preservação de joelhos e coluna com 150 kg.` 
+            detail: `• Estrutura: ${suggestedLongRun} km alternando blocos de 3 min de caminhada forte com 1 min de trote leve.` 
           },
           { 
             day: 'Terça-feira', 
             title: 'Mobilidade e Liberação Miofascial', 
             type: 'Regenerativo', 
+            altPlan: '• Plano B: 15 min de banho morno e alongamento leve de sola do pé e panturrilhas.',
             strength: 'Descanso de Força', 
             color: 'text-cyan-400', 
-            detail: '• 20 minutos de mobilidade articular e alongamentos estáticos para alívio de tensão lombar e panturrilhas.' 
+            detail: '• 20 minutos de mobilidade articular e alongamentos estáticos.' 
           },
           { 
             day: 'Quarta-feira', 
             title: 'Condicionamento Cruzado na Água (Natação)', 
             type: 'Zero Impacto', 
+            altPlan: '• Plano B: 25 minutos de bicicleta ergométrica leve sem carga.',
             strength: 'Força: Treino B (Glúteos & Mini Band)', 
             color: 'text-cyan-400', 
-            detail: '• 30 a 40 minutos de natação ou hidroginástica para fortalecimento cardiovascular sem carga articular.' 
+            detail: '• 30 a 40 minutos de natação ou hidroginástica para fortalecimento cardiovascular.' 
           },
           { 
             day: 'Quinta-feira', 
             title: 'Rodagem Curta Controlada', 
             type: 'Aeróbico Leve', 
+            altPlan: '• Plano B: Substitua por 30 minutos de caminhada em terreno plano.',
             strength: 'Trote Leve', 
             color: 'text-blue-400', 
-            detail: '• 3 km mistos (caminhada e trote leve) em piso plano e macio.' 
+            detail: '• 3 km mistos (caminhada e trote leve) em piso plano.' 
           },
           { 
             day: 'Sexta-feira', 
             title: 'Fortalecimento Focado em Isometria', 
             type: 'Força e Estabilidade', 
+            altPlan: '• Plano B: Faça apenas os exercícios deitada (ponte e abdômen).',
             strength: 'Força: Treino A (Superiores com Elásticos)', 
             color: 'text-purple-400', 
             detail: '• Foco em pranchas e exercícios posturais sentados com elásticos.' 
@@ -1004,34 +1007,37 @@
             day: 'Sábado', 
             title: 'Caminhada Longa de Resistência', 
             type: 'Resistência Aeróbica', 
+            altPlan: '• Plano B: Reduza para 3 km em ritmo mais lento.',
             strength: 'Hidratação e Descanso', 
             color: 'text-orange-400', 
-            detail: `• 4 a 5 km de caminhada contínua em ritmo firme e conversacional.` 
+            detail: `• 4 a 5 km de caminhada contínua em ritmo firme.` 
           },
           { 
             day: 'Domingo', 
             title: 'Descanso Total', 
             type: 'Regeneração', 
+            altPlan: '• Plano B: Descanso absoluto.',
             strength: 'Mobilidade', 
             color: 'text-slate-400', 
             detail: '• Descanso absoluto.' 
           }
         ];
       } else {
-        // Perfil padrão (ex: 94kg, que já corre mas nunca fez 12k)
         return [
           { 
             day: 'Segunda-feira', 
-            title: `Treino Longo de Base Adaptada (${suggestedLongRun} km)`, 
+            title: `Treino Longo Adaptado (${suggestedLongRun} km)`, 
             type: 'Longão Realista', 
+            altPlan: altPlanText,
             strength: 'Força: Treino A (Superiores)', 
             color: 'text-indigo-400', 
-            detail: `• Histórico máximo registado: ${maxDistRecorded} km.\n• Base do Longão: ${suggestedLongRun} km contínuos em ritmo confortável (Z2), respeitando estritamente o seu volume atual sem saltos abusivos.` 
+            detail: `• Teto máximo registado: ${maxDistRecorded} km.\n• Base do Longão: ${suggestedLongRun} km contínuos em ritmo confortável (Z2).` 
           },
           { 
             day: 'Terça-feira', 
             title: 'Rodagem Regenerativa Leve', 
             type: 'Recuperação Ativa', 
+            altPlan: '• Plano B: 20 minutos de caminhada leve ou descanso completo.',
             strength: 'Descanso de Força', 
             color: 'text-emerald-400', 
             detail: '• 4 km muito leves para soltura da musculatura pós-longão.' 
@@ -1040,6 +1046,7 @@
             day: 'Quarta-feira', 
             title: 'Condicionamento Cruzado & Natação', 
             type: 'Cross Training', 
+            altPlan: '• Plano B: 30 min de bicicleta estacionária leve.',
             strength: 'Força: Treino B (Pernas & Glúteos)', 
             color: 'text-cyan-400', 
             detail: '• 35 min de natação ou bike leve.' 
@@ -1048,14 +1055,16 @@
             day: 'Quinta-feira', 
             title: 'Intervalado Curto (Tiros na Pista)', 
             type: 'Velocidade', 
+            altPlan: '• Plano B: Reduza para 4 tiros em vez de 6, mantendo a pausa longa.',
             strength: 'Trote Regenerativo', 
             color: 'text-orange-400', 
-            detail: '• 6x 400m em ritmo forte, com 90 segundos de trote leve entre as séries.' 
+            detail: '• 6x 400m em ritmo forte, com 90 segundos de trote leve.' 
           },
           { 
             day: 'Sexta-feira', 
             title: 'Rodagem Contínua Moderada', 
             type: 'Aeróbico', 
+            altPlan: '• Plano B: Faça 3 km correndo e 1 km andando.',
             strength: 'Força: Treino C (Core & Estabilidade)', 
             color: 'text-blue-400', 
             detail: '• 5 km em ritmo constante.' 
@@ -1064,6 +1073,7 @@
             day: 'Sábado', 
             title: 'Fartlek de Ritmo Variado', 
             type: 'Fartlek', 
+            altPlan: '• Plano B: Substitua blocos fortes por acelerações suaves de 30 segundos.',
             strength: 'Hidratação e Descanso', 
             color: 'text-yellow-400', 
             detail: '• 25 min alternando 1 min forte / 1 min leve.' 
@@ -1072,6 +1082,7 @@
             day: 'Domingo', 
             title: 'Descanso Total', 
             type: 'Regeneração', 
+            altPlan: '• Plano B: Descanso absoluto.',
             strength: 'Mobilidade', 
             color: 'text-slate-400', 
             detail: '• Descanso absoluto.' 
@@ -1105,6 +1116,11 @@
               </button>
             </div>
             <p class="text-xs text-gray-300 whitespace-pre-line leading-relaxed">${item.detail}</p>
+            ${item.altPlan ? `
+              <div class="p-2.5 rounded-xl bg-cyan-950/20 border border-cyan-500/30 text-[11px] text-cyan-200">
+                <strong class="text-cyan-400"><i class="fa-solid fa-code-fork mr-1"></i> Opção Alternativa (Plano B):</strong> ${item.altPlan}
+              </div>
+            ` : ''}
             <div class="bg-slate-950 p-2.5 rounded-xl text-[11px] text-gray-400 border border-slate-800/80">
               <strong class="text-emerald-400">Musculação:</strong> ${item.strength}
             </div>
@@ -1203,7 +1219,7 @@
       localStorage.setItem(`stamina_manual_runs_${currentProfile}`, JSON.stringify(manualActivities));
       clearRunForm();
       updateDashboardData();
-      renderPlan(); // Atualiza o plano caso o histórico mude o teto de volume
+      renderPlan();
     }
 
     function editManualRun(id) {
@@ -1667,7 +1683,7 @@
         <div class="p-2 bg-slate-950 rounded-lg text-orange-400 font-mono">Z4 (Limiar Anaeróbico): ${Math.round(hrr * 0.8 + fcRest)} - ${Math.round(hrr * 0.9 + fcRest)} BPM</div>
         <div class="p-2 bg-slate-950 rounded-lg text-rose-400 font-mono">Z5 (Pico de VAM): ${Math.round(hrr * 0.9 + fcRest)} - ${fcMax} BPM</div>
       `;
-      res.classList.remove('hidden');
+      res.classList.add('hidden');
     }
 
     function calculateCalories() {
