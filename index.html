@@ -223,16 +223,16 @@
         </button>
       </div>
 
-      <!-- PREVISÕES DE DESEMPENHO -->
+      <!-- PREVISÕES DE DESEMPENHO (MODELO STRAVA / RIEGEL AVANÇADO) -->
       <div class="p-4 rounded-3xl bg-slate-900 border border-orange-500/30 space-y-4 relative overflow-hidden">
         <div class="flex justify-between items-center">
           <div>
             <h3 class="text-sm font-bold text-white flex items-center gap-2">
               <i class="fa-solid fa-chart-line text-orange-400"></i> Previsões de Desempenho
             </h3>
-            <p class="text-[10px] text-gray-400">Estimativas ajustadas ao seu ritmo real de treino.</p>
+            <p class="text-[10px] text-gray-400">Estimativas ajustadas ao seu histórico real de treino.</p>
           </div>
-          <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold">Base Riegel</span>
+          <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold">Base Strava / Riegel</span>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -383,7 +383,7 @@
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
           <h2 class="text-sm font-bold text-white">Protocolos de Teste de Corrida</h2>
-          <p class="text-xs text-gray-400">Avaliações científicas completas.</p>
+          <p class="text-xs text-gray-400">Avaliações científicas e testes de campo.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
@@ -392,18 +392,19 @@
       <div id="protocolsContainer" class="space-y-2.5"></div>
     </div>
 
-    <!-- TAB 6: CALCULATORS & TOOLS -->
+    <!-- TAB 6: CALCULATORS & TOOLS (EXPANDIDO) -->
     <div id="tab-calculators" class="tab-content hidden space-y-4">
       <div class="px-1 mb-1 flex justify-between items-center">
         <div>
           <h2 class="text-sm font-bold text-white">Ferramentas Profissionais</h2>
-          <p class="text-xs text-gray-400">Pace, preditor, zonas de FC e tabela de passagens.</p>
+          <p class="text-xs text-gray-400">Pace, Zonas de FC, Caloria, VAM e Tabela de Passagens.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
         </button>
       </div>
 
+      <!-- GERADOR DE SPLITS -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-cyan-500/30 space-y-3">
         <div class="flex items-center space-x-3 text-cyan-400">
           <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center"><i class="fa-solid fa-list-ol"></i></div>
@@ -428,6 +429,7 @@
         <div id="splitsResult" class="hidden space-y-1.5 pt-1 max-h-48 overflow-y-auto no-scrollbar"></div>
       </div>
 
+      <!-- CALCULADORA DE PACE E VO2 MAX -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <div class="flex items-center space-x-3 text-orange-400">
           <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center"><i class="fa-solid fa-gauge-high"></i></div>
@@ -450,6 +452,50 @@
           <div><span class="text-[9px] text-gray-400 uppercase font-bold">Est. VO2máx</span><div id="resVo2" class="text-sm font-black text-emerald-400">-- ml/kg</div></div>
         </div>
       </div>
+
+      <!-- CALCULADORA DE ZONAS DE FREQUÊNCIA CARDÍACA (KARVONEN) -->
+      <div class="p-4 rounded-2xl bg-slate-900 border border-rose-500/30 space-y-3">
+        <div class="flex items-center space-x-3 text-rose-400">
+          <div class="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center"><i class="fa-solid fa-heart-pulse"></i></div>
+          <h3 class="font-bold text-sm text-white">Zonas de Frequência Cardíaca (Karvonen)</h3>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">FC Máxima (BPM)</label>
+            <input type="number" id="fcMax" value="195" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-rose-500 outline-none" />
+          </div>
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">FC Repouso (BPM)</label>
+            <input type="number" id="fcRest" value="66" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-rose-500 outline-none" />
+          </div>
+        </div>
+        <button onclick="calculateZones()" class="w-full py-2.5 bg-gradient-to-r from-rose-500 to-pink-600 rounded-xl text-xs font-bold text-white shadow-lg shadow-rose-500/20 active:scale-95 transition">Calcular Zonas FC</button>
+        <div id="zonesResult" class="hidden space-y-1.5 pt-1 text-xs"></div>
+      </div>
+
+      <!-- CALCULADORA DE GASTO CALÓRICO -->
+      <div class="p-4 rounded-2xl bg-slate-900 border border-emerald-500/30 space-y-3">
+        <div class="flex items-center space-x-3 text-emerald-400">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center"><i class="fa-solid fa-fire"></i></div>
+          <h3 class="font-bold text-sm text-white">Calculadora de Gasto Calórico (METs)</h3>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Peso (kg)</label>
+            <input type="number" id="calWeight" value="75" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none" />
+          </div>
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Distância (km)</label>
+            <input type="number" step="0.1" id="calDist" value="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none" />
+          </div>
+          <div>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Tempo (min)</label>
+            <input type="number" id="calTime" value="25" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none" />
+          </div>
+        </div>
+        <button onclick="calculateCalories()" class="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl text-xs font-bold text-white shadow-lg shadow-emerald-500/20 active:scale-95 transition">Estimador Calórico</button>
+        <div id="calResult" class="hidden p-3 rounded-xl bg-slate-950 text-center font-bold text-emerald-400 text-sm"></div>
+      </div>
     </div>
 
     <!-- TAB 7: PHYSIOLOGY -->
@@ -466,12 +512,12 @@
       <div id="physiologyContainer" class="space-y-2.5"></div>
     </div>
 
-    <!-- TAB 8: WORKOUTS -->
+    <!-- TAB 8: WORKOUTS (MÉTODOS DE TREINAMENTO COMPLETOS COM FARTLEK, HILL REPEATS, ETC.) -->
     <div id="tab-workouts" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
           <h2 class="text-sm font-bold text-white">Métodos de Treinamento Profissional</h2>
-          <p class="text-xs text-gray-400">Catálogo completo de sessões estruturadas.</p>
+          <p class="text-xs text-gray-400">Catálogo completo com Fartlek, Tiros, Subidas e Longão.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
@@ -523,43 +569,51 @@
     let manualActivities = JSON.parse(localStorage.getItem('stamina_manual_runs') || '[]');
     let timerInterval = null;
 
-    // CATÁLOGO COMPLETO DE ELÁSTICOS RESTAURADO
+    // CATÁLOGO COMPLETO DE ELÁSTICOS
     const BANDS_WORKOUTS = {
       A: [
         { name: "Supino Reto com Elástico", setup: "Pise no centro do elástico e segure as extremidades nas mãos.", exec: "Empurre para cima estendendo os braços controlando a volta.", sets: "3 x 15 reps" },
         { name: "Remada Curvada com Elástico", setup: "Pise no elástico com os dois pés, incline o tronco à frente.", exec: "Puxe os punhos em direção ao quadril contraindo as escápulas.", sets: "3 x 15 reps" },
         { name: "Desenvolvimento de Ombros", setup: "Pise no elástico na largura dos ombros.", exec: "Eleve os braços acima da cabeça até esticar.", sets: "3 x 12 reps" },
-        { name: "Rosca Direta para Bíceps", setup: "Pise no elástico com um ou dois pés.", exec: "Flexione os cotovelos trazendo as mãos aos ombros.", sets: "3 x 15 reps" }
+        { name: "Rosca Direta para Bíceps", setup: "Pise no elástico com um ou dois pés.", exec: "Flexione os cotovelos trazendo as mãos aos ombros.", sets: "3 x 15 reps" },
+        { name: "Tríceps Trás da Cabeça (French Press)", setup: "Pise na extremidade inferior e segure acima com as duas mãos.", exec: "Extensão dos cotovelos acima da cabeça.", sets: "3 x 12 reps" }
       ],
       B: [
         { name: "Agachamento Livre com Elástico", setup: "Pise no elástico e apoie a alça nos ombros.", exec: "Agache mantendo o peito aberto e joelhos alinhados.", sets: "3 x 15 reps" },
         { name: "Ponte de Glúteos com Mini Band", setup: "Mini band posicionada logo acima dos joelhos.", exec: "Eleve o quadril fazendo força de abertura com os joelhos.", sets: "3 x 20 reps" },
         { name: "Cadeira Extensora com Elástico", setup: "Prenda o elástico numa cadeira ou base fixa e no tornozelo.", exec: "Estique a perna para frente contra a resistência.", sets: "3 x 15 reps" },
-        { name: "Elevação Pélvica Unilateral", setup: "Apoio de costas no banco com elástico na cintura.", exec: "Suba o quadril focando na contração do glúteo.", sets: "3 x 12 reps" }
+        { name: "Elevação Pélvica Unilateral", setup: "Apoio de costas no banco com elástico na cintura.", exec: "Suba o quadril focando na contração do glúteo.", sets: "3 x 12 reps" },
+        { name: "Passada Lateral (Monster Walk)", setup: "Mini band nos tornozelos.", exec: "Caminhe lateralmente mantendo a tensão do elástico.", sets: "3 x 15 passos cada lado" }
       ],
       C: [
         { name: "Pallof Press (Anti-rotação)", setup: "Prenda o elástico na altura do peito numa porta ou pilar.", exec: "Afaste o corpo e estique os braços resistindo à força lateral.", sets: "3 x 12 reps por lado" },
         { name: "Prancha com Mini Band nos Braços", setup: "Mini band nos antebraços em posição de prancha.", exec: "Afaste levemente os braços mantendo o core estabilizado.", sets: "3 x 45 seg" },
         { name: "Abdominal Remador com Resistência", setup: "Elástico preso nos pés.", exec: "Abra e feche o tronco e joelhos de forma sincronizada.", sets: "3 x 15 reps" },
-        { name: "Extensão de Lombar (Superman)", setup: "Elástico fixo sob os pés e nas mãos.", exec: "Eleve levemente o peito do chão contraindo a lombar.", sets: "3 x 12 reps" }
+        { name: "Extensão de Lombar (Superman)", setup: "Elástico fixo sob os pés e nas mãos.", exec: "Eleve levemente o peito do chão contraindo a lombar.", sets: "3 x 12 reps" },
+        { name: "Rotação Externa de Ombro (Manguito Rotador)", setup: "Elástico fixo na altura do cotovelo.", exec: "Roteie o antebraço para fora com o cotovelo colado ao tronco.", sets: "3 x 15 reps por lado" }
       ]
     };
 
-    // BASE DE DADOS COMPLETA (PROTOCOLOS, FISIOLOGIA E MÉTODOS DE TREINO RESTAURADOS)
+    // BASE DE DADOS AMPLIADA (PROTOCOLOS, FISIOLOGIA E MÉTODOS DE TREINO COMPLETOS)
     const DATABASE = {
       protocols: [
         { id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos em pista aferida.', whatItMeasures: 'Capacidade aeróbica máxima, VAM e estimativa de VO2máx.', physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico durante todo o teste.' },
         { id: 'proto-tc3k', category: 'Protocolo de Teste', title: 'Teste de 3.200 Metros (2 Milhas)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Avaliação militar e de performance', icon: 'fa-person-running', description: 'Corrida cronometrada cobrindo exatamente 3.200 metros no menor tempo possível.', whatItMeasures: 'Velocidade aeróbica máxima e eficiência de ritmo.', physiology: 'Alto estresse cardiovascular com recrutamento intenso do sistema oxidativo e glicolítico.' },
-        { id: 'proto-time-trial', category: 'Protocolo de Teste', title: 'Time Trial de 5 km', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Contrarrelógio para calibração de pace', icon: 'fa-flag-checkered', description: 'Corrida de 5 km em esforço máximo para recalibrar as zonas de treino.', whatItMeasures: 'Limiar anaeróbico funcional e velocidade de base.', physiology: 'Sustentação do limiar de lactato com tolerância à acidose metabólica.' }
+        { id: 'proto-time-trial', category: 'Protocolo de Teste', title: 'Time Trial de 5 km', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Contrarrelógio para calibração de pace', icon: 'fa-flag-checkered', description: 'Corrida de 5 km em esforço máximo para recalibrar as zonas de treino.', whatItMeasures: 'Limiar anaeróbico funcional e velocidade de base.', physiology: 'Sustentação do limiar de lactato com tolerância à acidose metabólica.' },
+        { id: 'proto-yoyo', category: 'Protocolo de Teste', title: 'Yo-Yo Intermittent Recovery Test', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'Teste progressivo de ir e vir', icon: 'fa-arrows-left-right', description: 'Corrida de 20 metros em ida e volta acompanhando bipes sonoros com intervalos breves.', whatItMeasures: 'Capacidade de recuperação intermitente e VAM.', physiology: 'Avalia a habilidade de ressintetizar fosfocreatina rapidamente durante pausas ativas.' },
+        { id: 'proto-vameval', category: 'Protocolo de Teste', title: 'Protocolo VAM-Eval (Pista)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Teste incremental contínuo', icon: 'fa-chart-line', description: 'Incremento de 0.5 km/h a cada minuto em pistas marcadas com cones a cada 20m.', whatItMeasures: 'Velocidade Aeróbica Máxima (VAM) com altíssima precisão.', physiology: 'Determina exatamente o ponto em que o VO2máx atinge seu teto funcional.' }
       ],
       physiology: [
         { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) alimenta todas as contrações musculares na corrida.', whatItMeasures: 'Ressíntese de energia rápida e sustentada.', physiology: 'Sistemas ATP-CP (explosão), Glicolítico (média intensidade) e Oxidativo (endurance).' },
         { id: 'phys-drift', category: 'Cardiovascular', title: 'Deriva Cardíaca (Cardiac Drift)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Aumento da FC em esforço constante', icon: 'fa-heart-pulse', description: 'Fenómeno onde a frequência cardíaca sobe gradativamente mesmo mantendo o pace estável.', whatItMeasures: 'Eficiência termorreguladora e hidratação.', physiology: 'Desvio associado à perda de volume plasmático, suor e desvio para circulação cutânea.' },
-        { id: 'phys-lactate', category: 'Bioenergética', title: 'Limiar de Lactato & Clearance', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'O ponto de virada metabólica', icon: 'fa-chart-area', description: 'Ponto onde a produção de lactato supera a capacidade de remoção celular.', whatItMeasures: 'Tolerância à fadiga em altas velocidades.', physiology: 'Determina o ritmo máximo sustentável sem acumulação excessiva de iões de hidrogénio.' }
+        { id: 'phys-lactate', category: 'Bioenergética', title: 'Limiar de Lactato & Clearance', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'O ponto de virada metabólica', icon: 'fa-chart-area', description: 'Ponto onde a produção de lactato supera a capacidade de remoção celular.', whatItMeasures: 'Tolerância à fadiga em altas velocidades.', physiology: 'Determina o ritmo máximo sustentável sem acumulação excessiva de iões de hidrogénio.' },
+        { id: 'phys-economy', category: 'Biomecânica', title: 'Economia de Corrida (Running Economy)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Consumo de O2 por metro percorrido', icon: 'fa-person-running', description: 'Mede o custo de oxigênio para manter uma dada velocidade submáxima.', whatItMeasures: 'Eficiência de passada e rigidez tendínea.', physiology: 'Influenciada pela biomecânica, técnica de apoio do pé e rigidez do complexo tendão de Aquiles.' }
       ],
       workouts: [
-        { id: 'work-interval', category: 'Método de Treino', title: 'Treino Intervalado (VO2máx)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Repetições de 400m a 1000m', icon: 'fa-stopwatch-20', description: 'Esforços intensos (95-100% VAM) intercalados com recuperação ativa.', whatItMeasures: 'Potência aeróbica máxima e expansão do VO2máx.', physiology: 'Elevação rápida da frequência cardíaca próxima ao teto máximo.' },
-        { id: 'work-tempo', category: 'Método de Treino', title: 'Tempo Run (Limiar)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Ritmo sustentável prolongado', icon: 'fa-gauge-high', description: 'Corrida contínua num ritmo ligeiramente abaixo do limiar anaeróbico.', whatItMeasures: 'Resistência de velocidade e economia de corrida.', physiology: 'Retardamento do acúmulo de fadiga em tiros longos.' },
+        { id: 'work-fartlek', category: 'Método de Treino', title: 'Fartlek (Brincadeira de Ritmos)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Variações livres de velocidade e terreno', icon: 'fa-wind', description: 'Treino estruturado com mudanças contínuas de ritmo baseadas em tempo ou terreno, sem pausas completas.', whatItMeasures: 'Versatilidade aeróbica, mudança de limiar e recrutamento muscular dinâmico.', physiology: 'Estimula o sistema aeróbico e a tolerância ao ácido lático de forma livre e eficiente.' },
+        { id: 'work-interval', category: 'Método de Treino', title: 'Treino Intervalado (Tiros/VO2máx)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Repetições de 400m a 1000m', icon: 'fa-stopwatch-20', description: 'Esforços intensos (95-100% VAM) intercalados com recuperação ativa.', whatItMeasures: 'Potência aeróbica máxima e expansão do VO2máx.', physiology: 'Elevação rápida da frequência cardíaca próxima ao teto máximo.' },
+        { id: 'work-hills', category: 'Método de Treino', title: 'Hill Repeats (Tiros em Subida)', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'Força específica e potência', icon: 'fa-mountain', description: 'Repetições de tiro curto ou médio (30s a 2min) em aclives com descida leve para recuperar.', whatItMeasures: 'Potência muscular, técnica de passada e menor impacto articular.', physiology: 'Fortalece glúteos e panturrilhas enquanto exige pico metabólico de alta frequência.' },
+        { id: 'work-tempo', category: 'Método de Treino', title: 'Tempo Run (Corrida em Limiar)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Ritmo sustentável prolongado', icon: 'fa-gauge-high', description: 'Corrida contínua num ritmo ligeiramente abaixo do limiar anaeróbico.', whatItMeasures: 'Resistência de velocidade e economia de corrida.', physiology: 'Retardamento do acúmulo de fadiga em tiros longos.' },
         { id: 'work-long', category: 'Método de Treino', title: 'O Longão (Long Run)', badgeColor: 'bg-indigo-500/20 text-indigo-300', subtitle: 'Resistência aeróbica de base', icon: 'fa-route', description: 'Sessão de longa distância em ritmo conversacional (Z2).', whatItMeasures: 'Capitulação mitocondrial, densidade capilar e queima de gordura.', physiology: 'Adaptação estrutural de tendões, articulações e estoques de glicogênio.' },
         { id: 'work-recovery', category: 'Método de Treino', title: 'Rodagem Regenerativa (Z1)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Recuperação ativa leve', icon: 'fa-leaf', description: 'Corrida curta e muito leve para descompressão muscular.', whatItMeasures: 'Fluxo sanguíneo e remoção de metabólitos.', physiology: 'Aceleração da recuperação sem causar microlesões adicionais.' }
       ]
@@ -622,7 +676,7 @@
 
       return [
         { day: 'Segunda-feira', title: 'Corrida Contínua (Base Aeróbica)', type: 'Corrida Z2', strength: 'Força: Treino A (Superiores)', color: 'text-blue-400', detail: `${Math.round(6 * mult)}k em ritmo conversacional (Z2).` },
-        { day: 'Terça-feira', title: 'Treino Intervalado (Tiros de Pista)', type: 'Tiros / VAM', strength: 'Descanso de Força', color: 'text-red-400', detail: `Aquecimento + ${weekNumber >= 3 ? '8' : '6'} x 400m forte.` },
+        { day: 'Terça-feira', title: 'Treino Fartlek (Variação de Ritmo)', type: 'Fartlek', strength: 'Descanso de Força', color: 'text-cyan-400', detail: `Aquecimento + blocos alternados de velocidade leve e forte.` },
         { day: 'Quarta-feira', title: 'Condicionamento Misto', type: 'Natação / Aeróbico', strength: 'Força: Treino B (Pernas)', color: 'text-cyan-400', detail: 'Sessão de natação ou aeróbico sem impacto.' },
         { day: 'Quinta-feira', title: 'Treino de Ritmo (Tempo Run)', type: 'Limiar Anaeróbico', strength: 'Trote Regenerativo', color: 'text-yellow-400', detail: `Aquecimento + ${Math.round(3.5 * mult)}k em limiar.` },
         { day: 'Sexta-feira', title: 'Rodagem Regenerativa', type: 'Recuperação Ativa', strength: 'Força: Treino C (Core)', color: 'text-emerald-400', detail: '3k a 4k em ritmo leve (Z1).' },
@@ -938,25 +992,16 @@
       renderWeeklyChart();
       renderSmartComparativeFeedback(filteredActivities, period, currentMonth, currentYear);
       renderManualActivitiesList(filteredActivities);
-      updatePerformancePredictions(filteredActivities);
+      updatePerformancePredictions();
     }
 
-    // MOTOR DE PREVISÕES CORRIGIDO (REALISTA E SEGURO)
-    function updatePerformancePredictions(activities) {
-      let bestPaceSec = 250; // Base inicial de 4:10 /km se não houver dados
-      if (activities.length > 0) {
-        let paces = activities.map(a => parsePaceToSeconds(a.pace)).filter(p => p > 180 && p < 450);
-        if (paces.length > 0) {
-          bestPaceSec = Math.min(...paces);
-        }
+    // MOTOR DE PREVISÕES ESTILO STRAVA (BASEADO EM HISTÓRICO REAL COM FATOR RIEGEL ROBUSTO)
+    function updatePerformancePredictions() {
+      let bestPaceSec = 300;
+      if (manualActivities.length > 0) {
+        let validPaces = manualActivities.map(a => parsePaceToSeconds(a.pace)).filter(p => p > 150 && p < 600);
+        if (validPaces.length > 0) bestPaceSec = Math.min(...validPaces);
       }
-
-      // Aplicação de Fator Riegel com fator de degradação real para distâncias maiores
-      const calcTimeSec = (distKm) => {
-        // Fator de quebra fisiológica por distância (1.07 a 1.10)
-        let fatigueFactor = Math.pow(distKm / 5, 1.08);
-        return bestPaceSec * distKm * (distKm <= 5 ? 1.0 : fatigueFactor * 0.96);
-      };
 
       const formatTime = (sec) => {
         let h = Math.floor(sec / 3600);
@@ -973,19 +1018,28 @@
         return `${m}:${s < 10 ? '0' : ''}${s} /km`;
       };
 
-      let t5k = calcTimeSec(5);
-      let t10k = calcTimeSec(10);
-      let t21k = calcTimeSec(21.097);
-      let t42k = calcTimeSec(42.195);
+      let t5 = calcTimeSec(5);
+      let t10 = calcTimeSec(10);
+      let t21 = calcTimeSec(21.097);
+      let t42 = calcTimeSec(42.195);
 
-      document.getElementById('pred5kTime').textContent = formatTime(t5k);
-      document.getElementById('pred5kPace').textContent = formatPace(t5k, 5);
-      document.getElementById('pred10kTime').textContent = formatTime(t10k);
-      document.getElementById('pred10kPace').textContent = formatPace(t10k, 10);
-      document.getElementById('pred21kTime').textContent = formatTime(t21k);
-      document.getElementById('pred21kPace').textContent = formatPace(t21k, 21.097);
-      document.getElementById('pred42kTime').textContent = formatTime(t42k);
-      document.getElementById('pred42kPace').textContent = formatPace(t42k, 42.195);
+      document.getElementById('pred5kTime').textContent = formatTime(t5);
+      document.getElementById('pred5kPace').textContent = formatPace(t5, 5);
+      document.getElementById('pred10kTime').textContent = formatTime(t10);
+      document.getElementById('pred10kPace').textContent = formatPace(t10, 10);
+      document.getElementById('pred21kTime').textContent = formatTime(t21);
+      document.getElementById('pred21kPace').textContent = formatPace(t21, 21.097);
+      document.getElementById('pred42kTime').textContent = formatTime(t42);
+      document.getElementById('pred42kPace').textContent = formatPace(t42, 42.195);
+    }
+
+    function calcTimeSec(distKm) {
+      let bestPaceSec = 300;
+      if (manualActivities.length > 0) {
+        let validPaces = manualActivities.map(a => parsePaceToSeconds(a.pace)).filter(p => p > 150 && p < 600);
+        if (validPaces.length > 0) bestPaceSec = Math.min(...validPaces);
+      }
+      return (bestPaceSec * distKm) * Math.pow(distKm / 5, 0.07);
     }
 
     function renderSmartComparativeFeedback(filteredActs, period, currentMonth, currentYear) {
@@ -1029,7 +1083,6 @@
           <div class="space-y-2 border-b border-slate-800/80 pb-3">
             <span class="text-emerald-400 font-bold block"><i class="fa-solid fa-circle-check mr-1"></i> Indicadores de Evolução & Desempenho</span>
             <p class="text-gray-300">• <strong>Pace Médio Consolidado:</strong> <strong>${formatPace(avgPaceSec)}</strong> em toda a base de dados, refletindo a consolidação do limiar aeróbico e constância de passada.</p>
-            <p class="text-gray-300">• <strong>Consistência Estrutural:</strong> Distribuição equilibrada de treinos que favorece a adaptação tendinosa e musculoesquelética.</p>
           </div>
           <div class="space-y-2">
             <span class="text-cyan-400 font-bold block"><i class="fa-solid fa-crosshairs mr-1"></i> Diretrizes para Próximos Ciclos</span>
@@ -1183,7 +1236,6 @@
       `).join('');
     }
 
-    // RENDERIZAR ABAS DE PROTOCOLOS, FISIOLOGIA E WORKOUTS COM CONTEÚDO COMPLETO
     function renderHomeContent() {
       if (document.getElementById('homeProtocolsList')) {
         document.getElementById('homeProtocolsList').innerHTML = DATABASE.protocols.map(item => `
@@ -1269,6 +1321,40 @@
       document.getElementById('resSpeed').textContent = `${(distKm / (totalSeconds / 3600)).toFixed(2)} km/h`;
       document.getElementById('resVo2').textContent = dist >= 1000 ? `${((dist - 504.9) / 44.73).toFixed(1)} ml/kg` : "--";
       document.getElementById('paceResult').classList.remove('hidden');
+    }
+
+    function calculateZones() {
+      const fcMax = parseInt(document.getElementById('fcMax').value);
+      const fcRest = parseInt(document.getElementById('fcRest').value);
+      if (!fcMax || !fcRest || fcMax <= fcRest) { alert("Insira valores válidos para FC."); return; }
+      const hrr = fcMax - fcRest;
+
+      const z1 = [Math.round(hrr * 0.5 + fcRest), Math.round(hrr * 0.6 + fcRest)];
+      const z2 = [Math.round(hrr * 0.6 + fcRest), Math.round(hrr * 0.7 + fcRest)];
+      const z3 = [Math.round(hrr * 0.7 + fcRest), Math.round(hrr * 0.8 + fcRest)];
+      const z4 = [Math.round(hrr * 0.8 + fcRest), Math.round(hrr * 0.9 + fcRest)];
+      const z5 = [Math.round(hrr * 0.9 + fcRest), fcMax];
+
+      let res = document.getElementById('zonesResult');
+      res.innerHTML = `
+        <div class="p-2 bg-slate-950 rounded-lg text-emerald-400 font-mono">Z1 (Regenerativo): ${z1[0]} - ${z1[1]} BPM</div>
+        <div class="p-2 bg-slate-950 rounded-lg text-cyan-400 font-mono">Z2 (Aeróbico Leve): ${z2[0]} - ${z2[1]} BPM</div>
+        <div class="p-2 bg-slate-950 rounded-lg text-amber-400 font-mono">Z3 (Limiar Aeróbico): ${z3[0]} - ${z3[1]} BPM</div>
+        <div class="p-2 bg-slate-950 rounded-lg text-orange-400 font-mono">Z4 (Limiar Anaeróbico): ${z4[0]} - ${z4[1]} BPM</div>
+        <div class="p-2 bg-slate-950 rounded-lg text-rose-400 font-mono">Z5 (Pico de VAM): ${z5[0]} - ${z5[1]} BPM</div>
+      `;
+      res.classList.remove('hidden');
+    }
+
+    function calculateCalories() {
+      const weight = parseFloat(document.getElementById('calWeight').value);
+      const dist = parseFloat(document.getElementById('calDist').value);
+      if (!weight || !dist) { alert("Insira peso e distância."); return; }
+      // Estimativa direta para corrida (~1.03 kcal por kg por km)
+      const cal = Math.round(weight * dist * 1.03);
+      let res = document.getElementById('calResult');
+      res.textContent = `Gasto Estimado: ~${cal} kcal`;
+      res.classList.remove('hidden');
     }
 
     function generatePaceSplits() {
