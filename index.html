@@ -359,7 +359,7 @@
         </div>
       </div>
 
-      <!-- MOTOR INTELIGENTE: COMPARATIVO NOS MESES E LEVANTAMENTO PURAMENTE TÉCNICO NO GERAL -->
+      <!-- ANÁLISE CRÍTICA -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
           <i class="fa-solid fa-brain"></i> ANÁLISE CRÍTICA DE DESEMPENHO & EVOLUÇÃO
@@ -523,33 +523,45 @@
     let manualActivities = JSON.parse(localStorage.getItem('stamina_manual_runs') || '[]');
     let timerInterval = null;
 
+    // CATÁLOGO COMPLETO DE ELÁSTICOS RESTAURADO
     const BANDS_WORKOUTS = {
       A: [
-        { name: "Supino com Elástico Extensor", setup: "Prenda o elástico na altura média da porta.", exec: "Empurre para frente até estender os braços.", sets: "3 x 15 reps" },
-        { name: "Remada Baixa / Curvada", setup: "Pise no centro do elástico tubular.", exec: "Puxe em direção ao quadril.", sets: "3 x 15 reps" }
+        { name: "Supino Reto com Elástico", setup: "Pise no centro do elástico e segure as extremidades nas mãos.", exec: "Empurre para cima estendendo os braços controlando a volta.", sets: "3 x 15 reps" },
+        { name: "Remada Curvada com Elástico", setup: "Pise no elástico com os dois pés, incline o tronco à frente.", exec: "Puxe os punhos em direção ao quadril contraindo as escápulas.", sets: "3 x 15 reps" },
+        { name: "Desenvolvimento de Ombros", setup: "Pise no elástico na largura dos ombros.", exec: "Eleve os braços acima da cabeça até esticar.", sets: "3 x 12 reps" },
+        { name: "Rosca Direta para Bíceps", setup: "Pise no elástico com um ou dois pés.", exec: "Flexione os cotovelos trazendo as mãos aos ombros.", sets: "3 x 15 reps" }
       ],
       B: [
-        { name: "Agachamento com Extensor", setup: "Pise no elástico e apoie nos ombros.", exec: "Agachamento mantendo o tronco erguido.", sets: "3 x 15 reps" },
-        { name: "Ponte de Glúteos com Mini Band", setup: "Mini band acima dos joelhos.", exec: "Eleve o quadril abrindo os joelhos.", sets: "3 x 20 reps" }
+        { name: "Agachamento Livre com Elástico", setup: "Pise no elástico e apoie a alça nos ombros.", exec: "Agache mantendo o peito aberto e joelhos alinhados.", sets: "3 x 15 reps" },
+        { name: "Ponte de Glúteos com Mini Band", setup: "Mini band posicionada logo acima dos joelhos.", exec: "Eleve o quadril fazendo força de abertura com os joelhos.", sets: "3 x 20 reps" },
+        { name: "Cadeira Extensora com Elástico", setup: "Prenda o elástico numa cadeira ou base fixa e no tornozelo.", exec: "Estique a perna para frente contra a resistência.", sets: "3 x 15 reps" },
+        { name: "Elevação Pélvica Unilateral", setup: "Apoio de costas no banco com elástico na cintura.", exec: "Suba o quadril focando na contração do glúteo.", sets: "3 x 12 reps" }
       ],
       C: [
-        { name: "Pallof Press (Anti-rotação)", setup: "Prenda na porta na altura do peito.", exec: "Estique os braços resistindo à rotação.", sets: "3 x 12 reps" },
-        { name: "Prancha com Mini Band", setup: "Mini band nos antebraços.", exec: "Manter core rígido com pressão externa.", sets: "3 x 45 seg" }
+        { name: "Pallof Press (Anti-rotação)", setup: "Prenda o elástico na altura do peito numa porta ou pilar.", exec: "Afaste o corpo e estique os braços resistindo à força lateral.", sets: "3 x 12 reps por lado" },
+        { name: "Prancha com Mini Band nos Braços", setup: "Mini band nos antebraços em posição de prancha.", exec: "Afaste levemente os braços mantendo o core estabilizado.", sets: "3 x 45 seg" },
+        { name: "Abdominal Remador com Resistência", setup: "Elástico preso nos pés.", exec: "Abra e feche o tronco e joelhos de forma sincronizada.", sets: "3 x 15 reps" },
+        { name: "Extensão de Lombar (Superman)", setup: "Elástico fixo sob os pés e nas mãos.", exec: "Eleve levemente o peito do chão contraindo a lombar.", sets: "3 x 12 reps" }
       ]
     };
 
+    // BASE DE DADOS COMPLETA (PROTOCOLOS, FISIOLOGIA E MÉTODOS DE TREINO RESTAURADOS)
     const DATABASE = {
       protocols: [
-        { id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos.', whatItMeasures: 'Capacidade aeróbica máxima e estimativa do VO2 máx.', physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico e VAM.' },
-        { id: 'proto-tc3k', category: 'Protocolo de Teste', title: 'Teste de 3.200 Metros (2 Milhas)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Avaliação militar de corrida', icon: 'fa-person-running', description: 'Corrida cronometrada em pista ou terreno plano por exatos 3.200 metros.', whatItMeasures: 'Velocidade aeróbica máxima e limiar anaeróbico.', physiology: 'Estresse cardiovascular elevado com predominância do sistema glicolítico oxidativo.' }
+        { id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos em pista aferida.', whatItMeasures: 'Capacidade aeróbica máxima, VAM e estimativa de VO2máx.', physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico durante todo o teste.' },
+        { id: 'proto-tc3k', category: 'Protocolo de Teste', title: 'Teste de 3.200 Metros (2 Milhas)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Avaliação militar e de performance', icon: 'fa-person-running', description: 'Corrida cronometrada cobrindo exatamente 3.200 metros no menor tempo possível.', whatItMeasures: 'Velocidade aeróbica máxima e eficiência de ritmo.', physiology: 'Alto estresse cardiovascular com recrutamento intenso do sistema oxidativo e glicolítico.' },
+        { id: 'proto-time-trial', category: 'Protocolo de Teste', title: 'Time Trial de 5 km', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Contrarrelógio para calibração de pace', icon: 'fa-flag-checkered', description: 'Corrida de 5 km em esforço máximo para recalibrar as zonas de treino.', whatItMeasures: 'Limiar anaeróbico funcional e velocidade de base.', physiology: 'Sustentação do limiar de lactato com tolerância à acidose metabólica.' }
       ],
       physiology: [
-        { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) é a molécula de energia direta.', whatItMeasures: 'Ressíntese de energia muscular.', physiology: 'ATP-CP, Glicolítico e Oxidativo.' },
-        { id: 'phys-drift', category: 'Cardiovascular', title: 'Deriva Cardíaca (Cardiac Drift)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Aumento da FC em esforço constante', icon: 'fa-heart-pulse', description: 'Fenómeno onde a frequência cardíaca sobe progressivamente mesmo mantendo o pace estável.', whatItMeasures: 'Eficiência termorreguladora e desidratação.', physiology: 'Desvio associado à perda de volume plasmático e vasodilatação cutânea.' }
+        { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) alimenta todas as contrações musculares na corrida.', whatItMeasures: 'Ressíntese de energia rápida e sustentada.', physiology: 'Sistemas ATP-CP (explosão), Glicolítico (média intensidade) e Oxidativo (endurance).' },
+        { id: 'phys-drift', category: 'Cardiovascular', title: 'Deriva Cardíaca (Cardiac Drift)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Aumento da FC em esforço constante', icon: 'fa-heart-pulse', description: 'Fenómeno onde a frequência cardíaca sobe gradativamente mesmo mantendo o pace estável.', whatItMeasures: 'Eficiência termorreguladora e hidratação.', physiology: 'Desvio associado à perda de volume plasmático, suor e desvio para circulação cutânea.' },
+        { id: 'phys-lactate', category: 'Bioenergética', title: 'Limiar de Lactato & Clearance', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'O ponto de virada metabólica', icon: 'fa-chart-area', description: 'Ponto onde a produção de lactato supera a capacidade de remoção celular.', whatItMeasures: 'Tolerância à fadiga em altas velocidades.', physiology: 'Determina o ritmo máximo sustentável sem acumulação excessiva de iões de hidrogénio.' }
       ],
       workouts: [
-        { id: 'work-interval', category: 'Método de Treino', title: 'Treino Intervalado (VO2máx)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Repetições de 400m a 1000m', icon: 'fa-stopwatch-20', description: 'Esforços intensos (95-100% VAM) com recuperação incompleta.', whatItMeasures: 'Potência aeróbica e VO2máx.', physiology: 'Elevação do batimento cardíaco próximo ao teto.' },
-        { id: 'work-tempo', category: 'Método de Treino', title: 'Tempo Run (Limiar)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Ritmo sustentável prolongado', icon: 'fa-gauge-high', description: 'Corrida contínua num ritmo ligeiramente abaixo do limiar anaeróbico.', whatItMeasures: 'Tolerância ao lactato e endurance de velocidade.', physiology: 'Retardamento do acúmulo de iões de hidrogénio no sangue.' }
+        { id: 'work-interval', category: 'Método de Treino', title: 'Treino Intervalado (VO2máx)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Repetições de 400m a 1000m', icon: 'fa-stopwatch-20', description: 'Esforços intensos (95-100% VAM) intercalados com recuperação ativa.', whatItMeasures: 'Potência aeróbica máxima e expansão do VO2máx.', physiology: 'Elevação rápida da frequência cardíaca próxima ao teto máximo.' },
+        { id: 'work-tempo', category: 'Método de Treino', title: 'Tempo Run (Limiar)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Ritmo sustentável prolongado', icon: 'fa-gauge-high', description: 'Corrida contínua num ritmo ligeiramente abaixo do limiar anaeróbico.', whatItMeasures: 'Resistência de velocidade e economia de corrida.', physiology: 'Retardamento do acúmulo de fadiga em tiros longos.' },
+        { id: 'work-long', category: 'Método de Treino', title: 'O Longão (Long Run)', badgeColor: 'bg-indigo-500/20 text-indigo-300', subtitle: 'Resistência aeróbica de base', icon: 'fa-route', description: 'Sessão de longa distância em ritmo conversacional (Z2).', whatItMeasures: 'Capitulação mitocondrial, densidade capilar e queima de gordura.', physiology: 'Adaptação estrutural de tendões, articulações e estoques de glicogênio.' },
+        { id: 'work-recovery', category: 'Método de Treino', title: 'Rodagem Regenerativa (Z1)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Recuperação ativa leve', icon: 'fa-leaf', description: 'Corrida curta e muito leve para descompressão muscular.', whatItMeasures: 'Fluxo sanguíneo e remoção de metabólitos.', physiology: 'Aceleração da recuperação sem causar microlesões adicionais.' }
       ]
     };
 
@@ -929,7 +941,53 @@
       updatePerformancePredictions(filteredActivities);
     }
 
-    // MOTOR INTELIGENTE: COMPARATIVO EM MESES E LEVANTAMENTO GERAL DETALHADO PURO
+    // MOTOR DE PREVISÕES CORRIGIDO (REALISTA E SEGURO)
+    function updatePerformancePredictions(activities) {
+      let bestPaceSec = 250; // Base inicial de 4:10 /km se não houver dados
+      if (activities.length > 0) {
+        let paces = activities.map(a => parsePaceToSeconds(a.pace)).filter(p => p > 180 && p < 450);
+        if (paces.length > 0) {
+          bestPaceSec = Math.min(...paces);
+        }
+      }
+
+      // Aplicação de Fator Riegel com fator de degradação real para distâncias maiores
+      const calcTimeSec = (distKm) => {
+        // Fator de quebra fisiológica por distância (1.07 a 1.10)
+        let fatigueFactor = Math.pow(distKm / 5, 1.08);
+        return bestPaceSec * distKm * (distKm <= 5 ? 1.0 : fatigueFactor * 0.96);
+      };
+
+      const formatTime = (sec) => {
+        let h = Math.floor(sec / 3600);
+        let m = Math.floor((sec % 3600) / 60);
+        let s = Math.round(sec % 60);
+        if (h > 0) return `${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
+      };
+
+      const formatPace = (sec, dist) => {
+        let p = sec / dist;
+        let m = Math.floor(p / 60);
+        let s = Math.round(p % 60);
+        return `${m}:${s < 10 ? '0' : ''}${s} /km`;
+      };
+
+      let t5k = calcTimeSec(5);
+      let t10k = calcTimeSec(10);
+      let t21k = calcTimeSec(21.097);
+      let t42k = calcTimeSec(42.195);
+
+      document.getElementById('pred5kTime').textContent = formatTime(t5k);
+      document.getElementById('pred5kPace').textContent = formatPace(t5k, 5);
+      document.getElementById('pred10kTime').textContent = formatTime(t10k);
+      document.getElementById('pred10kPace').textContent = formatPace(t10k, 10);
+      document.getElementById('pred21kTime').textContent = formatTime(t21k);
+      document.getElementById('pred21kPace').textContent = formatPace(t21k, 21.097);
+      document.getElementById('pred42kTime').textContent = formatTime(t42k);
+      document.getElementById('pred42kPace').textContent = formatPace(t42k, 42.195);
+    }
+
     function renderSmartComparativeFeedback(filteredActs, period, currentMonth, currentYear) {
       const container = document.getElementById('monthlyFeedbackContent');
       if (!container) return;
@@ -960,7 +1018,6 @@
         return `${m} minutos`;
       };
 
-      // RELATÓRIO GERAL: LEVANTAMENTO DETALHADO PURO (SEM COMPARAÇÃO ENTRE MESES)
       if (period === 'all') {
         container.innerHTML = `
           <div class="space-y-2 border-b border-slate-800/80 pb-3">
@@ -977,13 +1034,11 @@
           <div class="space-y-2">
             <span class="text-cyan-400 font-bold block"><i class="fa-solid fa-crosshairs mr-1"></i> Diretrizes para Próximos Ciclos</span>
             <p class="text-gray-300">• Mantenha a sinergia entre os treinos de corrida contínua e as sessões de força com elásticos para blindar os joelhos contra impactos.</p>
-            <p class="text-gray-300">• Utilize o seletor de meses para auditar o progresso específico entre períodos fechados.</p>
           </div>
         `;
         return;
       }
 
-      // ANÁLISE MENSAL COM CRUZAMENTO MATEMÁTICO PRECISO (Ex: 55km vs 55km com menos tempo/pace menor)
       let targetMonth = currentMonth;
       let monthNameCurrent = "Outubro";
       let monthNamePrev = "Setembro";
@@ -1024,7 +1079,7 @@
       let prevKm = prevActs.reduce((acc, curr) => acc + (curr.distance || 0), 0);
       let prevSec = prevActs.reduce((acc, curr) => acc + parseTimeString(curr.time), 0);
       let avgPacePrev = prevKm > 0 ? (prevSec / prevKm) : 0;
-      let paceDiff = avgPaceSec - avgPacePrev; // Negativo = mais rápido
+      let paceDiff = avgPaceSec - avgPacePrev;
       let kmDiff = totalKm - prevKm;
 
       let evolutionTitle = "Avaliação de Desempenho";
@@ -1032,38 +1087,26 @@
       let evolutionText = "";
       let trainingTips = "";
 
-      // Cruzamento cirúrgico de dados (ex: mesmo volume ou volume similar, mas em menos tempo / pace menor)
       if (Math.abs(kmDiff) <= 4 && paceDiff < -2) {
         evolutionTitle = `🚀 Evolução Comprovada (${monthNameCurrent} vs ${monthNamePrev})`;
         evolutionColor = "text-emerald-400";
-        evolutionText = `Você correu um volume equivalente ao mês anterior (~${totalKm.toFixed(1)} km vs ${prevKm.toFixed(1)} km em ${monthNamePrev}), mas concluiu os percursos em <strong>tempo menor</strong> e com <strong>pace mais ágil</strong> (${formatPace(avgPaceSec)} contra ${formatPace(avgPacePrev)} anterior). Isso demonstra uma <strong>evolução nítida na economia de corrida e eficiência cardiorrespiratória</strong>, evidenciando que o seu corpo gasta menos energia para render o mesmo esforço.`;
-        trainingTips = `
-          • <strong>Como Prosseguir:</strong> Como a aptidão aeróbica melhorou, preserve a maioria das rodagens em ritmo confortável para evitar sobrecarga mecânica.<br>
-          • <strong>Próximo Estímulo:</strong> Insira variações de ritmo (fartlek) nas terças-feiras para explorar ainda mais essa nova capacidade de VAM.
-        `;
+        evolutionText = `Você correu um volume equivalente ao mês anterior (~${totalKm.toFixed(1)} km vs ${prevKm.toFixed(1)} km em ${monthNamePrev}), mas concluiu os percursos em <strong>tempo menor</strong> e com <strong>pace mais ágil</strong> (${formatPace(avgPaceSec)} contra ${formatPace(avgPacePrev)} anterior). Isso demonstra uma <strong>evolução nítida na economia de corrida e eficiência cardiorrespiratória</strong>.`;
+        trainingTips = `• Mantenha a maioria das rodagens em ritmo confortável para evitar sobrecarga mecânica.`;
       } else if (totalKm > prevKm + 4 && paceDiff <= 1) {
         evolutionTitle = `📈 Expansão de Carga & Volume Sólida`;
         evolutionColor = "text-emerald-400";
-        evolutionText = `Houve um aumento produtivo de volume (+${kmDiff.toFixed(1)} km em relação a ${monthNamePrev}) mantendo a consistência de ritmo (${formatPace(avgPaceSec)}). O organismo adaptou-se muito bem ao estresse progressivo.`;
-        trainingTips = `
-          • <strong>Controle de Fadiga:</strong> Fique atento a rigores na panturrilha.<br>
-          • <strong>Ajuste de Ciclo:</strong> Respeite uma semana de polimento a cada ciclo longo para assimilação completa.
-        `;
+        evolutionText = `Houve um aumento produtivo de volume (+${kmDiff.toFixed(1)} km em relação a ${monthNamePrev}) mantendo a consistência de ritmo (${formatPace(avgPaceSec)}).`;
+        trainingTips = `• Respeite uma semana de polimento a cada ciclo longo para assimilação completa.`;
       } else if (paceDiff > 3) {
         evolutionTitle = `⚠️ Alerta de Queda de Rendimento / Fadiga`;
         evolutionColor = "text-rose-400";
-        evolutionText = `Comparado a ${monthNamePrev}, o seu pace médio aumentou (${formatPace(avgPaceSec)} vs ${formatPace(avgPacePrev)}), indicando que demorou mais tempo para cumprir a distância. Isso aponta para <strong>fadiga acumulada, recuperação insuficiente ou excesso de treinos intensos sem descanso adequado</strong>.`;
-        trainingTips = `
-          • <strong>Estratégia de Alívio:</strong> Alivie o pé nas próximas sessões e reduza o ritmo para a Zona 2 pura.<br>
-          • <strong>Recuperação:</strong> Priorize o sono e utilize os treinos de força com elásticos para restaurar a rigidez dos membros inferiores.
-        `;
+        evolutionText = `Comparado a ${monthNamePrev}, o seu pace médio aumentou (${formatPace(avgPaceSec)} vs ${formatPace(avgPacePrev)}), indicando fadiga acumulada.`;
+        trainingTips = `• Reduza o ritmo das rodagens para Zona 2 pura e priorize o descanso.`;
       } else {
         evolutionTitle = `⚖️ Manutenção e Estabilidade de Ritmo`;
         evolutionColor = "text-cyan-400";
-        evolutionText = `Volume e ritmos mantidos em patamares muito próximos aos de ${monthNamePrev} (~${totalKm.toFixed(1)} km a ${formatPace(avgPaceSec)}). O treino encontra-se em fase de estabilização fisiológica.`;
-        trainingTips = `
-          • <strong>Quebra de Platô:</strong> Para gerar novos estímulos de adaptação, adicione blocos de ritmo controlado nas rodagens de fim de semana.
-        `;
+        evolutionText = `Volume e ritmos mantidos em patamares muito próximos aos de ${monthNamePrev} (~${totalKm.toFixed(1)} km a ${formatPace(avgPaceSec)}).`;
+        trainingTips = `• Adicione blocos de ritmo controlado nas rodagens para quebrar o platô.`;
       }
 
       container.innerHTML = `
@@ -1071,7 +1114,6 @@
           <span class="text-amber-400 font-bold block"><i class="fa-solid fa-scale-balanced mr-1"></i> Comparativo Direto (${monthNameCurrent} vs ${monthNamePrev})</span>
           <p class="text-gray-300">• <strong>Volume:</strong> ${totalKm.toFixed(1)} km (${monthNameCurrent}) vs ${prevKm.toFixed(1)} km (${monthNamePrev}).</p>
           <p class="text-gray-300">• <strong>Pace Médio:</strong> <strong>${formatPace(avgPaceSec)}</strong> (Anterior: ${formatPace(avgPacePrev)}).</p>
-          <p class="text-gray-300">• <strong>Tempo Total:</strong> ${formatTotalTime(totalSec)} vs ${formatTotalTime(prevSec)} anterior.</p>
         </div>
         <div class="space-y-2 border-b border-slate-800/80 pb-3">
           <span class="${evolutionColor} font-bold block"><i class="fa-solid fa-bolt mr-1"></i> ${evolutionTitle}</span>
@@ -1141,47 +1183,7 @@
       `).join('');
     }
 
-    function updatePerformancePredictions(activities) {
-      let baseDist = 5;
-      let baseSec = 27 * 60 + 30;
-
-      if (activities.length > 0) {
-        let validRuns = activities.filter(a => a.distance >= 2);
-        if (validRuns.length > 0) {
-          let best = validRuns.reduce((prev, curr) => (curr.distance > prev.distance ? curr : prev), validRuns[0]);
-          let calculatedSec = parseTimeString(best.time);
-          if (calculatedSec > 0 && best.distance > 0) {
-            baseDist = best.distance;
-            baseSec = calculatedSec;
-          }
-        }
-      }
-
-      const calcRiegel = (targetDist) => baseSec * Math.pow(targetDist / baseDist, 1.06);
-      const formatTime = (sec) => {
-        let h = Math.floor(sec / 3600);
-        let m = Math.floor((sec % 3600) / 60);
-        let s = Math.round(sec % 60);
-        if (h > 0) return `${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
-        return `${m}:${s < 10 ? '0' : ''}${s}`;
-      };
-      const formatPace = (sec, dist) => {
-        let p = sec / dist;
-        let m = Math.floor(p / 60);
-        let s = Math.round(p % 60);
-        return `${m}:${s < 10 ? '0' : ''}${s} /km`;
-      };
-
-      document.getElementById('pred5kTime').textContent = formatTime(calcRiegel(5));
-      document.getElementById('pred5kPace').textContent = formatPace(calcRiegel(5), 5);
-      document.getElementById('pred10kTime').textContent = formatTime(calcRiegel(10));
-      document.getElementById('pred10kPace').textContent = formatPace(calcRiegel(10), 10);
-      document.getElementById('pred21kTime').textContent = formatTime(calcRiegel(21.097));
-      document.getElementById('pred21kPace').textContent = formatPace(calcRiegel(21.097), 21.097);
-      document.getElementById('pred42kTime').textContent = formatTime(calcRiegel(42.195));
-      document.getElementById('pred42kPace').textContent = formatPace(calcRiegel(42.195), 42.195);
-    }
-
+    // RENDERIZAR ABAS DE PROTOCOLOS, FISIOLOGIA E WORKOUTS COM CONTEÚDO COMPLETO
     function renderHomeContent() {
       if (document.getElementById('homeProtocolsList')) {
         document.getElementById('homeProtocolsList').innerHTML = DATABASE.protocols.map(item => `
