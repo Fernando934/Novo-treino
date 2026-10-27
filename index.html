@@ -77,7 +77,7 @@
           <h1 class="text-base font-extrabold tracking-tight bg-gradient-to-r from-orange-400 via-emerald-400 to-amber-300 bg-clip-text text-transparent">
             StaminaLab 360°
           </h1>
-          <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Plataforma Científica & Make Sync</p>
+          <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Plataforma Científica & Conexão Strava</p>
         </div>
       </div>
       <div class="flex items-center space-x-2">
@@ -147,10 +147,10 @@
         <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-orange-600/10 rounded-full blur-2xl"></div>
         <div class="relative z-10 flex justify-between items-center">
           <div>
-            <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold uppercase tracking-wider">Sincronização Make / Strava</span>
+            <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold uppercase tracking-wider">Conexão Oficial Strava</span>
             <h3 class="text-base font-extrabold text-white mt-2">Central de Feedback e Evolução</h3>
             <p class="text-xs text-gray-300 mt-1 leading-relaxed">
-              Consulte os seus gráficos semanais, o acumulado dos meses anteriores (Agosto, Setembro, Outubro) e a análise científica.
+              Conecte sua conta do Strava diretamente pelo navegador (com login do Google) para puxar seu histórico real de corridas.
             </p>
           </div>
           <div class="bg-orange-600 text-slate-950 p-3 rounded-2xl shrink-0 ml-3 font-bold">
@@ -225,31 +225,42 @@
       <div id="bandsExercisesList" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (MAKE / STRAVA SYNC) -->
+    <!-- TAB 4: FEEDBACK & EVOLUÇÃO (CONEXÃO DIRETA STRAVA + GOOGLE LOG-IN) -->
     <div id="tab-feedback" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
-          <h2 class="text-sm font-bold text-white">Feedback & Sincronização Make</h2>
-          <p class="text-xs text-gray-400">Integração automatizada com os seus treinos reais.</p>
+          <h2 class="text-sm font-bold text-white">Conexão Direta Strava</h2>
+          <p class="text-xs text-gray-400">Autorização oficial para importar suas corridas reais.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
         </button>
       </div>
 
-      <!-- Configuração de Webhook / URL do Make -->
-      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-        <h3 class="text-xs font-bold text-orange-400 uppercase tracking-wider flex items-center gap-2">
-          <i class="fa-solid fa-link"></i> Ligação Make (Webhook / Google Sheets)
-        </h3>
-        <p class="text-[11px] text-gray-400 leading-relaxed">
-          Cole abaixo o link do Webhook do seu cenário do Make (ou endpoint JSON) para sincronizar automaticamente as suas atividades reais do Strava.
-        </p>
-        <div class="flex gap-2">
-          <input type="text" id="makeWebhookInput" placeholder="https://hook.eu1.make.com/..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-orange-500" />
-          <button onclick="syncMakeData()" class="px-4 py-2 bg-orange-600 text-white font-bold text-xs rounded-xl hover:bg-orange-500 transition shrink-0">
-            Sincronizar
+      <!-- PAINEL DE LOGIN STRAVA -->
+      <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-orange-500/30 space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-2xl bg-orange-600/20 text-orange-400 flex items-center justify-center font-bold">
+              <i class="fa-brands fa-strava text-xl"></i>
+            </div>
+            <div>
+              <h3 class="text-xs font-bold text-white" id="stravaStatusTitle">Login no Strava</h3>
+              <p class="text-[10px] text-gray-400" id="stravaStatusSubtitle">Status: Desconectado</p>
+            </div>
+          </div>
+          <button onclick="redirectToStravaLogin()" id="stravaConnectBtn" class="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-orange-600/20 transition flex items-center gap-2">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar com Strava
           </button>
+        </div>
+
+        <div class="pt-2 border-t border-slate-800/80">
+          <label class="text-[10px] text-gray-400 font-bold block mb-1">Seu Client ID do Strava API:</label>
+          <div class="flex gap-2">
+            <input type="text" id="stravaClientIdInput" placeholder="Ex: 123456" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white outline-none focus:border-orange-500" />
+            <button onclick="saveClientId()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-gray-300 rounded-xl transition">Salvar</button>
+          </div>
+          <p class="text-[9px] text-gray-500 mt-1">Obtenha seu ID em <a href="https://www.strava.com/settings/api" target="_blank" class="text-orange-400 underline">strava.com/settings/api</a>. É preciso configurar apenas 1 vez.</p>
         </div>
       </div>
 
@@ -302,18 +313,18 @@
           <i class="fa-solid fa-brain"></i> Análise Científica & Feedback de Desempenho
         </h3>
         <div id="monthlyFeedbackContent" class="text-xs text-gray-300 leading-relaxed bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-          Aguardando dados para gerar análise científica...
+          Aguardando conexão com o Strava para processar dados de corrida...
         </div>
       </div>
 
-      <!-- Histórico de Atividades Sincronizadas -->
+      <!-- Histórico de Atividades Sincronizadas do Strava -->
       <div class="space-y-3">
         <div class="flex justify-between items-center px-1">
-          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Atividades Sincronizadas (Make / Strava)</h3>
-          <button onclick="loadSampleRealRuns()" class="text-[10px] text-orange-400 hover:underline">Carregar Exemplo Real</button>
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Atividades Reais do Strava</h3>
+          <button onclick="disconnectStrava()" class="text-[10px] text-rose-400 hover:underline">Desconectar / Limpar</button>
         </div>
         <div id="stravaActivitiesList" class="space-y-2">
-          <p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade sincronizada ainda.</p>
+          <p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade importada. Clique em "Entrar com Strava".</p>
         </div>
       </div>
 
@@ -514,7 +525,9 @@
     let postponedDays = JSON.parse(localStorage.getItem('stamina_postponed') || '{}');
     let workoutLogs = JSON.parse(localStorage.getItem('stamina_logs') || '[]');
     
-    let stravaActivities = JSON.parse(localStorage.getItem('stamina_make_runs') || '[]');
+    let stravaAccessToken = localStorage.getItem('stamina_strava_access_token') || '';
+    let stravaClientId = localStorage.getItem('stamina_strava_client_id') || '';
+    let stravaActivities = JSON.parse(localStorage.getItem('stamina_strava_activities') || '[]');
 
     const BANDS_WORKOUTS = {
       A: [
@@ -546,7 +559,7 @@
         { id: 'proto-cs', category: 'Protocolo de Teste', title: 'Critical Speed (Velocidade Crítica)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Modelo Matemático de Dois Pontos', icon: 'fa-calculator', description: 'Combina tempos de duas distâncias máximas distintas (ex: 800m e 3000m).', whatItMeasures: 'Velocidade crítica e reserva anaeróbica (D\').', physiology: 'Separa o domínio de intensidade pesada do severo.', whenToUse: 'Atletas de alta performance.', whenNotToUse: 'Iniciantes.', materials: 'Cronômetro e pista.', formula: 'CS = (D2 - D1) / (T2 - T1)', howToCalculate: 'Divida a variação de distância pela variação de tempo.', example: 'CS calculada em 16.8 km/h.', summary: 'Fórmula matemática precisa sem laboratório.' }
       ],
       physiology: [
-        { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) é a molécula de energia direta.', whatItMeasures: 'Ressíntese de energia muscular.', physiology: 'ATP-CP, Glicolítico e Oxidativo.', whenToUse: 'Estruturação de pausas.', whenNotToUse: 'N/A', materials: 'N/A', formula: 'ATP → ADP + Pi + Energia', howToCalculate: 'Baseado na duração do esforço.', example: 'Sprints usam ATP-CP; maratona usa sistema oxidativo.', summary: 'A base da bioenergética humana.' },
+        { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) é a molécula de energia direta.', whatItMeasures: 'Ressíntese de energia muscular.', physiology: 'ATP-CP, Glicolítico e Oxidativo.', whenToUse: 'Estruturação de pausas.', whenNotToUse: 'N/A', materials: 'N/A', formula: 'ATP → ADP + Pi + Energia', howToCalculate: 'Baseado na duração do effort.', example: 'Sprints usam ATP-CP; maratona usa sistema oxidativo.', summary: 'A base da bioenergética humana.' },
         { id: 'phys-vo2', category: 'Consumo de Oxigênio', title: 'VO2 e VO2 Máximo', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'O teto aeróbico', icon: 'fa-lung', description: 'Volume máximo de oxigênio captado por minuto.', whatItMeasures: 'Potência aeróbica máxima.', physiology: 'Limitado pelo débito cardíaco e extração muscular.', whenToUse: 'Avaliação biológica do corredor.', whenNotToUse: 'N/A', materials: 'Ergoespirometria.', formula: 'Débito cardíaco x Diferença a-vO2', howToCalculate: 'ml/kg/min.', example: 'Elite: 70-85 ml/kg/min.', summary: 'O tamanho do motor aeróbico.' },
         { id: 'phys-lactate', category: 'Cinética Metabólica', title: 'Cinética e Depuração de Lactato', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'O lactato como combustível', icon: 'fa-fire', description: 'O lactato não é apenas lixo metabólico; é reaproveitado como substrato energético pelas fibras lentas e pelo coração.', whatItMeasures: 'Capacidade de tamponamento e depuração.', physiology: 'Produção nas fibras rápidas e oxidação nas fibras lentas.', whenToUse: 'Prescrição de treinos de limiar.', whenNotToUse: 'N/A', materials: 'Lactatímetro portátil.', formula: 'Taxa de Produção vs Taxa de Depuração', howToCalculate: 'Medição pós-esforço em minutos 1, 3 e 5.', example: 'Treinos de Tempo Run melhoram a densidade de transportadores MCT.', summary: 'O lactato é amigo do corredor, não vilão.' },
         { id: 'phys-fibers', category: 'Morfologia Muscular', title: 'Tipos de Fibras Musculares (I, IIa, IIx)', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A composição do músculo', icon: 'fa-dna', description: 'Fibras Tipo I (contrações lentas, altamente oxidativas) e Tipo II (rápidas, glicolíticas).', whatItMeasures: 'Predisposição a velocidade ou resistência.', physiology: 'Recrutamento ordenado pelo Princípio de Henneman.', whenToUse: 'Definição de perfil de atleta (fundista vs sprinter).', whenNotToUse: 'N/A', materials: 'Biópsia ou testes de campo.', formula: 'Princípio de Henneman (Recrutamento de menor para maior)', howToCalculate: 'Testes de potência vs testes de tempo limite.', example: 'Fundistas possuem alta densidade de Fibras Tipo I.', summary: 'A genética e o treino moldam a capacidade contrátil.' },
@@ -555,9 +568,216 @@
       workouts: [
         { id: 'work-interval', category: 'Método de Treino', title: 'Treino Intervalado (VO2máx)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Repetições de 400m a 1000m', icon: 'fa-stopwatch-20', description: 'Esforços intensos (95-100% VAM) com recuperação incompleta.', whatItMeasures: 'Potência aeróbica e VO2máx.', physiology: 'Elevação do batimento cardíaco próximo ao teto.', whenToUse: 'Fases específicas de prova.', whenNotToUse: 'Atletas sem base.', materials: 'Pista ou GPS.', formula: '95-100% VAM', howToCalculate: 'Pausas 1:1', example: '8x 400m forte / 1 min trote.', summary: 'O treino mestre para esticar o teto aeróbico.' },
         { id: 'work-tempo', category: 'Método de Treino', title: 'Treino de Ritmo (Tempo Run)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Corrida no Limiar', icon: 'fa-gauge', description: 'Corrida contínua sustentada na intensidade do Limiar Anaeróbico.', whatItMeasures: 'Taxa de remoção de lactato.', physiology: 'Trabalho no estado estável de lactato.', whenToUse: 'Provas de 10k a maratona.', whenNotToUse: 'Dias de recuperação.', materials: 'GPS.', formula: 'Pace de Limiar (L2)', howToCalculate: '20 a 40 minutos contínuos.', example: '25 min a 4:30/km.', summary: 'Aumenta a velocidade sem acumular fadiga.' },
-        { id: 'work-long', category: 'Método de Treino', title: 'Longão (Long Run)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Resistência aeróbica', icon: 'fa-route', description: 'Treino longo semanal em ritmo confortável.', whatItMeasures: 'Capilarização e mitocôndrias.', physiology: 'Oxidação de gorduras.', whenToUse: 'Preparação de fundo.', whenNotToUse: 'Exceder 30% du volume semanal.', materials: 'Hidratação.', formula: '65-75% FCmax', howToCalculate: 'Pace conversacional.', example: '16km a 18km contínuos.', summary: 'A fundação de resistência.' }
+        { id: 'work-long', category: 'Método de Treino', title: 'Longão (Long Run)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Resistência aeróbica', icon: 'fa-route', description: 'Treino longo semanal em ritmo confortável.', whatItMeasures: 'Capilarização e mitocôndrias.', physiology: 'Oxidação de gorduras.', whenToUse: 'Preparação de fundo.', whenNotToUse: 'Exceder 30% do volume semanal.', materials: 'Hidratação.', formula: '65-75% FCmax', howToCalculate: 'Pace conversacional.', example: '16km a 18km contínuos.', summary: 'A fundação de resistência.' }
       ]
     };
+
+    function saveClientId() {
+      const val = document.getElementById('stravaClientIdInput').value.trim();
+      if (!val) { alert("Insira seu Client ID."); return; }
+      stravaClientId = val;
+      localStorage.setItem('stamina_strava_client_id', stravaClientId);
+      alert("Client ID salvo com sucesso!");
+    }
+
+    // REDIRECIONA PARA A PÁGINA OFICIAL DO STRAVA (COM BOTÃO DE LOG-IN DO GOOGLE)
+    function redirectToStravaLogin() {
+      if (!stravaClientId) {
+        alert("Por favor, insira o seu Client ID do Strava abaixo e clique em Salvar.");
+        return;
+      }
+      const redirectUri = window.location.href.split('#')[0].split('?')[0];
+      const authUrl = `https://www.strava.com/oauth/authorize?client_id=${stravaClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=activity:read_all`;
+      window.location.href = authUrl;
+    }
+
+    // CAPTURA O TOKEN RETORNADO NA URL APÓS O LOGIN NO STRAVA
+    function handleStravaTokenCallback() {
+      const hash = window.location.hash;
+      if (hash && hash.includes('access_token=')) {
+        const params = new URLSearchParams(hash.replace('#', '?'));
+        const token = params.get('access_token');
+        if (token) {
+          stravaAccessToken = token;
+          localStorage.setItem('stamina_strava_access_token', stravaAccessToken);
+          window.history.replaceState({}, document.title, window.location.pathname);
+          fetchRealStravaRuns();
+        }
+      } else if (stravaAccessToken) {
+        fetchRealStravaRuns();
+      }
+    }
+
+    // REQUISIÇÃO DIRETA À API DO STRAVA PARA BUSCAR AS CORRIDAS REAIS
+    async function fetchRealStravaRuns() {
+      if (!stravaAccessToken) return;
+      try {
+        const response = await fetch('https://www.strava.com/api/v3/athlete/activities?per_page=100', {
+          headers: { 'Authorization': `Bearer ${stravaAccessToken}` }
+        });
+        if (response.ok) {
+          const acts = await response.json();
+          // Filtra apenas atividades de Corrida (Run)
+          stravaActivities = acts.filter(a => a.type === 'Run').map(a => {
+            const distKm = a.distance / 1000;
+            const timeMin = Math.round(a.moving_time / 60);
+            const paceSec = (a.moving_time) / distKm;
+            const pMin = Math.floor(paceSec / 60);
+            const pSec = Math.round(paceSec % 60);
+            return {
+              id: a.id,
+              name: a.name,
+              distance: distKm,
+              time: `${timeMin} min`,
+              pace: `${pMin}:${pSec < 10 ? '0' : ''}${pSec} /km`,
+              start_date: a.start_date
+            };
+          });
+          localStorage.setItem('stamina_strava_activities', JSON.stringify(stravaActivities));
+          updateDashboardData();
+        } else {
+          disconnectStrava();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function disconnectStrava() {
+      stravaAccessToken = '';
+      stravaActivities = [];
+      localStorage.removeItem('stamina_strava_access_token');
+      localStorage.removeItem('stamina_strava_activities');
+      updateDashboardData();
+    }
+
+    function updateDashboardData() {
+      const period = document.getElementById('periodFilter') ? document.getElementById('periodFilter').value : 'current_month';
+      const now = new Date();
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+
+      let filteredActivities = stravaActivities.filter(act => {
+        if (!act.start_date) return true;
+        const d = new Date(act.start_date);
+        const month = d.getMonth();
+        const year = d.getFullYear();
+
+        if (period === 'current_month') return month === currentMonth && year === currentYear;
+        if (period === 'september') return month === currentMonth - 1 && year === currentYear;
+        if (period === 'august') return month === currentMonth - 2 && year === currentYear;
+        return true; // 'all'
+      });
+
+      document.getElementById('statRunsCount').textContent = filteredActivities.length;
+      document.getElementById('statBandsCount').textContent = completedBands.length;
+
+      let totalWeekKm = 0;
+      let totalPeriodKm = filteredActivities.reduce((acc, curr) => acc + (curr.distance || 0), 0);
+
+      stravaActivities.forEach(act => {
+        if (act.start_date) {
+          const d = new Date(act.start_date);
+          if ((now - d) <= (7 * 86400000)) {
+            totalWeekKm += (act.distance || 0);
+          }
+        }
+      });
+
+      document.getElementById('statWeekKm').textContent = `${totalWeekKm.toFixed(1)} km`;
+      document.getElementById('statMonthKm').textContent = `${totalPeriodKm.toFixed(1)} km`;
+
+      renderWeeklyChart();
+      renderMonthlyFeedback(totalPeriodKm, filteredActivities.length, period);
+      renderStravaActivitiesList(filteredActivities);
+
+      if (stravaAccessToken) {
+        document.getElementById('stravaStatusTitle').textContent = "Conectado ao Strava";
+        document.getElementById('stravaStatusSubtitle').textContent = "Status: Autenticado e Sincronizado";
+        document.getElementById('stravaConnectBtn').textContent = "Atualizar Corridas";
+        document.getElementById('stravaConnectBtn').className = "px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center gap-2";
+      } else {
+        document.getElementById('stravaStatusTitle').textContent = "Login no Strava";
+        document.getElementById('stravaStatusSubtitle').textContent = "Status: Desconectado";
+        document.getElementById('stravaConnectBtn').textContent = "Entrar com Strava";
+        document.getElementById('stravaConnectBtn').className = "px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-orange-600/20 transition flex items-center gap-2";
+      }
+    }
+
+    function renderWeeklyChart() {
+      const container = document.getElementById('weeklyChartContainer');
+      if (!container) return;
+
+      let daysKm = [0, 0, 0, 0, 0, 0, 0];
+      const now = new Date();
+
+      stravaActivities.forEach(act => {
+        if (act.start_date) {
+          const d = new Date(act.start_date);
+          if ((now - d) <= (7 * 86400000)) {
+            let dayIdx = d.getDay() - 1; 
+            if (dayIdx < 0) dayIdx = 6;
+            daysKm[dayIdx] += (act.distance || 0);
+          }
+        }
+      });
+
+      const maxKm = Math.max(...daysKm, 10);
+      let totalKmWeek = daysKm.reduce((a, b) => a + b, 0);
+      document.getElementById('weeklyTotalKmLabel').textContent = `Total: ${totalKmWeek.toFixed(1)} km`;
+
+      container.innerHTML = daysKm.map((km, idx) => {
+        const heightPct = Math.round((km / maxKm) * 100);
+        return `
+          <div class="flex flex-col items-center flex-1 h-full justify-end group">
+            <span class="text-[9px] font-bold text-orange-400 mb-1 opacity-0 group-hover:opacity-100 transition">${km > 0 ? km.toFixed(1) : ''}</span>
+            <div class="w-full max-w-[20px] bg-gradient-to-t from-orange-600 to-amber-400 rounded-t-md transition-all duration-500" style="height: ${Math.max(heightPct, 6)}%"></div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderMonthlyFeedback(totalKm, totalSessions, period) {
+      const container = document.getElementById('monthlyFeedbackContent');
+      if (!container) return;
+
+      if (stravaActivities.length === 0) {
+        container.innerHTML = `<span class="text-gray-500">Conecte sua conta do Strava para gerar a análise científica de desempenho com suas corridas reais.</span>`;
+        return;
+      }
+
+      let analysisText = "";
+      if (totalKm < 30) {
+        analysisText = `<strong>Fase de Manutenção / Base:</strong> Volume acumulado de ${totalKm.toFixed(1)} km em ${totalSessions} sessões. Foco em estímulos aeróbicos controlados com preservação articular.`;
+      } else if (totalKm >= 30 && totalKm < 90) {
+        analysisText = `<strong>Evolução Consistente:</strong> Excelente consistência com ${totalKm.toFixed(1)} km percorridos em ${totalSessions} treinos. Aumento progressivo da densidade mitocondrial e velocidade sustentada.`;
+      } else {
+        analysisText = `<strong>Alta Performance & Volume Expressivo:</strong> Carga acumulada robusta de ${totalKm.toFixed(1)} km! Excelente adaptação cardiovascular. Atenção ao descanso e semanas de polimento.`;
+      }
+
+      container.innerHTML = analysisText;
+    }
+
+    function renderStravaActivitiesList(listToRender) {
+      const container = document.getElementById('stravaActivitiesList');
+      if (!container) return;
+      if (listToRender.length === 0) {
+        container.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade sincronizada.</p>`;
+        return;
+      }
+      container.innerHTML = listToRender.map(act => `
+        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs flex justify-between items-center">
+          <div>
+            <strong class="text-white">${act.name}</strong>
+            <div class="text-[10px] text-gray-400">${new Date(act.start_date || Date.now()).toLocaleDateString('pt-BR')} • ${act.time}</div>
+          </div>
+          <div class="text-right">
+            <span class="text-orange-400 font-bold">${act.distance.toFixed(2)} km</span>
+            <div class="text-[10px] text-gray-300">Pace: ${act.pace}</div>
+          </div>
+        </div>
+      `).join('');
+    }
 
     function switchBandsWorkout(type) {
       ['A', 'B', 'C'].forEach(t => {
@@ -656,160 +876,6 @@
       postponedDays[index] = !postponedDays[index];
       localStorage.setItem('stamina_postponed', JSON.stringify(postponedDays));
       renderPlan();
-    }
-
-    // Função para carregar dados reais estruturados do Make ou histórico completo
-    async function syncMakeData() {
-      const webhookUrl = document.getElementById('makeWebhookInput').value.trim();
-      if (!webhookUrl) {
-        loadSampleRealRuns();
-        return;
-      }
-      try {
-        const response = await fetch(webhookUrl);
-        const data = await response.json();
-        if (Array.isArray(data)) {
-          stravaActivities = data;
-          localStorage.setItem('stamina_make_runs', JSON.stringify(stravaActivities));
-          updateDashboardData();
-          alert("Dados sincronizados com sucesso via Make!");
-        }
-      } catch (e) {
-        console.error(e);
-        alert("Erro ao conectar com o Webhook do Make. Verifique a URL.");
-      }
-    }
-
-    function loadSampleRealRuns() {
-      // Carrega o seu histórico real de Agosto, Setembro e Outubro
-      stravaActivities = [
-        { id: 1, name: "Corrida Matinal Japeri", distance: 6.5, time: "35 min", pace: "5:23 /km", start_date: "2026-10-26T07:00:00Z" },
-        { id: 2, name: "Treino Intervalado Pista", distance: 8.0, time: "42 min", pace: "5:15 /km", start_date: "2026-10-24T08:00:00Z" },
-        { id: 3, name: "Rodagem Contínua Z2", distance: 10.0, time: "52 min", pace: "5:12 /km", start_date: "2026-10-18T07:00:00Z" },
-        { id: 4, name: "Longão Japeri - Estação", distance: 14.2, time: "1h 16 min", pace: "5:21 /km", start_date: "2026-10-11T06:30:00Z" },
-        { id: 5, name: "Rodagem Setembro - Semana 4", distance: 9.5, time: "50 min", pace: "5:15 /km", start_date: "2026-09-22T07:00:00Z" },
-        { id: 6, name: "Teste Limiar 3.200m", distance: 5.0, time: "24 min", pace: "4:48 /km", start_date: "2026-09-15T07:00:00Z" },
-        { id: 7, name: "Primeira Corrida de Rua Oficial", distance: 10.0, time: "49 min", pace: "4:54 /km", start_date: "2026-08-23T08:00:00Z" }
-      ];
-      localStorage.setItem('stamina_make_runs', JSON.stringify(stravaActivities));
-      updateDashboardData();
-      alert("Histórico real de treinos carregado com sucesso!");
-    }
-
-    function updateDashboardData() {
-      const period = document.getElementById('periodFilter') ? document.getElementById('periodFilter').value : 'current_month';
-      const now = new Date();
-      const currentMonth = now.getMonth();
-      const currentYear = now.getFullYear();
-
-      let filteredActivities = stravaActivities.filter(act => {
-        if (!act.start_date) return true;
-        const d = new Date(act.start_date);
-        const month = d.getMonth();
-        const year = d.getFullYear();
-
-        if (period === 'current_month') return month === currentMonth && year === currentYear;
-        if (period === 'september') return month === currentMonth - 1 && year === currentYear;
-        if (period === 'august') return month === currentMonth - 2 && year === currentYear;
-        return true; // 'all'
-      });
-
-      document.getElementById('statRunsCount').textContent = filteredActivities.length;
-      document.getElementById('statBandsCount').textContent = completedBands.length;
-
-      let totalWeekKm = 0;
-      let totalPeriodKm = filteredActivities.reduce((acc, curr) => acc + (curr.distance || 0), 0);
-
-      stravaActivities.forEach(act => {
-        if (act.start_date) {
-          const d = new Date(act.start_date);
-          if ((now - d) <= (7 * 86400000)) {
-            totalWeekKm += (act.distance || 0);
-          }
-        }
-      });
-
-      document.getElementById('statWeekKm').textContent = `${totalWeekKm.toFixed(1)} km`;
-      document.getElementById('statMonthKm').textContent = `${totalPeriodKm.toFixed(1)} km`;
-
-      renderWeeklyChart();
-      renderMonthlyFeedback(totalPeriodKm, filteredActivities.length, period);
-      renderStravaActivitiesList(filteredActivities);
-    }
-
-    function renderWeeklyChart() {
-      const container = document.getElementById('weeklyChartContainer');
-      if (!container) return;
-
-      let daysKm = [0, 0, 0, 0, 0, 0, 0];
-      const now = new Date();
-
-      stravaActivities.forEach(act => {
-        if (act.start_date) {
-          const d = new Date(act.start_date);
-          if ((now - d) <= (7 * 86400000)) {
-            let dayIdx = d.getDay() - 1; 
-            if (dayIdx < 0) dayIdx = 6;
-            daysKm[dayIdx] += (act.distance || 0);
-          }
-        }
-      });
-
-      const maxKm = Math.max(...daysKm, 10);
-      let totalKmWeek = daysKm.reduce((a, b) => a + b, 0);
-      document.getElementById('weeklyTotalKmLabel').textContent = `Total: ${totalKmWeek.toFixed(1)} km`;
-
-      container.innerHTML = daysKm.map((km, idx) => {
-        const heightPct = Math.round((km / maxKm) * 100);
-        return `
-          <div class="flex flex-col items-center flex-1 h-full justify-end group">
-            <span class="text-[9px] font-bold text-orange-400 mb-1 opacity-0 group-hover:opacity-100 transition">${km > 0 ? km.toFixed(1) : ''}</span>
-            <div class="w-full max-w-[20px] bg-gradient-to-t from-orange-600 to-amber-400 rounded-t-md transition-all duration-500" style="height: ${Math.max(heightPct, 6)}%"></div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderMonthlyFeedback(totalKm, totalSessions, period) {
-      const container = document.getElementById('monthlyFeedbackContent');
-      if (!container) return;
-
-      if (stravaActivities.length === 0) {
-        container.innerHTML = `<span class="text-gray-500">Clique em "Carregar Exemplo Real" ou ligue o seu Webhook do Make para gerar a análise científica.</span>`;
-        return;
-      }
-
-      let analysisText = "";
-      if (totalKm < 30) {
-        analysisText = `<strong>Fase de Manutenção / Base:</strong> Volume acumulado de ${totalKm.toFixed(1)} km em ${totalSessions} sessões. Foco em estímulos aeróbicos controlados com excelente preservação articular.`;
-      } else if (totalKm >= 30 && totalKm < 90) {
-        analysisText = `<strong>Evolução Consistente:</strong> Excelente consistência com ${totalKm.toFixed(1)} km percorridos em ${totalSessions} treinos. Aumento progressivo da capacidade mitocondrial e limiar.`;
-      } else {
-        analysisText = `<strong>Alta Performance & Volume Expressivo:</strong> Carga acumulada robusta de ${totalKm.toFixed(1)} km! Excelente adaptação cardiovascular. Respeite as semanas de recuperação (tapering).`;
-      }
-
-      container.innerHTML = analysisText;
-    }
-
-    function renderStravaActivitiesList(listToRender) {
-      const container = document.getElementById('stravaActivitiesList');
-      if (!container) return;
-      if (listToRender.length === 0) {
-        container.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade encontrada neste período.</p>`;
-        return;
-      }
-      container.innerHTML = listToRender.map(act => `
-        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs flex justify-between items-center">
-          <div>
-            <strong class="text-white">${act.name}</strong>
-            <div class="text-[10px] text-gray-400">${new Date(act.start_date || Date.now()).toLocaleDateString('pt-BR')} • ${act.time}</div>
-          </div>
-          <div class="text-right">
-            <span class="text-orange-400 font-bold">${act.distance.toFixed(2)} km</span>
-            <div class="text-[10px] text-gray-300">Pace: ${act.pace}</div>
-          </div>
-        </div>
-      `).join('');
     }
 
     function renderHomeContent() {
@@ -940,6 +1006,12 @@
       renderCategoryList('physiology', 'physiologyContainer');
       renderCategoryList('workouts', 'workoutsContainer');
       renderWorkoutLogs();
+
+      if (stravaClientId) {
+        document.getElementById('stravaClientIdInput').value = stravaClientId;
+      }
+
+      handleStravaTokenCallback();
       updateDashboardData();
     });
 
