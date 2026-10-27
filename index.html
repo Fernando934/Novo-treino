@@ -611,7 +611,6 @@
       updateDashboardData();
     }
 
-    // FUNÇÃO PARA EXCLUIR O PERFIL ATUAL COM SEGURANÇA
     function deleteCurrentProfilePrompt() {
       if (profilesList.length <= 1) {
         alert("Não é possível excluir o último perfil restante na aplicação.");
@@ -620,17 +619,14 @@
       if (confirm(`Tem certeza de que deseja excluir o perfil '${currentProfile}' e todos os seus registos salvos?`)) {
         let profileToDelete = currentProfile;
 
-        // Remove do localStorage os dados específicos deste perfil
         localStorage.removeItem(`stamina_runs_done_${profileToDelete}`);
         localStorage.removeItem(`stamina_bands_done_${profileToDelete}`);
         localStorage.removeItem(`stamina_postponed_${profileToDelete}`);
         localStorage.removeItem(`stamina_manual_runs_${profileToDelete}`);
 
-        // Atualiza a lista de perfis
         profilesList = profilesList.filter(p => p !== profileToDelete);
         localStorage.setItem('stamina_profiles_list', JSON.stringify(profilesList));
 
-        // Seleciona o primeiro perfil remanescente
         currentProfile = profilesList[0];
         localStorage.setItem('stamina_active_profile', currentProfile);
 
@@ -1347,7 +1343,7 @@
     function generatePaceSplits() {
       const dist = parseFloat(document.getElementById('splitDist').value);
       const targetTimeStr = document.getElementById('splitTargetTime').value.trim();
-      const parts = targetTimeStr.split(':').map(Number);
+      const parts = targetTestStr = targetTimeStr.split(':').map(Number);
       let totalSec = parts.length === 3 ? (parts[0] * 3600) + (parts[1] * 60) + parts[2] : (parts[0] * 60) + parts[1];
       let baseSecPerKm = totalSec / dist;
       let html = '';
