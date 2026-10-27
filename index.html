@@ -155,7 +155,7 @@
       </section>
     </div>
 
-    <!-- TAB 2: PLANO SEMANAL AUTOMÁTICO (RESTAURADO) -->
+    <!-- TAB 2: PLANO SEMANAL AUTOMÁTICO -->
     <div id="tab-plan" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -172,7 +172,7 @@
       <div id="planContainer" class="space-y-3"></div>
     </div>
 
-    <!-- TAB 3: FORTALECIMENTO COM ELÁSTICOS + CRONÓMETRO + TREINOS A, B, C -->
+    <!-- TAB 3: FORTALECIMENTO COM ELÁSTICOS + CRONÓMETRO -->
     <div id="tab-bands" class="tab-content hidden space-y-4">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -184,7 +184,6 @@
         </button>
       </div>
 
-      <!-- CRONÓMETRO INTERATIVO DE DESCANSO -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-emerald-500/30 space-y-3">
         <div class="flex justify-between items-center">
           <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
@@ -294,20 +293,20 @@
         <div class="grid grid-cols-3 gap-2">
           <div>
             <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Distância (km)</label>
-            <input type="number" step="0.1" id="newRunDist" placeholder="ex: 6.5" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
+            <input type="number" step="0.1" id="newRunDist" placeholder="ex: 5.0" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
           </div>
           <div>
-            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Duração (ex: 35 min)</label>
-            <input type="text" id="newRunTime" placeholder="ex: 35 min" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Duração (ex: 25 min)</label>
+            <input type="text" id="newRunTime" placeholder="ex: 25 min" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
           </div>
           <div>
             <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Pace Médio</label>
-            <input type="text" id="newRunPace" placeholder="ex: 5:23 /km" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
+            <input type="text" id="newRunPace" placeholder="ex: 5:00 /km" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
           </div>
         </div>
         <div>
-          <label class="text-[10px] text-cyan-400 uppercase font-bold block mb-1"><i class="fa-solid fa-list-ol mr-1"></i> Ritmo por KM (ex: 5:10, 5:15, 5:05)</label>
-          <input type="text" id="newRunSplits" placeholder="ex: 5:20, 5:15, 5:12, 5:10" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-500 outline-none" />
+          <label class="text-[10px] text-cyan-400 uppercase font-bold block mb-1"><i class="fa-solid fa-list-ol mr-1"></i> Ritmo por KM (ex: 5:0, 5:30, 5:0, 4:40)</label>
+          <input type="text" id="newRunSplits" placeholder="ex: 5:0, 5:30, 5:0, 4:40" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-500 outline-none" />
         </div>
         <div class="flex gap-2">
           <button onclick="saveOrUpdateManualRun()" id="saveRunBtn" class="flex-1 py-2.5 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl text-xs font-bold text-white shadow-lg shadow-orange-500/20 active:scale-95 transition">
@@ -362,21 +361,18 @@
         </div>
       </div>
 
-      <!-- ANÁLISE CRÍTICA BASEADA EM SPLITS E COMPARATIVO MENSAL -->
+      <!-- ANÁLISE CRÍTICA GERAL -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2.5">
         <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
           <i class="fa-solid fa-brain"></i> ANÁLISE CRÍTICA DE DESEMPENHO & SPLITS
         </h3>
-        
-        <div id="monthlyFeedbackContent" class="space-y-3 text-xs leading-relaxed">
-          <!-- Preenchido dinamicamente pelo JS -->
-        </div>
+        <div id="monthlyFeedbackContent" class="space-y-3 text-xs leading-relaxed"></div>
       </div>
 
       <!-- Lista de Atividades com Opção de Editar e Ver Detalhes -->
       <div class="space-y-3">
         <div class="flex justify-between items-center px-1">
-          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Histórico de Corridas (Com Edição & Splits)</h3>
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Histórico de Corridas (Clique no Olho para Análise Detalhada)</h3>
         </div>
         <div id="manualActivitiesList" class="space-y-2">
           <p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade registada ainda.</p>
@@ -384,7 +380,7 @@
       </div>
     </div>
 
-    <!-- TAB 5: PROTOCOLS (TOTALMENTE RESTAURADO) -->
+    <!-- TAB 5: PROTOCOLS -->
     <div id="tab-protocols" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -398,7 +394,7 @@
       <div id="protocolsContainer" class="space-y-2.5"></div>
     </div>
 
-    <!-- TAB 6: CALCULATORS (TOTALMENTE RESTAURADO COM TODAS AS FERRAMENTAS) -->
+    <!-- TAB 6: CALCULATORS -->
     <div id="tab-calculators" class="tab-content hidden space-y-4">
       <div class="px-1 mb-1 flex justify-between items-center">
         <div>
@@ -410,7 +406,6 @@
         </button>
       </div>
 
-      <!-- GERADOR DE SPLITS -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-cyan-500/30 space-y-3">
         <div class="flex items-center space-x-3 text-cyan-400">
           <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center"><i class="fa-solid fa-list-ol"></i></div>
@@ -435,7 +430,6 @@
         <div id="splitsResult" class="hidden space-y-1.5 pt-1 max-h-48 overflow-y-auto no-scrollbar"></div>
       </div>
 
-      <!-- CALCULADORA DE PACE E VO2 -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <div class="flex items-center space-x-3 text-orange-400">
           <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center"><i class="fa-solid fa-gauge-high"></i></div>
@@ -458,29 +452,9 @@
           <div><span class="text-[9px] text-gray-400 uppercase font-bold">Est. VO2máx</span><div id="resVo2" class="text-sm font-black text-emerald-400">-- ml/kg</div></div>
         </div>
       </div>
-
-      <!-- ZONAS KARVONEN -->
-      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-        <div class="flex items-center space-x-3 text-rose-400">
-          <div class="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center"><i class="fa-solid fa-heart-pulse"></i></div>
-          <h3 class="font-bold text-sm text-white">Zonas de Frequência (Karvonen)</h3>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">FC Máxima (bpm)</label>
-            <input type="number" id="calcFcMax" value="195" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-rose-500 outline-none" />
-          </div>
-          <div>
-            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">FC Repouso (bpm)</label>
-            <input type="number" id="calcFcRest" value="66" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-rose-500 outline-none" />
-          </div>
-        </div>
-        <button onclick="calculateKarvonen()" class="w-full py-2.5 bg-gradient-to-r from-rose-500 to-red-600 rounded-xl text-xs font-bold text-white shadow-lg shadow-rose-500/20 active:scale-95 transition">Calcular Zonas Alvo</button>
-        <div id="karvonenResult" class="hidden space-y-1.5 pt-1"></div>
-      </div>
     </div>
 
-    <!-- TAB 7: PHYSIOLOGY (TOTALMENTE RESTAURADO) -->
+    <!-- TAB 7: PHYSIOLOGY -->
     <div id="tab-physiology" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -494,7 +468,7 @@
       <div id="physiologyContainer" class="space-y-2.5"></div>
     </div>
 
-    <!-- TAB 8: WORKOUTS (TOTALMENTE RESTAURADO) -->
+    <!-- TAB 8: WORKOUTS -->
     <div id="tab-workouts" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -531,7 +505,7 @@
     </div>
   </nav>
 
-  <!-- MODAL FOR DETAILED VIEWS -->
+  <!-- MODAL FOR DETAILED VIEWS & INDIVIDUAL RUN ANALYSIS -->
   <div id="detailModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex flex-col justify-end sm:justify-center p-0 sm:p-4">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl mx-auto rounded-t-3xl sm:rounded-3xl max-h-[88vh] flex flex-col overflow-hidden shadow-2xl">
       <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
@@ -545,50 +519,33 @@
 
   <script>
     let currentModalItem = null;
-    let favorites = JSON.parse(localStorage.getItem('stamina_favs') || '[]');
-    let completedRuns = JSON.parse(localStorage.getItem('stamina_runs_done') || '[]');
-    let completedBands = JSON.parse(localStorage.getItem('stamina_bands_done') || '[]');
-    let postponedDays = JSON.parse(localStorage.getItem('stamina_postponed') || '{}');
     let manualActivities = JSON.parse(localStorage.getItem('stamina_manual_runs') || '[]');
     let timerInterval = null;
 
     const BANDS_WORKOUTS = {
       A: [
         { name: "Supino com Elástico Extensor", setup: "Prenda o elástico na altura média da porta.", exec: "Empurre para frente até estender os braços.", sets: "3 x 15 reps" },
-        { name: "Remada Baixa / Curvada", setup: "Pise no centro do elástico tubular.", exec: "Puxe em direção ao quadril.", sets: "3 x 15 reps" },
-        { name: "Desenvolvimento de Ombros", setup: "Pise no centro do elástico.", exec: "Eleve os braços acima da cabeça.", sets: "3 x 12 reps" },
-        { name: "Rosca Direta (Bíceps)", setup: "Pise no elástico com os pés.", exec: "Flexione os braços mantendo cotovelos fixos.", sets: "3 x 15 reps" },
-        { name: "Tríceps na Porta", setup: "Prenda o elástico no topo da porta.", exec: "Empurre para baixo esticando o braço.", sets: "3 x 15 reps" }
+        { name: "Remada Baixa / Curvada", setup: "Pise no centro do elástico tubular.", exec: "Puxe em direção ao quadril.", sets: "3 x 15 reps" }
       ],
       B: [
         { name: "Agachamento com Extensor", setup: "Pise no elástico e apoie nos ombros.", exec: "Agachamento mantendo o tronco erguido.", sets: "3 x 15 reps" },
-        { name: "Ponte de Glúteos com Mini Band", setup: "Mini band acima dos joelhos.", exec: "Eleve o quadril abrindo os joelhos.", sets: "3 x 20 reps" },
-        { name: "Caminhada Lateral (Monster Walk)", setup: "Mini band nos tornozelos.", exec: "Passos laterais mantendo tensão.", sets: "3 x 15 passos" },
-        { name: "Avanço / Passada", setup: "Pise com um pé no centro.", exec: "Afundo alternado controlando o joelho.", sets: "3 x 12 reps" }
+        { name: "Ponte de Glúteos com Mini Band", setup: "Mini band acima dos joelhos.", exec: "Eleve o quadril abrindo os joelhos.", sets: "3 x 20 reps" }
       ],
       C: [
         { name: "Pallof Press (Anti-rotação)", setup: "Prenda na porta na altura do peito.", exec: "Estique os braços resistindo à rotação.", sets: "3 x 12 reps" },
-        { name: "Abdução de Quadril", setup: "Tira de tornozelo na parte baixa.", exec: "Afaste a perna lateralmente.", sets: "3 x 15 reps" },
-        { name: "Face Pull com Elástico", setup: "Prenda na altura do rosto.", exec: "Puxe em direção ao rosto abrindo cotovelos.", sets: "3 x 15 reps" },
         { name: "Prancha com Mini Band", setup: "Mini band nos antebraços.", exec: "Manter core rígido com pressão externa.", sets: "3 x 45 seg" }
       ]
     };
 
     const DATABASE = {
       protocols: [
-        { id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos.', whatItMeasures: 'Capacidade aeróbica máxima e estimativa do VO2 máx.', physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico e VAM.' },
-        { id: 'proto-3km', category: 'Protocolo de Teste', title: 'Teste de 3 km', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Determinação de VAM e Pace Máximo', icon: 'fa-flag-checkered', description: 'Avaliação de ritmo sustentado em 3.000 metros.', whatItMeasures: 'Velocidade Aeróbica Máxima (VAM).', physiology: 'Solicitação intensa de ~90-100% do VO2máx.' },
-        { id: 'proto-conconi', category: 'Protocolo de Teste', title: 'Teste de Conconi', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Deflexão da Frequência Cardíaca', icon: 'fa-chart-line', description: 'Teste incremental contínuo correlacionando velocidade e FC.', whatItMeasures: 'Limiar Anaeróbico por deflexão cardíaca.', physiology: 'Identifica o ponto onde a FC deixa de subir linearmente.' }
+        { id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos.', whatItMeasures: 'Capacidade aeróbica máxima e estimativa do VO2 máx.', physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico e VAM.' }
       ],
       physiology: [
-        { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) é a molécula de energia direta.', whatItMeasures: 'Ressíntese de energia muscular.', physiology: 'ATP-CP, Glicolítico e Oxidativo.' },
-        { id: 'phys-vo2', category: 'Consumo de Oxigênio', title: 'VO2 e VO2 Máximo', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'O teto aeróbico', icon: 'fa-lung', description: 'Volume máximo de oxigênio captado por minuto.', whatItMeasures: 'Potência aeróbica máxima.', physiology: 'Limitado pelo débito cardíaco e extração muscular.' },
-        { id: 'phys-lactate', category: 'Cinética Metabólica', title: 'Cinética e Depuração de Lactato', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'O lactato como combustível', icon: 'fa-fire', description: 'O lactato é reaproveitado como substrato energético pelas fibras lentas.', whatItMeasures: 'Capacidade de tamponamento.', physiology: 'Produção nas fibras rápidas e oxidação nas lentas.' }
+        { id: 'phys-atp', category: 'Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) é a molécula de energia direta.', whatItMeasures: 'Ressíntese de energia muscular.', physiology: 'ATP-CP, Glicolítico e Oxidativo.' }
       ],
       workouts: [
-        { id: 'work-interval', category: 'Método de Treino', title: 'Treino Intervalado (VO2máx)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Repetições de 400m a 1000m', icon: 'fa-stopwatch-20', description: 'Esforços intensos (95-100% VAM) com recuperação incompleta.', whatItMeasures: 'Potência aeróbica e VO2máx.', physiology: 'Elevação do batimento cardíaco próximo ao teto.' },
-        { id: 'work-tempo', category: 'Método de Treino', title: 'Treino de Ritmo (Tempo Run)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Corrida no Limiar', icon: 'fa-gauge', description: 'Corrida contínua sustentada na intensidade do Limiar Anaeróbico.', whatItMeasures: 'Taxa de remoção de lactato.', physiology: 'Trabalho no estado estável de lactato.' },
-        { id: 'work-long', category: 'Método de Treino', title: 'Longão (Long Run)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Resistência aeróbica', icon: 'fa-route', description: 'Treino longo semanal em ritmo confortável.', whatItMeasures: 'Capilarização e mitocôndrias.', physiology: 'Oxidação de gorduras.' }
+        { id: 'work-interval', category: 'Método de Treino', title: 'Treino Intervalado (VO2máx)', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'Repetições de 400m a 1000m', icon: 'fa-stopwatch-20', description: 'Esforços intensos (95-100% VAM) com recuperação incompleta.', whatItMeasures: 'Potência aeróbica e VO2máx.', physiology: 'Elevação do batimento cardíaco próximo ao teto.' }
       ]
     };
 
@@ -607,7 +564,6 @@
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
           display.textContent = "00:00 - FIM!";
-          if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
         } else {
           updateText();
         }
@@ -616,7 +572,7 @@
 
     function stopRestTimer() {
       clearInterval(timerInterval);
-      document.getElementById('timerDisplay').textContent = "00:00";
+      document.getElementById('timerDisplay').textContent = "00:45";
     }
 
     function switchBandsWorkout(type) {
@@ -636,85 +592,6 @@
           <p class="text-[11px] text-gray-300"><strong>Execução:</strong> ${ex.exec}</p>
         </div>
       `).join('');
-    }
-
-    function getDynamicWeeklyPlan() {
-      const now = new Date();
-      const weekNumber = Math.ceil(now.getDate() / 7);
-      let phaseName = "Semana 1: Base Aeróbica & Volume";
-      let mult = 1.0;
-      if (weekNumber === 2) { phaseName = "Semana 2: Intensidade & Limiar"; mult = 1.1; }
-      else if (weekNumber === 3) { phaseName = "Semana 3: Pico de Carga & VAM"; mult = 1.2; }
-      else if (weekNumber >= 4) { phaseName = "Semana 4: Polimento & Descarga (Taper)"; mult = 0.8; }
-      document.getElementById('cycleWeekLabel').textContent = phaseName;
-
-      return [
-        { day: 'Segunda-feira', title: 'Corrida Contínua (Base Aeróbica)', type: 'Corrida Z2', strength: 'Força: Treino A (Superiores)', color: 'text-blue-400', detail: `${Math.round(6 * mult)}k em ritmo conversacional (Z2).` },
-        { day: 'Terça-feira', title: 'Treino Intervalado (Tiros de Pista)', type: 'Tiros / VAM', strength: 'Descanso de Força', color: 'text-red-400', detail: `Aquecimento + ${weekNumber >= 3 ? '8' : '6'} x 400m forte.` },
-        { day: 'Quarta-feira', title: 'Condicionamento Misto', type: 'Natação / Aeróbico', strength: 'Força: Treino B (Pernas)', color: 'text-cyan-400', detail: 'Sessão de natação ou aeróbico sem impacto.' },
-        { day: 'Quinta-feira', title: 'Treino de Ritmo (Tempo Run)', type: 'Limiar Anaeróbico', strength: 'Trote Regenerativo', color: 'text-yellow-400', detail: `Aquecimento + ${Math.round(3.5 * mult)}k em limiar.` },
-        { day: 'Sexta-feira', title: 'Rodagem Regenerativa', type: 'Recuperação Ativa', strength: 'Força: Treino C (Core)', color: 'text-emerald-400', detail: '3k a 4k em ritmo leve (Z1).' },
-        { day: 'Sábado', title: 'O Longão (Long Run)', type: 'Resistência', strength: 'Hidratação e Descanso', color: 'text-indigo-400', detail: `${Math.round((weekNumber >= 4 ? 8 : 10) * mult)}k contínuos.` },
-        { day: 'Domingo', title: 'Descanso Ativo', type: 'Regeneração Total', strength: 'Mobilidade Leve', color: 'text-slate-400', detail: 'Descanso total de corrida.' }
-      ];
-    }
-
-    function renderPlan() {
-      const container = document.getElementById('planContainer');
-      if (!container) return;
-      const dynamicPlan = getDynamicWeeklyPlan();
-
-      container.innerHTML = dynamicPlan.map((item, index) => {
-        const isRunDone = completedRuns.includes(index);
-        const isBandDone = completedBands.includes(index);
-        const isPostponed = postponedDays[index] || false;
-
-        return `
-          <div class="p-4 rounded-2xl bg-slate-900 border ${isPostponed ? 'border-amber-500/50 bg-amber-950/10' : 'border-slate-800'} space-y-2.5 transition">
-            <div class="flex justify-between items-start">
-              <div>
-                <span class="text-[10px] font-bold uppercase tracking-wider ${item.color}">${item.day} • ${item.type}</span>
-                <h4 class="text-xs font-bold text-white mt-0.5 ${isRunDone ? 'line-through text-gray-400' : ''}">${item.title}</h4>
-              </div>
-              <button onclick="togglePostpone(${index})" class="text-[10px] bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-lg text-amber-400 hover:bg-slate-700 transition">
-                <i class="fa-solid fa-clock-rotate-left mr-1"></i> ${isPostponed ? 'Adiado' : 'Adiar Treino'}
-              </button>
-            </div>
-            <p class="text-xs text-gray-300">${item.detail}</p>
-            <div class="bg-slate-950 p-2.5 rounded-xl text-[11px] text-gray-400 border border-slate-800/80">
-              <strong class="text-emerald-400">Musculação:</strong> ${item.strength}
-            </div>
-            <div class="grid grid-cols-2 gap-2 pt-1">
-              <button onclick="toggleRunDone(${index})" class="py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition ${isRunDone ? 'bg-orange-500 text-slate-950' : 'bg-slate-800 text-gray-300'}">
-                <i class="fa-solid fa-person-running"></i> ${isRunDone ? 'Corrida Feita' : 'Marcar Corrida'}
-              </button>
-              <button onclick="toggleBandDone(${index})" class="py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition ${isBandDone ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-gray-300'}">
-                <i class="fa-solid fa-dumbbell"></i> ${isBandDone ? 'Força Feita' : 'Marcar Força'}
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function toggleRunDone(index) {
-      if (completedRuns.includes(index)) completedRuns = completedRuns.filter(i => i !== index);
-      else completedRuns.push(index);
-      localStorage.setItem('stamina_runs_done', JSON.stringify(completedRuns));
-      renderPlan();
-    }
-
-    function toggleBandDone(index) {
-      if (completedBands.includes(index)) completedBands = completedBands.filter(i => i !== index);
-      else completedBands.push(index);
-      localStorage.setItem('stamina_bands_done', JSON.stringify(completedBands));
-      renderPlan();
-    }
-
-    function togglePostpone(index) {
-      postponedDays[index] = !postponedDays[index];
-      localStorage.setItem('stamina_postponed', JSON.stringify(postponedDays));
-      renderPlan();
     }
 
     function exportBackupData() {
@@ -751,7 +628,7 @@
       const name = document.getElementById('newRunName').value.trim() || "Corrida Manual";
       const date = document.getElementById('newRunDate').value || new Date().toISOString().split('T')[0];
       const distance = parseFloat(document.getElementById('newRunDist').value);
-      const timeStr = document.getElementById('newRunTime').value.trim() || "30 min";
+      const timeStr = document.getElementById('newRunTime').value.trim() || "25 min";
       const pace = document.getElementById('newRunPace').value.trim() || "5:00 /km";
       const splits = document.getElementById('newRunSplits').value.trim();
 
@@ -818,20 +695,98 @@
       }
     }
 
+    function parsePaceToSeconds(paceStr) {
+      if (!paceStr) return 0;
+      let clean = paceStr.replace(/[^0-9:]/g, '');
+      let parts = clean.split(':').map(Number);
+      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) return (parts[0] * 60) + parts[1];
+      if (parts.length === 1 && !isNaN(parts[0])) return parts[0] * 60;
+      return 0;
+    }
+
+    function formatSecondsToPace(sec) {
+      if (!sec || isNaN(sec)) return "--:--";
+      let m = Math.floor(sec / 60);
+      let s = Math.round(sec % 60);
+      return `${m}:${s < 10 ? '0' : ''}${s} /km`;
+    }
+
+    // ANÁLISE INDIVIDUALIZADA POR CORRIDA (AO CLICAR NO OLHO)
     function viewRunDetails(id) {
       let act = manualActivities.find(a => a.id == id);
       if (!act) return;
-      document.getElementById('modalCategoryBadge').textContent = "Detalhes da Corrida";
+
+      let splitAnalysisHtml = "";
+      let strength = "Bom controlo geral da distância planeada.";
+      let weakness = "Sem desvios críticos aparentes.";
+      let improvement = "Mantenha a consistência e faça aquecimento adequado.";
+
+      if (act.splits && act.splits.includes(',')) {
+        let rawSplits = act.splits.split(',').map(s => s.trim());
+        let splitSecs = rawSplits.map(s => parsePaceToSeconds(s)).filter(s => s > 0);
+
+        if (splitSecs.length >= 2) {
+          let fastest = Math.min(...splitSecs);
+          let slowest = Math.max(...splitSecs);
+          let firstHalf = splitSecs.slice(0, Math.floor(splitSecs.length / 2)).reduce((a,b)=>a+b,0) / Math.floor(splitSecs.length / 2);
+          let secondHalf = splitSecs.slice(Math.floor(splitSecs.length / 2)).reduce((a,b)=>a+b,0) / (splitSecs.length - Math.floor(splitSecs.length / 2));
+
+          splitAnalysisHtml = `
+            <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1">
+              <span class="text-cyan-400 font-bold block"><i class="fa-solid fa-stopwatch mr-1"></i> Leituras de Splits por KM:</span>
+              <p class="font-mono text-gray-200 text-xs">${rawSplits.join(' ➔ ')}</p>
+              <div class="text-[11px] text-gray-400 mt-1 flex justify-between">
+                <span>Mais rápido: <strong class="text-emerald-400">${formatSecondsToPace(fastest)}</strong></span>
+                <span>Mais lento: <strong class="text-rose-400">${formatSecondsToPace(slowest)}</strong></span>
+              </div>
+            </div>
+          `;
+
+          if (secondHalf < firstHalf - 3) {
+            strength = "Excelente capacidade de <em>Negative Split</em> (acelerou na segunda metade da prova, demonstrando ótima reserva energética e gestão de ritmo).";
+            weakness = "O primeiro quilómetro pode ter sido excessivamente conservador.";
+            improvement = "Para buscar recordes pessoais, tente arriscar um ritmo ligeiramente mais ágil nos primeiros 20% do percurso sem estourar.";
+          } else if (secondHalf > firstHalf + 5) {
+            strength	= "Início de treino forte e corajoso.";
+            weakness = "Fadiga acentuada na reta final (quebra de ritmo nos últimos quilómetros).";
+            improvement = "Trabalhe melhor o pacing inicial (evite sair muito rápido) e adicione treinos de limiar para melhorar a resistência à fadiga.";
+          } else {
+            strength = "Ritmo extremamente linear e constante do início ao fim (pacing estável).";
+            weakness = "Pouca variação de intensidade para testar picos de velocidade.";
+            improvement = "Para evoluir o VO2máx, insira tiros intervalados ou oscilações controladas de ritmo (fartlek) nas próximas sessões.";
+          }
+        }
+      } else {
+        splitAnalysisHtml = `<p class="text-xs text-gray-400 italic">Nenhum split detalhado por km foi registado nesta atividade.</p>`;
+      }
+
+      document.getElementById('modalCategoryBadge').textContent = "Autópsia Científica da Corrida";
       document.getElementById('modalTitle').textContent = act.name;
       document.getElementById('modalBody').innerHTML = `
-        <div class="space-y-2 text-xs">
-          <p><strong>Data:</strong> ${act.start_date || 'N/A'}</p>
-          <p><strong>Distância:</strong> ${act.distance.toFixed(1)} km</p>
-          <p><strong>Duração:</strong> ${act.time}</p>
-          <p><strong>Pace Médio:</strong> ${act.pace}</p>
-          <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1">
-            <span class="text-cyan-400 font-bold block"><i class="fa-solid fa-stopwatch mr-1"></i> Ritmo por KM (Splits):</span>
-            <p class="font-mono text-gray-200">${act.splits ? act.splits : 'Nenhum split registado para este treino.'}</p>
+        <div class="space-y-3 text-xs">
+          <div class="grid grid-cols-3 gap-2 bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
+            <div><span class="text-[9px] text-gray-400 uppercase font-bold">Distância</span><div class="text-sm font-black text-orange-400">${act.distance.toFixed(1)} km</div></div>
+            <div><span class="text-[9px] text-gray-400 uppercase font-bold">Duração</span><div class="text-sm font-black text-white">${act.time}</div></div>
+            <div><span class="text-[9px] text-gray-400 uppercase font-bold">Pace Médio</span><div class="text-sm font-black text-emerald-400">${act.pace}</div></div>
+          </div>
+
+          ${splitAnalysisHtml}
+
+          <div class="space-y-2 pt-1">
+            <div class="p-3 rounded-xl bg-emerald-950/20 border border-emerald-500/30 space-y-1">
+              <strong class="text-emerald-400 block"><i class="fa-solid fa-circle-check mr-1"></i> Ponto Forte:</strong>
+              <p class="text-gray-300">${strength}</p>
+            </div>
+
+            <div class="p-3 rounded-xl bg-amber-950/20 border border-amber-500/30 space-y-1">
+              <strong class="text-amber-400 block"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Ponto Fraco / Gargalo:</strong>
+              <p class="text-gray-300">${weakness}</p>
+            </div>
+
+            <div class="p-3 rounded-xl bg-cyan-950/20 border border-cyan-500/30 space-y-1">
+              <strong class="text-cyan-400 block"><i class="fa-solid fa-crosshairs mr-1"></i> O Que Melhorar no Próximo Treino:</strong>
+              <p class="text-gray-300">${improvement}</p>
+            </div>
           </div>
         </div>
       `;
@@ -845,14 +800,6 @@
       if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) return (parts[0] * 60) + parts[1];
       let numMatch = String(timeStr).match(/([0-9]+)/);
       return numMatch ? parseInt(numMatch[1]) * 60 : 0;
-    }
-
-    function parsePaceString(paceStr) {
-      if (!paceStr) return 0;
-      let clean = String(paceStr).toLowerCase().replace(/[^0-9:]/g, '');
-      let parts = clean.split(':').map(Number);
-      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) return (parts[0] * 60) + parts[1];
-      return 0;
     }
 
     function updateDashboardData() {
@@ -890,18 +837,17 @@
       document.getElementById('statMonthKm').textContent = `${totalPeriodKm.toFixed(1)} km`;
 
       renderWeeklyChart();
-      renderSplitBasedFeedbackEngine(filteredActivities, period, currentMonth, currentYear);
+      renderGeneralFeedbackEngine(filteredActivities, period, currentMonth, currentYear);
       renderManualActivitiesList(filteredActivities);
       updatePerformancePredictions(filteredActivities);
     }
 
-    // MOTOR DE ANÁLISE PROFUNDO (ANALISA RITMOS PARCIAIS / SPLITS E COMPARATIVO MENSAL)
-    function renderSplitBasedFeedbackEngine(filteredActs, period, currentMonth, currentYear) {
+    function renderGeneralFeedbackEngine(filteredActs, period, currentMonth, currentYear) {
       const container = document.getElementById('monthlyFeedbackContent');
       if (!container) return;
 
       if (filteredActs.length === 0) {
-        container.innerHTML = `<span class="text-gray-500">Adicione as suas corridas neste período para gerar a análise técnica.</span>`;
+        container.innerHTML = `<span class="text-gray-500">Adicione as suas corridas neste período para gerar a análise.</span>`;
         return;
       }
 
@@ -910,7 +856,6 @@
       let totalSec = filteredActs.reduce((acc, curr) => acc + parseTimeString(curr.time), 0);
       let avgPaceSec = totalKm > 0 ? (totalSec / totalKm) : 0;
       let avgDist = totalKm / totalSessions;
-      let longestRun = filteredActs.reduce((max, act) => act.distance > max.distance ? act : max, filteredActs[0]);
 
       const formatPace = (sec) => {
         if (!sec || isNaN(sec)) return "--:--";
@@ -919,123 +864,13 @@
         return `${m}:${s < 10 ? '0' : ''}${s} /km`;
       };
 
-      // Análise de Splits cadastrados
-      let splitDetailsText = "Nenhum split por km registado neste período. Dica: insira os tempos parciais no formato '5:10, 5:05, 5:00' para análise fina de pacing.";
-      let splitsAnalyses = [];
-
-      filteredActs.forEach(a => {
-        if (a.splits && a.splits.includes(':')) {
-          let splitNums = a.splits.split(',').map(s => parsePaceString(s.trim())).filter(n => n > 0);
-          if (splitNums.length >= 2) {
-            let firstHalf = splitNums.slice(0, Math.floor(splitNums.length / 2)).reduce((a,b)=>a+b, 0) / Math.floor(splitNums.length / 2);
-            let secondHalf = splitNums.slice(Math.floor(splitNums.length / 2)).reduce((a,b)=>a+b, 0) / (splitNums.length - Math.floor(splitNums.length / 2));
-            
-            if (secondHalf < firstHalf - 3) {
-              splitsAnalyses.append ? null : splitsAnalyses.push(`No treino <strong>${a.name}</strong>, você aplicou um excelente <em>Negative Split</em> (acelerou na 2ª metade).`);
-            } else if (secondHalf > firstHalf + 5) {
-              splitsAnalyses.push(`No treino <strong>${a.name}</strong>, houve quebra de ritmo na metade final (aumento do pace). Cuidado para não começar rápido demais.`);
-            } else {
-              splitsAnalyses.push(`No treino <strong>${a.name}</strong>, o pacing foi altamente constante e linear.`);
-            }
-          }
-        }
-      });
-
-      if (splitsAnalyses.length > 0) {
-        splitDetailsText = splitsAnalyses.join('<br>• ');
-      }
-
-      if (period === 'all') {
-        container.innerHTML = `
-          <div class="space-y-1.5 border-b border-slate-800/80 pb-3">
-            <div class="text-amber-400 font-bold text-xs flex items-center gap-1.5">
-              <i class="fa-solid fa-chart-pie"></i> Levantamento Geral do Histórico Completo
-            </div>
-            <p class="text-gray-300">• <strong>Volume Global:</strong> <strong>${totalKm.toFixed(1)} km</strong> acumulados em <strong>${totalSessions} sessões</strong> (Média de ${avgDist.toFixed(1)} km por treino).</p>
-            <p class="text-gray-300">• <strong>Pace Médio Geral:</strong> <strong>${formatPace(avgPaceSec)}</strong> consolidado em toda a base de dados.</p>
-            <p class="text-gray-300">• <strong>Sessão Mais Longa:</strong> <strong>${longestRun.distance.toFixed(1)} km</strong> (${longestRun.name}).</p>
-          </div>
-          <div class="space-y-1.5 border-b border-slate-800/80 pb-3 pt-1">
-            <div class="text-emerald-400 font-bold text-xs flex items-center gap-1.5">
-              <i class="fa-solid fa-list-ol"></i> Análise Técnica Baseada em Splits (Parciais por KM)
-            </div>
-            <p class="text-gray-300">• ${splitDetailsText}</p>
-          </div>
-          <div class="space-y-1.5 pt-1">
-            <div class="text-rose-400 font-bold text-xs flex items-center gap-1.5">
-              <i class="fa-solid fa-compass"></i> Prescrição Estrutural para Evolução
-            </div>
-            <p class="text-gray-300">• Para continuar evoluindo sem platôs, intercale treinos intervalados curtos (tiros de 400m) com sessões de fortalecimento muscular com elásticos.</p>
-          </div>
-        `;
-      } else {
-        // MODO MENSAL COM CRUZAMENTO MÊS A MÊS E ANÁLISE DE SPLITS
-        let targetMonth = currentMonth;
-        if (period === 'september') targetMonth = currentMonth - 1;
-        else if (period === 'august') targetMonth = currentMonth - 2;
-        else targetMonth = currentMonth - 1;
-
-        let prevActs = manualActivities.filter(act => {
-          if (!act.start_date) return false;
-          let d = new Date(act.start_date);
-          return d.getMonth() === targetMonth && d.getFullYear() === currentYear;
-        });
-
-        let prevKm = prevActs.reduce((acc, curr) => acc + (curr.distance || 0), 0);
-        let prevSec = prevActs.reduce((acc, curr) => acc + parseTimeString(curr.time), 0);
-        let avgPacePrev = prevKm > 0 ? (prevSec / prevKm) : 0;
-
-        let paceDiff = avgPaceSec - avgPacePrev;
-        let kmDiff = totalKm - prevKm;
-
-        let comparativeText = "";
-        let specificAdvice = "";
-
-        if (prevActs.length > 0) {
-          if (paceDiff < -3) {
-            comparativeText = `🚀 <strong>Evolução de Velocidade Real:</strong> O seu pace médio melhorou de <strong>${formatPace(avgPacePrev)}</strong> para <strong>${formatPace(avgPaceSec)}</strong> (${Math.abs(Math.round(paceDiff))}s/km mais rápido), acumulando <strong>${totalKm.toFixed(1)} km</strong>. Excelente ganho de eficiência aeróbica.`;
-          } else if (paceDiff > 3) {
-            comparativeText = `📈 <strong>Foco em Fundo / Volume:</strong> O pace médio ajustou-se para <strong>${formatPace(avgPaceSec)}</strong> (comparado a ${formatPace(avgPacePrev)} no mês anterior), priorizando rodagens longas e regenerativas em Z2.`;
-          } else {
-            comparativeText = `⚖️ <strong>Estabilidade Consistente:</strong> Ritmo mantido de forma exemplar (${formatPace(avgPaceSec)} vs ${formatPace(avgPacePrev)} do mês passado).`;
-          }
-
-          if (kmDiff > 5) {
-            specificAdvice = `⚠️ <strong>Controle de Carga:</strong> O volume cresceu +${kmDiff.toFixed(1)} km. Garanta que 80% dessa quilometragem seja em Z2 (ritmo conversacional) e realize os treinos de força (elásticos) para proteger os joelhos.`;
-          } else {
-            specificAdvice = `🎯 <strong>Direcionamento Técnico:</strong> O volume está equilibrado. Para destravar o pace, adicione um treino semanal de <em>Intervalado Longo (ex: 4x 1000m)</em> ou tiros em rampa.`;
-          }
-        } else {
-          comparativeText = `📊 <strong>Panorama Operacional:</strong> Acumulou <strong>${totalKm.toFixed(1)} km</strong> em <strong>${totalSessions} sessões</strong> (Média de ${avgDist.toFixed(1)} km por treino a ${formatPace(avgPaceSec)}).`;
-          specificAdvice = `💡 <strong>Recomendação:</strong> Mantenha a consistência de 3 a 4 estímulos semanais de corrida intercalados com os treinos de força A, B e C.`;
-        }
-
-        container.innerHTML = `
-          <div class="space-y-2 border-b border-slate-800/80 pb-3">
-            <div class="text-amber-400 font-bold text-xs flex items-center gap-1.5">
-              <i class="fa-solid fa-chart-bar"></i> Sumário do Período
-            </div>
-            <p class="text-gray-300">• <strong>Volume Executado:</strong> ${totalKm.toFixed(1)} km em ${totalSessions} treinos (Média de ${avgDist.toFixed(1)} km/sessão).</p>
-            <p class="text-gray-300">• <strong>Pace Médio Ponderado:</strong> ${formatPace(avgPaceSec)}</p>
-            <p class="text-gray-300">• <strong>Maior Estímulo:</strong> ${longestRun.distance.toFixed(1)} km (${longestRun.name}).</p>
-          </div>
-
-          <div class="space-y-2 border-b border-slate-800/80 pb-3 pt-1">
-            <div class="text-emerald-400 font-bold text-xs flex items-center gap-1.5">
-              <i class="fa-solid fa-bolt"></i> Comparativo Mês a Mês & Splits Parciais
-            </div>
-            <p class="text-gray-300">${comparativeText}</p>
-            <p class="text-gray-300 pt-1">• <strong>Análise de Ritmo por KM:</strong> ${splitDetailsText}</p>
-          </div>
-
-          <div class="space-y-2 pt-1">
-            <div class="text-rose-400 font-bold text-xs flex items-center gap-1.5">
-              <i class="fa-solid fa-crosshairs"></i> Direcionamento Prático
-            </div>
-            <p class="text-gray-300">${specificAdvice}</p>
-          </div>
-        `;
-      }
+      container.innerHTML = `
+        <div class="space-y-1.5">
+          <p class="text-gray-300">• <strong>Volume do Período:</strong> <strong>${totalKm.toFixed(1)} km</strong> em <strong>${totalSessions} treinos</strong> (Média de ${avgDist.toFixed(1)} km/sessão).</p>
+          <p class="text-gray-300">• <strong>Pace Médio Global:</strong> <strong>${formatPace(avgPaceSec)}</strong>.</p>
+          <p class="text-gray-400 text-[11px] mt-1"><i class="fa-solid fa-circle-info text-cyan-400 mr-1"></i> Clique no ícone de olho em cada treino abaixo para ver os pontos fortes, fracos e o que melhorar com base nos splits de cada quilómetro.</p>
+        </div>
+      `;
     }
 
     function renderWeeklyChart() {
@@ -1060,7 +895,7 @@
       let totalKmWeek = daysKm.reduce((a, b) => a + b, 0);
       document.getElementById('weeklyTotalKmLabel').textContent = `Total: ${totalKmWeek.toFixed(1)} km`;
 
-      container.innerHTML = daysKm.map((km, idx) => {
+      container.innerHTML = daysKm.map((km) => {
         const heightPct = Math.round((km / maxKm) * 100);
         return `
           <div class="flex flex-col items-center flex-1 h-full justify-end group">
@@ -1087,9 +922,9 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="text-orange-400 font-bold">${act.distance.toFixed(1)} km</span>
-            <button onclick="viewRunDetails(${act.id})" class="p-1.5 text-cyan-400 hover:text-cyan-300" title="Ver Detalhes"><i class="fa-solid fa-eye"></i></button>
-            <button onclick="editManualRun(${act.id})" class="p-1.5 text-amber-400 hover:text-amber-300" title="Editar Corrida"><i class="fa-solid fa-pen"></i></button>
-            <button onclick="deleteManualRun(${act.id})" class="p-1.5 text-rose-400 hover:text-rose-300" title="Apagar Atividade"><i class="fa-solid fa-trash"></i></button>
+            <button onclick="viewRunDetails(${act.id})" class="p-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 rounded-lg transition" title="Ver Análise Detalhada"><i class="fa-solid fa-eye text-sm"></i></button>
+            <button onclick="editManualRun(${act.id})" class="p-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 rounded-lg transition" title="Editar Corrida"><i class="fa-solid fa-pen text-sm"></i></button>
+            <button onclick="deleteManualRun(${act.id})" class="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg transition" title="Apagar Atividade"><i class="fa-solid fa-trash text-sm"></i></button>
           </div>
         </div>
       `).join('');
@@ -1138,7 +973,7 @@
 
     function renderHomeContent() {
       if (document.getElementById('homeProtocolsList')) {
-        document.getElementById('homeProtocolsList').innerHTML = DATABASE.protocols.slice(0, 2).map(item => `
+        document.getElementById('homeProtocolsList').innerHTML = DATABASE.protocols.map(item => `
           <div onclick="openModal('${item.id}')" class="p-3 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer flex items-center justify-between">
             <div class="flex items-center space-x-3"><div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-orange-400"><i class="fa-solid ${item.icon}"></i></div><div><h4 class="text-xs font-bold text-white">${item.title}</h4><p class="text-[10px] text-gray-400">${item.subtitle}</p></div></div>
           </div>
@@ -1151,25 +986,9 @@
       }
     }
 
-    function renderCategoryList(catKey, containerId) {
-      let container = document.getElementById(containerId);
-      if (!container || !DATABASE[catKey]) return;
-      container.innerHTML = DATABASE[catKey].map(item => `
-        <div onclick="openModal('${item.id}')" class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer">
-          <span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${item.badgeColor}">${item.category}</span>
-          <h4 class="text-xs font-bold text-white mt-1">${item.title}</h4>
-          <p class="text-[10px] text-gray-400">${item.subtitle || item.description}</p>
-        </div>
-      `).join('');
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
       renderHomeContent();
-      renderPlan();
       switchBandsWorkout('A');
-      renderCategoryList('protocols', 'protocolsContainer');
-      renderCategoryList('physiology', 'physiologyContainer');
-      renderCategoryList('workouts', 'workoutsContainer');
       updateDashboardData();
     });
 
@@ -1215,27 +1034,6 @@
       document.getElementById('resSpeed').textContent = `${(distKm / (totalSeconds / 3600)).toFixed(2)} km/h`;
       document.getElementById('resVo2').textContent = dist >= 1000 ? `${((dist - 504.9) / 44.73).toFixed(1)} ml/kg` : "--";
       document.getElementById('paceResult').classList.remove('hidden');
-    }
-
-    function calculateKarvonen() {
-      const fcMax = parseInt(document.getElementById('calcFcMax').value);
-      const fcRest = parseInt(document.getElementById('calcFcRest').value);
-      if (!fcMax || !fcRest || fcMax <= fcRest) { alert("Verifique os valores de FC."); return; }
-      const hrr = fcMax - fcRest;
-      const zones = [
-        { name: 'Z1 - Recuperação', min: 0.50, max: 0.60, color: 'text-gray-300' },
-        { name: 'Z2 - Aeróbico Leve', min: 0.60, max: 0.70, color: 'text-orange-400' },
-        { name: 'Z3 - Limiar / Tempo', min: 0.70, max: 0.80, color: 'text-emerald-400' },
-        { name: 'Z4 - Anaeróbico', min: 0.80, max: 0.90, color: 'text-amber-400' },
-        { name: 'Z5 - VO2 Máx', min: 0.90, max: 1.00, color: 'text-rose-400' }
-      ];
-      document.getElementById('karvonenResult').innerHTML = zones.map(z => `
-        <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-          <span class="font-bold ${z.color}">${z.name}</span>
-          <span class="font-mono text-white">${Math.round(fcRest + hrr * z.min)} - ${Math.round(fcRest + hrr * z.max)} bpm</span>
-        </div>
-      `).join('');
-      document.getElementById('karvonenResult').classList.remove('hidden');
     }
 
     function generatePaceSplits() {
