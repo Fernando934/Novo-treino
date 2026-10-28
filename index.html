@@ -1094,7 +1094,10 @@
       if (!container) return;
       const dynamicPlan = getDynamicWeeklyPlan();
 
-      const todayDayIndex = 1;
+      // CORRIGIDO: Obtém o dia real do dispositivo (0 = Domingo, 1 = Segunda, ..., 6 = Sábado)
+      // Como o array começa em Segunda-feira (índice 0), ajustamos o índice:
+      let jsDay = new Date().getDay(); // Domingo = 0, Segunda = 1, Terça = 2, Quarta = 3...
+      let todayDayIndex = jsDay === 0 ? 6 : jsDay - 1; // Transforma Domingo em 6, Segunda em 0, Terça em 1, Quarta em 2...
 
       container.innerHTML = dynamicPlan.map((item, index) => {
         const isRunDone = completedRuns.includes(index);
@@ -1681,16 +1684,16 @@
         <div class="p-2 bg-slate-950 rounded-lg text-orange-400 font-mono">Z4 (Limiar Anaeróbico): ${Math.round(hrr * 0.8 + fcRest)} - ${Math.round(hrr * 0.9 + fcRest)} BPM</div>
         <div class="p-2 bg-slate-950 rounded-lg text-rose-400 font-mono">Z5 (Pico de VAM): ${Math.round(hrr * 0.9 + fcRest)} - ${fcMax} BPM</div>
       `;
-      res.classList.remove('hidden'); // CORRIGIDO: Exibe o resultado corretamente
+      res.classList.remove('hidden');
     }
 
     function calculateCalories() {
       const weight = parseFloat(document.getElementById('calWeight').value) || 75;
-      const dist = parseFloat(document.getElementById('calDist').value) || 5;
+      const dist = parseFloat(document.getElementById('calDist5').value) || 5;
       const cal = Math.round(weight * dist * 1.03);
       const res = document.getElementById('calResult');
       res.textContent = `Gasto Calórico Estimado: ~${cal} kcal`;
-      res.classList.remove('hidden'); // CORRIGIDO: Exibe o resultado corretamente
+      res.classList.remove('hidden');
     }
 
     function generatePaceSplits() {
@@ -1707,7 +1710,7 @@
       }
       let res = document.getElementById('splitsResult');
       res.innerHTML = html;
-      res.classList.remove('hidden'); // CORRIGIDO: Exibe o resultado corretamente
+      res.classList.remove('hidden');
     }
   </script>
 </body>
