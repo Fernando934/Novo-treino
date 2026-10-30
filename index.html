@@ -133,10 +133,10 @@
         <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-orange-600/10 rounded-full blur-2xl"></div>
         <div class="relative z-10 flex justify-between items-center">
           <div>
-            <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold uppercase tracking-wider">Registo & Previsões</span>
+            <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold uppercase tracking-wider">Registo Manual & Previsões</span>
             <h3 class="text-base font-extrabold text-white mt-2">Central de Atividades e Gráficos</h3>
             <p class="text-xs text-gray-300 mt-1 leading-relaxed">
-              Acompanhe suas corridas sincronizadas ou manuais e veja previsões de ritmo.
+              Adicione as suas corridas e acompanhe as previsões de desempenho estimadas.
             </p>
           </div>
           <div class="bg-orange-600 text-slate-950 p-3 rounded-2xl shrink-0 ml-3 font-bold">
@@ -230,25 +230,11 @@
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
           <h2 class="text-sm font-bold text-white">Central de Atividades & Backup</h2>
-          <p class="text-xs text-gray-400">Sincronização do Bettdow FB041 + Registos Manuais.</p>
+          <p class="text-xs text-gray-400">Adicione corridas e analise a evolução detalhada.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
         </button>
-      </div>
-
-      <!-- STATUS DA CONEXÃO BETDOW/STRAVA -->
-      <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-          <div class="w-9 h-9 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center text-base">
-            <i class="fa-brands fa-strava"></i>
-          </div>
-          <div>
-            <h3 class="text-xs font-bold text-white">Bettdow FB041 ➔ Strava</h3>
-            <p class="text-[10px] text-emerald-400 font-semibold"><i class="fa-solid fa-circle text-[7px] mr-1"></i> Webhook Ativo & Sincronizado</p>
-          </div>
-        </div>
-        <span class="text-[9px] bg-slate-800 text-gray-300 px-2 py-1 rounded-lg border border-slate-700">GPS Nativo</span>
       </div>
 
       <!-- PREVISÕES DE DESEMPENHO -->
@@ -304,14 +290,14 @@
         </div>
       </div>
 
-      <!-- ADICIONAR CORRIDA MANUALMENTE (MANTIDO) -->
+      <!-- ADICIONAR CORRIDA MANUALMENTE -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-        <h3 class="font-bold text-sm text-orange-400 flex items-center gap-2" id="formRunTitle"><i class="fa-solid fa-plus-circle"></i> Registar Nova Corrida / Sincronizar</h3>
+        <h3 class="font-bold text-sm text-orange-400 flex items-center gap-2" id="formRunTitle"><i class="fa-solid fa-plus-circle"></i> Registar Nova Corrida</h3>
         <input type="hidden" id="editRunId" value="" />
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Título / Local</label>
-            <input type="text" id="newRunName" placeholder="ex: Rodagem Japeri (GPS Bettdow)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
+            <input type="text" id="newRunName" placeholder="ex: Rodagem Japeri" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
           </div>
           <div>
             <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Data</label>
@@ -1108,8 +1094,10 @@
       if (!container) return;
       const dynamicPlan = getDynamicWeeklyPlan();
 
-      let jsDay = new Date().getDay();
-      let todayDayIndex = jsDay === 0 ? 6 : jsDay - 1;
+      // CORRIGIDO: Obtém o dia real do dispositivo (0 = Domingo, 1 = Segunda, ..., 6 = Sábado)
+      // Como o array começa em Segunda-feira (índice 0), ajustamos o índice:
+      let jsDay = new Date().getDay(); // Domingo = 0, Segunda = 1, Terça = 2, Quarta = 3...
+      let todayDayIndex = jsDay === 0 ? 6 : jsDay - 1; // Transforma Domingo em 6, Segunda em 0, Terça em 1, Quarta em 2...
 
       container.innerHTML = dynamicPlan.map((item, index) => {
         const isRunDone = completedRuns.includes(index);
@@ -1255,7 +1243,7 @@
     function cancelEditRun() {
       clearRunForm();
       document.getElementById('editRunId').value = '';
-      document.getElementById('formRunTitle').innerHTML = `<i class="fa-solid fa-plus-circle"></i> Registar Nova Corrida / Sincronizar`;
+      document.getElementById('formRunTitle').innerHTML = `<i class="fa-solid fa-plus-circle"></i> Registar Nova Corrida`;
       document.getElementById('saveRunBtn').textContent = "Adicionar ao Histórico";
       document.getElementById('cancelEditBtn').classList.add('hidden');
     }
@@ -1337,7 +1325,7 @@
           if (firstKmSec > avgPaceSec + 25) {
             strength = "Excelente capacidade de Negative Split (acelerou progressivamente na segunda metade).";
             weakness = `O 1º quilómetro (${formatSecondsToPace(firstKmSec)}) foi ${Math.round(diffFromAvg)}s mais lento que a sua média total do treino.`;
-            errorPlace = `Pace ideal calculated para o KM 1: <strong>${formatSecondsToPace(idealFirstKmSec)}</strong>.`;
+            errorPlace = `Pace ideal calculado para o KM 1: <strong>${formatSecondsToPace(idealFirstKmSec)}</strong>.`;
             improvement = "Inicie aquecimento prévio antes de rodar o relógio para evitar perder tempo excessivo no KM 1.";
           } else if (secondHalf < firstHalf - 3) {
             strength = "Excelente progressão de ritmo (Negative Split).";
@@ -1478,7 +1466,7 @@
       const container = document.getElementById('monthlyFeedbackContent');
       if (!container) return;
       if (filteredActs.length === 0) {
-        container.innerHTML = `<span class="text-gray-500">Adicione ou sincronize as suas corridas neste período para gerar a análise estatística completa.</span>`;
+        container.innerHTML = `<span class="text-gray-500">Adicione as suas corridas neste período para gerar a análise estatística completa.</span>`;
         return;
       }
 
@@ -1701,7 +1689,7 @@
 
     function calculateCalories() {
       const weight = parseFloat(document.getElementById('calWeight').value) || 75;
-      const dist = parseFloat(document.getElementById('calDist').value) || 5;
+      const dist = parseFloat(document.getElementById('calDist5').value) || 5;
       const cal = Math.round(weight * dist * 1.03);
       const res = document.getElementById('calResult');
       res.textContent = `Gasto Calórico Estimado: ~${cal} kcal`;
