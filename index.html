@@ -230,7 +230,7 @@
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
           <h2 class="text-sm font-bold text-white">Central de Atividades & Backup</h2>
-          <p class="text-xs text-gray-400">Registo manual de treinos com análise detalhada por KM (Ritmo & FC).</p>
+          <p class="text-xs text-gray-400">Registo por tipo de treino, ritmo e FC por KM.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
@@ -290,14 +290,23 @@
         </div>
       </div>
 
-      <!-- ADICIONAR CORRIDA MANUALMENTE COM RITMO E FC POR KM -->
+      <!-- ADICIONAR CORRIDA MANUALMENTE COM TIPO DE TREINO -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <h3 class="font-bold text-sm text-orange-400 flex items-center gap-2" id="formRunTitle"><i class="fa-solid fa-plus-circle"></i> Registar Nova Corrida</h3>
         <input type="hidden" id="editRunId" value="" />
+        
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Título / Local</label>
-            <input type="text" id="newRunName" placeholder="ex: Rodagem Japeri" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Tipo de Treino</label>
+            <select id="newRunType" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none">
+              <option value="Longão">Longão (Resistência)</option>
+              <option value="Intervalado / Tiros">Intervalado / Tiros</option>
+              <option value="Rodagem Regenerativa">Rodagem Regenerativa (Leve)</option>
+              <option value="Rodagem Moderada">Rodagem Moderada (Base)</option>
+              <option value="Fortex (Progressivo)">Fortex (Progressivo)</option>
+              <option value="Fartlek">Fartlek</option>
+              <option value="Teste Físico / Prova">Teste Físico / Prova</option>
+            </select>
           </div>
           <div>
             <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Data</label>
@@ -397,7 +406,7 @@
       <!-- HISTÓRICO -->
       <div class="space-y-3">
         <div class="flex justify-between items-center px-1">
-          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Histórico de Corridas (Clique no Olho para Autópsia de Ritmo & FC por KM)</h3>
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Histórico de Corridas (Clique no Olho para Autópsia Contextualizada)</h3>
         </div>
         <div id="manualActivitiesList" class="space-y-2">
           <p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade registada ainda.</p>
@@ -1009,7 +1018,7 @@
 
     function saveOrUpdateManualRun() {
       const editId = document.getElementById('editRunId').value;
-      const name = document.getElementById('newRunName').value.trim() || "Corrida Manual";
+      const name = document.getElementById('newRunType').value; // Salva o tipo de treino selecionado
       const date = document.getElementById('newRunDate').value || new Date().toISOString().split('T')[0];
       const distance = parseFloat(document.getElementById('newRunDist').value);
       const timeStr = document.getElementById('newRunTime').value.trim() || "25 min";
@@ -1044,7 +1053,7 @@
       let act = manualActivities.find(a => a.id == id);
       if (!act) return;
       document.getElementById('editRunId').value = act.id;
-      document.getElementById('newRunName').value = act.name;
+      document.getElementById('newRunType').value = act.name || 'Longão';
       document.getElementById('newRunDate').value = act.start_date || '';
       document.getElementById('newRunDist').value = act.distance;
       document.getElementById('newRunTime').value = act.time;
@@ -1068,7 +1077,6 @@
     }
 
     function clearRunForm() {
-      document.getElementById('newRunName').value = '';
       document.getElementById('newRunDist').value = '';
       document.getElementById('newRunTime').value = '';
       document.getElementById('newRunPace').value = '';
@@ -1115,8 +1123,9 @@
       let improvement = "Mantenha a consistência nos treinos.";
 
       let avgPaceSec = parsePaceToSeconds(act.pace) || 340;
+      let workoutType = act.name || "Rodagem";
 
-      // 1. ANÁLISE DE RITMO POR KM (SPLITS)
+      // 1. ANÁLISE DE RITMO POR KM (SPLITS) CONTEXTUALIZADA AO TIPO DE TREINO
       if (act.splits && act.splits.includes(',')) {
         let rawSplits = act.splits.split(',').map(s => s.trim());
         let splitSecs = rawSplits.map(s => parsePaceToSeconds(s)).filter(s => s > 0);
@@ -1133,7 +1142,7 @@
 
           splitAnalysisHtml = `
             <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1">
-              <span class="text-cyan-400 font-bold block"><i class="fa-solid fa-stopwatch mr-1"></i> Passagens de Ritmo por KM:</span>
+              <span class="text-cyan-400 font-bold block"><i class="fa-solid fa-stopwatch mr-1"></i> Passagens de Ritmo por KM (${workoutType}):</span>
               <p class="font-mono text-gray-200 text-xs">${rawSplits.join(' ➔ ')}</p>
               <div class="text-[11px] text-gray-400 mt-1 flex justify-between">
                 <span>Mais rápido: <strong class="text-emerald-400">KM ${fastestKm} (${formatSecondsToPace(fastest)})</strong></span>
@@ -1145,26 +1154,35 @@
           let idealFirstKmSec = Math.round(avgPaceSec * 1.05);
           let diffFromAvg = firstKmSec - avgPaceSec;
 
-          if (firstKmSec > avgPaceSec + 25) {
-            strength = "Excelente capacidade de Negative Split (acelerou progressivamente na segunda metade).";
-            weakness = `O 1º quilómetro (${formatSecondsToPace(firstKmSec)}) foi ${Math.round(diffFromAvg)}s mais lento que a sua média total do treino.`;
-            errorPlace = `Pace ideal calculado para o KM 1: <strong>${formatSecondsToPace(idealFirstKmSec)}</strong>.`;
-            improvement = "Inicie aquecimento prévio antes de rodar para evitar perder tempo excessivo no KM 1.";
-          } else if (secondHalf < firstHalf - 3) {
-            strength = "Excelente progressão de ritmo (Negative Split).";
-            weakness = "Constância preservada na primeira metade.";
-            errorPlace = `KM 1 foi executado dentro da janela ideal de tolerância.`;
-            improvement = "Mantenha a mesma estratégia de dosagem de esforço.";
-          } else if (secondHalf > firstHalf + 5) {
-            strength = "Largada agressiva e forte.";
-            weakness = "Perda de ritmo na metade final devido a fadiga precoce.";
-            errorPlace = `Erro de intensidade no KM 1. Ajuste a saída para <strong>${formatSecondsToPace(idealFirstKmSec)}</strong>.`;
-            improvement = "Controle o entusiasmo no início para ter gás na reta final.";
+          if (workoutType.includes('Longão') || workoutType.includes('Regenerativa')) {
+            if (firstKmSec > avgPaceSec + 25) {
+              strength = "Excelente aquecimento progressivo adequado para preservar as articulações.";
+              weakness = `O 1º quilómetro (${formatSecondsToPace(firstKmSec)}) foi ${Math.round(diffFromAvg)}s mais lento, o que é ótimo para evitar picos de esforço precoce.`;
+              errorPlace = "Aquecimento executado perfeitamente na zona de base.";
+              improvement = "Mantenha essa cautela inicial nos próximos treinos longos.";
+            } else {
+              strength = "Boa constância aeróbica.";
+              weakness = "Largada um pouco acelerada para um treino de base/longão.";
+              errorPlace = `Cuidado para não desgastar energia cedo demais. Tente iniciar o 1º KM mais leve.`;
+              improvement = "Lembre-se: treinos longos e regenerativos exigem controle absoluto no início.";
+            }
           } else {
-            strength = "Ritmo extremamente homogêneo e linear do início ao fim.";
-            weakness = "Pouca variação tática de velocidade.";
-            errorPlace = "Nenhum erro de pacing relevante detetado pelos filtros.";
-            improvement = "Insira blocos intervalados para treinar alteração de ritmo.";
+            if (secondHalf < firstHalf - 3) {
+              strength = "Excelente progressão de ritmo (Negative Split).";
+              weakness = "Constância preservada na primeira metade.";
+              errorPlace = `KM 1 executado na janela ideal de tolerância.`;
+              improvement = "Mantenha a estratégia de dosagem de esforço.";
+            } else if (secondHalf > firstHalf + 5) {
+              strength = "Largada agressiva e forte.";
+              weakness = "Perda de ritmo na metade final devido a fadiga precoce.";
+              errorPlace = `Erro de intensidade no KM 1. Ajuste a saída para <strong>${formatSecondsToPace(idealFirstKmSec)}</strong>.`;
+              improvement = "Controle o entusiasmo no início para ter gás na reta final.";
+            } else {
+              strength = "Ritmo extremamente homogêneo e linear do início ao fim.";
+              weakness = "Pouca variação tática de velocidade.";
+              errorPlace = "Nenhum erro de pacing relevante detetado.";
+              improvement = "Mantenha a consistência.";
+            }
           }
         }
       } else {
@@ -1184,12 +1202,18 @@
           let fcDiff = maxFcKm - firstKmFc;
           let fcTrendDiag = "";
 
-          if (fcDiff > 18) {
-            fcTrendDiag = `Deriva Cardíaca Alta (+${fcDiff} bpm do 1º ao pico no KM ${peakKm}). Indica subida rápida de temperatura corporal, possível desidratação ou fadiga acumulada.`;
-          } else if (fcDiff <= 10) {
-            fcTrendDiag = "Estabilidade Cardíaca Excelente! Curva de batimentos extremamente controlada ao longo de todos os quilómetros.";
+          if (workoutType.includes('Longão') || workoutType.includes('Regenerativa')) {
+            if (fcDiff > 15) {
+              fcTrendDiag = `Atenção: Deriva cardíaca acentuada para um treino de ${workoutType} (+${fcDiff} bpm). Seus batimentos subiram muito ao longo dos quilómetros, indicando possível desidratação, calor ou ritmo forte demais.`;
+            } else {
+              fcTrendDiag = `Excelente controle cardiovascular para um treino de ${workoutType}. Batimentos estáveis e dentro da zona aeróbica de base.`;
+            }
           } else {
-            fcTrendDiag = "Adaptação cardiovascular gradual e normal dentro do esperado para a distância.";
+            if (fcDiff > 20) {
+              fcTrendDiag = `Deriva Cardíaca Alta (+${fcDiff} bpm até o KM ${peakKm}). Desgaste cardiovascular elevado.`;
+            } else {
+              fcTrendDiag = "Resposta cardíaca consistente com a proposta do treino intervalado/moderado.";
+            }
           }
 
           fcSplitsAnalysisHtml = `
@@ -1206,43 +1230,19 @@
           `;
         }
       } else if (act.fc) {
-        let zoneText = "";
-        let zoneColor = "text-emerald-400";
-        let fcDiag = "";
-
-        if (act.fc < 140) {
-          zoneText = "Zona 1/2 (Regenerativo / Aeróbico Leve)";
-          zoneColor = "text-emerald-400";
-          fcDiag = "Excelente trabalho de base aeróbica e queima de gordura. Baixo estresse articular e cardíaco.";
-        } else if (act.fc >= 140 && act.fc < 160) {
-          zoneText = "Zona 3 (Limiar Aeróbico / Moderado)";
-          zoneColor = "text-cyan-400";
-          fcDiag = "Intensidade moderada eficiente. Ótimo equilíbrio entre desenvolvimento de resistência e controle de fadiga.";
-        } else if (act.fc >= 160 && act.fc < 175) {
-          zoneText = "Zona 4 (Limiar Anaeróbico / Tempo Run)";
-          zoneColor = "text-amber-400";
-          fcDiag = "Esforço sustentado forte. Ideal para treinos de ritmo/limiar, mas requer atenção na recuperação pós-treino.";
-        } else {
-          zoneText = "Zona 5 (Esforço Máximo / VAM)";
-          zoneColor = "text-rose-400";
-          fcDiag = "Frequência muito alta. Normal para tiros curtos, mas se foi em rodagem, indica sobrecarga ou largada forte demais.";
-        }
-
         fcSplitsAnalysisHtml = `
           <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
             <div class="flex justify-between items-center">
               <strong class="text-rose-400 flex items-center gap-1.5 text-xs">
                 <i class="fa-solid fa-heart-pulse"></i> Frequência Cardíaca Média: ${act.fc} BPM
               </strong>
-              <span class="text-[10px] font-bold ${zoneColor}">${zoneText}</span>
             </div>
-            <p class="text-gray-300 text-[11px] leading-relaxed mt-1">${fcDiag}</p>
           </div>
         `;
       }
 
       // 3. RENDERIZAÇÃO NO MODAL
-      document.getElementById('modalCategoryBadge').textContent = "Autópsia Científica da Corrida";
+      document.getElementById('modalCategoryBadge').textContent = `Autópsia • ${workoutType}`;
       document.getElementById('modalTitle').textContent = act.name;
       document.getElementById('modalBody').innerHTML = `
         <div class="space-y-3 text-xs">
@@ -1262,7 +1262,7 @@
               <p class="text-gray-300">${strength}</p>
             </div>
             <div class="p-3 rounded-xl bg-amber-950/20 border border-amber-500/30 space-y-1">
-              <strong class="text-amber-400 block"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Análise do KM 1 & Esforço Inicial:</strong>
+              <strong class="text-amber-400 block"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Análise Contextualizada (${workoutType}):</strong>
               <p class="text-gray-300">${weakness} <br><span class="text-amber-300 font-semibold">${errorPlace}</span></p>
             </div>
             <div class="p-3 rounded-xl bg-cyan-950/20 border border-cyan-500/30 space-y-1">
@@ -1439,12 +1439,12 @@
       container.innerHTML = listToRender.map(act => `
         <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs flex justify-between items-center">
           <div>
-            <strong class="text-white">${act.name}</strong>
+            <strong class="text-orange-400 uppercase">${act.name || 'Corrida'}</strong>
             <div class="text-[10px] text-gray-400">${act.start_date || 'Data N/A'} • ${act.time} • Pace: ${act.pace} ${act.fc ? '• <span class="text-rose-400 font-bold">' + act.fc + ' bpm</span>' : ''}</div>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-orange-400 font-bold">${act.distance.toFixed(1)} km</span>
-            <button onclick="viewRunDetails(${act.id})" class="p-2 bg-cyan-500/15 text-cyan-400 rounded-lg" title="Ver Autópsia do KM 1 & FC por KM"><i class="fa-solid fa-eye text-sm"></i></button>
+            <span class="text-white font-bold">${act.distance.toFixed(1)} km</span>
+            <button onclick="viewRunDetails(${act.id})" class="p-2 bg-cyan-500/15 text-cyan-400 rounded-lg" title="Ver Autópsia"><i class="fa-solid fa-eye text-sm"></i></button>
             <button onclick="editManualRun(${act.id})" class="p-2 bg-amber-500/15 text-amber-400 rounded-lg"><i class="fa-solid fa-pen text-sm"></i></button>
             <button onclick="deleteManualRun(${act.id})" class="p-2 bg-rose-500/15 text-rose-400 rounded-lg"><i class="fa-solid fa-trash text-sm"></i></button>
           </div>
@@ -1590,7 +1590,7 @@
       const cal = Math.round(weight * dist * 1.03);
       const res = document.getElementById('calResult');
       res.textContent = `Gasto Calórico Estimado: ~${cal} kcal`;
-      res.classList.remove('hidden');
+      res.classList.format('hidden');
     }
 
     function generatePaceSplits() {
