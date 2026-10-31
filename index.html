@@ -136,7 +136,7 @@
             <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold uppercase tracking-wider">Registo & Previsões</span>
             <h3 class="text-base font-extrabold text-white mt-2">Central de Atividades e Gráficos</h3>
             <p class="text-xs text-gray-300 mt-1 leading-relaxed">
-              Acompanhe suas corridas manuais e veja previsões de ritmo e frequência cardíaca.
+              Acompanhe suas corridas manuais e veja previsões de ritmo e frequência cardíaca por KM.
             </p>
           </div>
           <div class="bg-orange-600 text-slate-950 p-3 rounded-2xl shrink-0 ml-3 font-bold">
@@ -230,7 +230,7 @@
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
           <h2 class="text-sm font-bold text-white">Central de Atividades & Backup</h2>
-          <p class="text-xs text-gray-400">Registo manual de treinos com análise de Ritmo e FC.</p>
+          <p class="text-xs text-gray-400">Registo manual de treinos com análise detalhada por KM (Ritmo & FC).</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
@@ -290,7 +290,7 @@
         </div>
       </div>
 
-      <!-- ADICIONAR CORRIDA MANUALMENTE COM CAMPO DE FC -->
+      <!-- ADICIONAR CORRIDA MANUALMENTE COM RITMO E FC POR KM -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <h3 class="font-bold text-sm text-orange-400 flex items-center gap-2" id="formRunTitle"><i class="fa-solid fa-plus-circle"></i> Registar Nova Corrida</h3>
         <input type="hidden" id="editRunId" value="" />
@@ -324,10 +324,17 @@
           </div>
         </div>
 
-        <div>
-          <label class="text-[10px] text-cyan-400 uppercase font-bold block mb-1"><i class="fa-solid fa-list-ol mr-1"></i> Ritmo por KM (ex: 5:00, 5:30, 5:10, 4:40)</label>
-          <input type="text" id="newRunSplits" placeholder="ex: 5:00, 5:30, 5:10, 4:40" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-500 outline-none" />
+        <div class="space-y-2">
+          <div>
+            <label class="text-[10px] text-cyan-400 uppercase font-bold block mb-1"><i class="fa-solid fa-list-ol mr-1"></i> Ritmo por KM (ex: 5:00, 5:30, 5:10, 4:40)</label>
+            <input type="text" id="newRunSplits" placeholder="ex: 5:00, 5:30, 5:10, 4:40" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-500 outline-none" />
+          </div>
+          <div>
+            <label class="text-[10px] text-rose-400 uppercase font-bold block mb-1"><i class="fa-solid fa-heart-pulse mr-1"></i> FC por KM (ex: 145, 152, 158, 162)</label>
+            <input type="text" id="newRunFcSplits" placeholder="ex: 145, 152, 158, 162" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-rose-500 outline-none" />
+          </div>
         </div>
+
         <div class="flex gap-2">
           <button onclick="saveOrUpdateManualRun()" id="saveRunBtn" class="flex-1 py-2.5 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl text-xs font-bold text-white shadow-lg shadow-orange-500/20 active:scale-95 transition">
             Adicionar ao Histórico
@@ -390,7 +397,7 @@
       <!-- HISTÓRICO -->
       <div class="space-y-3">
         <div class="flex justify-between items-center px-1">
-          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Histórico de Corridas (Clique no Olho para Autópsia por KM & FC)</h3>
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Histórico de Corridas (Clique no Olho para Autópsia de Ritmo & FC por KM)</h3>
         </div>
         <div id="manualActivitiesList" class="space-y-2">
           <p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade registada ainda.</p>
@@ -773,99 +780,15 @@
 
     const DATABASE = {
       protocols: [
-        { 
-          id: 'proto-cooper', 
-          category: 'Protocolo de Teste', 
-          title: 'Teste de Cooper (12 Minutos)', 
-          badgeColor: 'bg-purple-500/20 text-purple-300', 
-          subtitle: 'Estimativa prática do VO2 Máximo', 
-          icon: 'fa-stopwatch', 
-          description: 'Mede a maior distância possível percorrida em 12 minutos contínuos em pista aferida.', 
-          whatItMeasures: 'Capacidade aeróbica máxima, VAM e estimativa de VO2máx.', 
-          physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico durante todo o teste.', 
-          stepByStep: '1. Aquecimento leve de 5 a 10 min.\n2. Corra a maior distância possível em 12 min mantendo ritmo contínuo e forte.\n3. Anote a distância total percorrida.', 
-          howToUseResult: '• Calcule o seu VO2máx estimado com a fórmula: (Distância em metros - 504.9) / 44.73.\n• Use a distância total para classificar sua aptidão cardiorrespiratória em tabelas normativas.\n• Direcione o resultado para ajustar os ritmos dos treinos de rodagem e limiar.' 
-        },
-        { 
-          id: 'proto-tc3k', 
-          category: 'Protocolo de Teste', 
-          title: 'Teste de 3.200 Metros (2 Milhas)', 
-          badgeColor: 'bg-cyan-500/20 text-cyan-300', 
-          subtitle: 'Avaliação militar e de performance', 
-          icon: 'fa-person-running', 
-          description: 'Corrida cronometrada cobrindo exatamente 3.200 metros no menor tempo possível.', 
-          whatItMeasures: 'Velocidade aeróbica máxima e eficiência de ritmo.', 
-          physiology: 'Alto estresse cardiovascular com recrutamento intenso do sistema oxidativo e glicolítico.', 
-          stepByStep: '1. Aquecimento dinâmico.\n2. Execute 3.200m no menor tempo possível.\n3. Anote o tempo total final.', 
-          howToUseResult: '• Pegue o tempo total obtido e insira na Calculadora de Pace para descobrir o seu pace médio por quilómetro.\n• Utilize este pace médio para estruturar os seus treinos intervalados e metas de provas de média distância.' 
-        },
-        { 
-          id: 'proto-tc1k', 
-          category: 'Protocolo de Teste', 
-          title: 'Teste de 1.000 Metros (1 km Máximo)', 
-          badgeColor: 'bg-orange-500/20 text-orange-300', 
-          subtitle: 'Potência anaeróbica lática', 
-          icon: 'fa-gauge-high', 
-          description: 'Avaliação de tiro em distância média para estimar velocidade pura e limiar superior.', 
-          whatItMeasures: 'Potência anaeróbica lática e velocidade máxima sustentada.', 
-          physiology: 'Altíssima exigência dos sistemas glicolítico e ATP-CP.', 
-          stepByStep: '1. Aquecimento completo e progressivo.\n2. Corra 1000m na máxima intensidade suportada.\n3. Registre o tempo final.', 
-          howToUseResult: '• O tempo obtido nos 1.000m serve como referência exata para o pace dos seus tiros curtos e intervalados intensos (Z5).\n• Se o tempo caiu em relação ao teste anterior, indica ganho de potência neuromuscular e velocidade pura.' 
-        },
-        { 
-          id: 'proto-t5k', 
-          category: 'Protocolo de Teste', 
-          title: 'Corrida de 5 Quilómetros (5K Time Trial)', 
-          badgeColor: 'bg-emerald-500/20 text-emerald-300', 
-          subtitle: 'Padrão ouro de limiar e ritmo de prova', 
-          icon: 'fa-stopwatch', 
-          description: 'Corrida contínua de 5 km em esforço máximo para calibrar todas as zonas de treino.', 
-          whatItMeasures: 'VO2máx funcional e limiar anaeróbico real de prova.', 
-          physiology: 'Equilíbrio ideal entre capacidade oxidativa e tolerância ao lactato.', 
-          stepByStep: '1. Trote leve de 10 min + educativos.\n2. Largada controlada para evitar quebra no primeiro km.\n3. Ritmo progressivo até o sprint final.', 
-          howToUseResult: '• Insira o tempo final dos 5K na ferramenta de Previsões e Calculadora de Pace.\n• O sistema recalculará automaticamente os seus tempos estimados para 10K, Meia Maratona e Maratona.\n• Utilize o pace médio dos 5K para definir o ritmo exato dos treinos de limiar (Tempo Run).' 
-        }
+        { id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos em pista aferida.', whatItMeasures: 'Capacidade aeróbica máxima, VAM e estimativa de VO2máx.', physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico durante todo o teste.', stepByStep: '1. Aquecimento leve de 5 a 10 min.\n2. Corra a maior distância possível em 12 min mantendo ritmo contínuo e forte.\n3. Anote a distância total percorrida.', howToUseResult: '• Calcule o seu VO2máx estimado com a fórmula: (Distância em metros - 504.9) / 44.73.\n• Use a distância total para classificar sua aptidão cardiorrespiratória em tabelas normativas.\n• Direcione o resultado para ajustar os ritmos dos treinos de rodagem e limiar.' },
+        { id: 'proto-tc3k', category: 'Protocolo de Teste', title: 'Teste de 3.200 Metros (2 Milhas)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Avaliação militar e de performance', icon: 'fa-person-running', description: 'Corrida cronometrada cobrindo exatamente 3.200 metros no menor tempo possível.', whatItMeasures: 'Velocidade aeróbica máxima e eficiência de ritmo.', physiology: 'Alto estresse cardiovascular com recrutamento intenso do sistema oxidativo e glicolítico.', stepByStep: '1. Aquecimento dinâmico.\n2. Execute 3.200m no menor tempo possível.\n3. Anote o tempo total final.', howToUseResult: '• Pegue o tempo total obtido e insira na Calculadora de Pace para descobrir o seu pace médio por quilómetro.\n• Utilize este pace médio para estruturar os seus treinos intervalados e metas de provas de média distância.' },
+        { id: 'proto-tc1k', category: 'Protocolo de Teste', title: 'Teste de 1.000 Metros (1 km Máximo)', badgeColor: 'bg-orange-500/20 text-orange-300', subtitle: 'Potência anaeróbica lática', icon: 'fa-gauge-high', description: 'Avaliação de tiro em distância média para estimar velocidade pura e limiar superior.', whatItMeasures: 'Potência anaeróbica lática e velocidade máxima sustentada.', physiology: 'Altíssima exigência dos sistemas glicolítico e ATP-CP.', stepByStep: '1. Aquecimento completo e progressivo.\n2. Corra 1000m na máxima intensidade suportada.\n3. Registre o tempo final.', howToUseResult: '• O tempo obtido nos 1.000m serve como referência exata para o pace dos seus tiros curtos e intervalados intensos (Z5).\n• Se o tempo caiu em relação ao teste anterior, indica ganho de potência neuromuscular e velocidade pura.' },
+        { id: 'proto-t5k', category: 'Protocolo de Teste', title: 'Corrida de 5 Quilómetros (5K Time Trial)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Padrão ouro de limiar e ritmo de prova', icon: 'fa-stopwatch', description: 'Corrida contínua de 5 km em esforço máximo para calibrar todas as zonas de treino.', whatItMeasures: 'VO2máx funcional e limiar anaeróbico real de prova.', physiology: 'Equilíbrio ideal entre capacidade oxidativa e tolerância ao lactato.', stepByStep: '1. Trote leve de 10 min + educativos.\n2. Largada controlada para evitar quebra no primeiro km.\n3. Ritmo progressivo até o sprint final.', howToUseResult: '• Insira o tempo final dos 5K na ferramenta de Previsões e Calculadora de Pace.\n• O sistema recalculará automaticamente os seus tempos estimados para 10K, Meia Maratona e Maratona.\n• Utilize o pace médio dos 5K para definir o ritmo exato dos treinos de limiar (Tempo Run).' }
       ],
       physiology: [
-        { 
-          id: 'phys-atp', 
-          category: 'Fisiologia & Bioenergética', 
-          title: 'Sistemas Energéticos & ATP', 
-          badgeColor: 'bg-rose-500/20 text-rose-300', 
-          subtitle: 'A moeda de troca celular', 
-          icon: 'fa-bolt', 
-          description: 'A Adenosina Trifosfato (ATP) alimenta todas as contrações musculares na corrida através de vias metabólicas.', 
-          whatItMeasures: 'Capacidade de ressíntese de energia rápida (ATP-CP), glicolítica e oxidativa.', 
-          physiology: 'Transição entre vias anaeróbicas e aeróbicas conforme a intensidade e duração do esforço.', 
-          howToApply: '1. Para treinar o sistema ATP-CP (explosão): faça tiros curtos de 10 a 20 segundos com repouso completo (90s).\n2. Para o sistema glicolítico (alta intensidade): faça tiros médios de 1 a 2 minutos.\n3. Para o sistema oxidativo (base): mantenha rodagens longas em ritmo conversacional (Z2).', 
-          utility: 'Ajuda a estruturar a semana de treinos equilibrando velocidade pura, tiros e resistência, garantindo que o corpo saiba gerar energia eficientemente em qualquer distância.' 
-        },
-        { 
-          id: 'phys-lactic', 
-          category: 'Fisiologia & Bioenergética', 
-          title: 'Limiar Anaeróbico & Lactato', 
-          badgeColor: 'bg-amber-500/20 text-amber-300', 
-          subtitle: 'O ponto de virada metabólica', 
-          icon: 'fa-chart-area', 
-          description: 'O lactato é um subproduto energético vital e tampão, e não um vilão causador de fadiga.', 
-          whatItMeasures: 'Tolerância à fadiga e sustentação de pace forte sem acúmulo descontrolado de metabólitos.', 
-          physiology: 'Equilíbrio exato entre a produção e a remoção de lactato sanguíneo pelos músculos ativos e fígado.', 
-          howToApply: '1. Realize treinos de "Tempo Run" ou limiar contínuo (20 a 30 min em ritmo forte sustentável).\n2. Execute blocos intervalados longos (ex: 4x 2000m) na zona de limiar (Z4).\n3. Monitore a constância da respiração (deve ser rítmica e controlada).', 
-          utility: 'Serve para elevar a velocidade que você consegue manter antes de "quebrar", permitindo correr provas de 5K, 10K e Meia Maratona em um ritmo médio muito superior.' 
-        },
-        { 
-          id: 'phys-drift', 
-          category: 'Fisiologia & Bioenergética', 
-          title: 'Deriva Cardíaca (Cardiovascular Drift)', 
-          badgeColor: 'bg-blue-500/20 text-blue-300', 
-          subtitle: 'Aumento da FC em treinos longos', 
-          icon: 'fa-heart-pulse', 
-          description: 'Elevação gradual da frequência cardíaca mantendo exatamente o mesmo ritmo constante.', 
-          whatItMeasures: 'Eficiência termorreguladora, nível de hidratação e fadiga cardiovascular.', 
-          physiology: 'Desvio no volume sistólico devido à perda de líquidos (suor) e desvio de sangue para resfriamento da pele.', 
-          howToApply: '1. Monitore a sua FC e o pace em treinos longos (> 60 minutos).\n2. Estabeleça uma rotina rigorosa de hidratação a cada 20-30 minutos durante o exercício.\n3. Realize treinos longos nos horários mais frescos do dia (manhã cedo ou fim de tarde).', 
-          utility: 'Ajuda a diferenciar se o aumento da frequência cardíaca no final de um treino longo foi fadiga aeróbica real ou apenas desidratação/calor, permitindo ajustar a estratégia nutricional e de prova.' 
-        }
+        { id: 'phys-atp', category: 'Fisiologia & Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) alimenta todas as contrações musculares na corrida através de vias metabólicas.', whatItMeasures: 'Capacidade de ressíntese de energia rápida (ATP-CP), glicolítica e oxidativa.', physiology: 'Transição entre vias anaeróbicas e aeróbicas conforme a intensidade e duração do esforço.', howToApply: '1. Para treinar o sistema ATP-CP (explosão): faça tiros curtos de 10 a 20 segundos com repouso completo (90s).\n2. Para o sistema glicolítico (alta intensidade): faça tiros médios de 1 a 2 minutos.\n3. Para o sistema oxidativo (base): mantenha rodagens longas em ritmo conversacional (Z2).', utility: 'Ajuda a estruturar a semana de treinos equilibrando velocidade pura, tiros e resistência, garantindo que o corpo saiba gerar energia eficientemente em qualquer distância.' },
+        { id: 'phys-lactic', category: 'Fisiologia & Bioenergética', title: 'Limiar Anaeróbico & Lactato', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'O ponto de virada metabólica', icon: 'fa-chart-area', description: 'O lactato é um subproduto energético vital e tampão, e não um vilão causador de fadiga.', whatItMeasures: 'Tolerância à fadiga e sustentação de pace forte sem acúmulo descontrolado de metabólitos.', physiology: 'Equilíbrio exato entre a produção e a remoção de lactato sanguíneo pelos músculos ativos e fígado.', howToApply: '1. Realize treinos de "Tempo Run" ou limiar contínuo (20 a 30 min em ritmo forte sustentável).\n2. Execute blocos intervalados longos (ex: 4x 2000m) na zona de limiar (Z4).\n3. Monitore a constância da respiração (deve ser rítmica e controlada).', utility: 'Serve para elevar a velocidade que você consegue manter antes de "quebrar", permitindo correr provas de 5K, 10K e Meia Maratona em um ritmo médio muito superior.' },
+        { id: 'phys-drift', category: 'Fisiologia & Bioenergética', title: 'Deriva Cardíaca (Cardiovascular Drift)', badgeColor: 'bg-blue-500/20 text-blue-300', subtitle: 'Aumento da FC em treinos longos', icon: 'fa-heart-pulse', description: 'Elevação gradual da frequência cardíaca mantendo exatamente o mesmo ritmo constante.', whatItMeasures: 'Eficiência termorreguladora, nível de hidratação e fadiga cardiovascular.', physiology: 'Desvio no volume sistólico devido à perda de líquidos (suor) e desvio de sangue para resfriamento da pele.', howToApply: '1. Monitore a sua FC e o pace em treinos longos (> 60 minutos).\n2. Estabeleça uma rotina rigorosa de hidratação a cada 20-30 minutos durante o exercício.\n3. Realize treinos longos nos horários mais frescos do dia (manhã cedo ou fim de tarde).', utility: 'Ajuda a diferenciar se o aumento da frequência cardíaca no final de um treino longo foi fadiga aeróbica real ou apenas desidratação/calor, permitindo ajustar a estratégia nutricional e de prova.' }
       ],
       workouts: [
         { id: 'work-fartlek', category: 'Método de Treino', title: 'Fartlek (Brincadeira de Ritmos)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Variações livres de velocidade e terreno', icon: 'fa-wind', description: 'Treino estruturado com mudanças contínuas de ritmo sem pausas completas.', whatItMeasures: 'Versatilidade aeróbica.', physiology: 'Tolerância ao ácido lático de forma dinâmica.', stepByStep: '1. Aquecimento 10 min.\n2. Alterne tiros de 1 min forte com 1 min trote leve.\n3. Desaquecimento 5 min.' },
@@ -1093,6 +1016,7 @@
       const pace = document.getElementById('newRunPace').value.trim() || "5:00";
       const fc = parseInt(document.getElementById('newRunFc').value) || null;
       const splits = document.getElementById('newRunSplits').value.trim();
+      const fcSplits = document.getElementById('newRunFcSplits').value.trim();
 
       if (!distance || isNaN(distance)) {
         alert("Insira uma distância válida em quilómetros.");
@@ -1102,11 +1026,11 @@
       if (editId) {
         let index = manualActivities.findIndex(a => a.id == editId);
         if (index !== -1) {
-          manualActivities[index] = { id: parseInt(editId), name, distance, time: timeStr, pace, fc, splits, start_date: date };
+          manualActivities[index] = { id: parseInt(editId), name, distance, time: timeStr, pace, fc, splits, fcSplits, start_date: date };
         }
         cancelEditRun();
       } else {
-        const newRun = { id: Date.now(), name, distance, time: timeStr, pace, fc, splits, start_date: date };
+        const newRun = { id: Date.now(), name, distance, time: timeStr, pace, fc, splits, fcSplits, start_date: date };
         manualActivities.unshift(newRun);
       }
 
@@ -1127,6 +1051,7 @@
       document.getElementById('newRunPace').value = act.pace;
       document.getElementById('newRunFc').value = act.fc || '';
       document.getElementById('newRunSplits').value = act.splits || '';
+      document.getElementById('newRunFcSplits').value = act.fcSplits || '';
 
       document.getElementById('formRunTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Editar Corrida`;
       document.getElementById('saveRunBtn').textContent = "Atualizar Corrida";
@@ -1149,6 +1074,7 @@
       document.getElementById('newRunPace').value = '';
       document.getElementById('newRunFc').value = '';
       document.getElementById('newRunSplits').value = '';
+      document.getElementById('newRunFcSplits').value = '';
       document.getElementById('newRunDate').value = '';
     }
 
@@ -1182,6 +1108,7 @@
       if (!act) return;
 
       let splitAnalysisHtml = "";
+      let fcSplitsAnalysisHtml = "";
       let strength = "Bom controlo geral da distância planeada.";
       let weakness = "Sem desvios críticos aparentes nos ritmos parciais.";
       let errorPlace = "Nenhum desvio drástico detetado.";
@@ -1189,6 +1116,7 @@
 
       let avgPaceSec = parsePaceToSeconds(act.pace) || 340;
 
+      // 1. ANÁLISE DE RITMO POR KM (SPLITS)
       if (act.splits && act.splits.includes(',')) {
         let rawSplits = act.splits.split(',').map(s => s.trim());
         let splitSecs = rawSplits.map(s => parsePaceToSeconds(s)).filter(s => s > 0);
@@ -1205,7 +1133,7 @@
 
           splitAnalysisHtml = `
             <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1">
-              <span class="text-cyan-400 font-bold block"><i class="fa-solid fa-stopwatch mr-1"></i> Leituras de Splits por KM:</span>
+              <span class="text-cyan-400 font-bold block"><i class="fa-solid fa-stopwatch mr-1"></i> Passagens de Ritmo por KM:</span>
               <p class="font-mono text-gray-200 text-xs">${rawSplits.join(' ➔ ')}</p>
               <div class="text-[11px] text-gray-400 mt-1 flex justify-between">
                 <span>Mais rápido: <strong class="text-emerald-400">KM ${fastestKm} (${formatSecondsToPace(fastest)})</strong></span>
@@ -1240,11 +1168,44 @@
           }
         }
       } else {
-        splitAnalysisHtml = `<p class="text-xs text-gray-400 italic">Nenhum split por km registado nesta atividade.</p>`;
+        splitAnalysisHtml = `<p class="text-xs text-gray-400 italic">Nenhum split de ritmo registado nesta atividade.</p>`;
       }
 
-      let fcAnalysisHtml = "";
-      if (act.fc) {
+      // 2. ANÁLISE DE FREQUÊNCIA CARDÍACA POR KM (SPLITS DE FC)
+      if (act.fcSplits && act.fcSplits.includes(',')) {
+        let rawFcSplits = act.fcSplits.split(',').map(s => parseInt(s.trim())).filter(s => !isNaN(s));
+
+        if (rawFcSplits.length >= 2) {
+          let firstKmFc = rawFcSplits[0];
+          let maxFcKm = Math.max(...rawFcSplits);
+          let minFcKm = Math.min(...rawFcSplits);
+          let peakKm = rawFcSplits.indexOf(maxFcKm) + 1;
+
+          let fcDiff = maxFcKm - firstKmFc;
+          let fcTrendDiag = "";
+
+          if (fcDiff > 18) {
+            fcTrendDiag = `Deriva Cardíaca Alta (+${fcDiff} bpm do 1º ao pico no KM ${peakKm}). Indica subida rápida de temperatura corporal, possível desidratação ou fadiga acumulada.`;
+          } else if (fcDiff <= 10) {
+            fcTrendDiag = "Estabilidade Cardíaca Excelente! Curva de batimentos extremamente controlada ao longo de todos os quilómetros.";
+          } else {
+            fcTrendDiag = "Adaptação cardiovascular gradual e normal dentro do esperado para a distância.";
+          }
+
+          fcSplitsAnalysisHtml = `
+            <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1">
+              <span class="text-rose-400 font-bold block flex items-center gap-1.5">
+                <i class="fa-solid fa-heart-pulse"></i> Batimentos (FC) por KM:
+              </span>
+              <p class="font-mono text-gray-200 text-xs">${rawFcSplits.map(f => f + ' bpm').join(' ➔ ')}</p>
+              <div class="text-[11px] text-gray-400 mt-1.5 pt-1 border-t border-slate-800/80">
+                <span class="block">KM 1: <strong class="text-white">${firstKmFc} bpm</strong> | Pico: <strong class="text-rose-400">KM ${peakKm} (${maxFcKm} bpm)</strong></span>
+                <p class="text-gray-300 mt-1 leading-relaxed">${fcTrendDiag}</p>
+              </div>
+            </div>
+          `;
+        }
+      } else if (act.fc) {
         let zoneText = "";
         let zoneColor = "text-emerald-400";
         let fcDiag = "";
@@ -1264,10 +1225,10 @@
         } else {
           zoneText = "Zona 5 (Esforço Máximo / VAM)";
           zoneColor = "text-rose-400";
-          fcDiag = "Frequência muito alta. Normal para tiros curtos, mas se foi em rodagem, indica sobrecarga, calor excessivo ou largada forte demais.";
+          fcDiag = "Frequência muito alta. Normal para tiros curtos, mas se foi em rodagem, indica sobrecarga ou largada forte demais.";
         }
 
-        fcAnalysisHtml = `
+        fcSplitsAnalysisHtml = `
           <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
             <div class="flex justify-between items-center">
               <strong class="text-rose-400 flex items-center gap-1.5 text-xs">
@@ -1280,6 +1241,7 @@
         `;
       }
 
+      // 3. RENDERIZAÇÃO NO MODAL
       document.getElementById('modalCategoryBadge').textContent = "Autópsia Científica da Corrida";
       document.getElementById('modalTitle').textContent = act.name;
       document.getElementById('modalBody').innerHTML = `
@@ -1291,8 +1253,8 @@
             <div><span class="text-[9px] text-gray-400 uppercase font-bold block">FC Média</span><div class="text-xs font-black text-rose-400">${act.fc ? act.fc + ' bpm' : '--'}</div></div>
           </div>
           
-          ${fcAnalysisHtml}
           ${splitAnalysisHtml}
+          ${fcSplitsAnalysisHtml}
 
           <div class="space-y-2 pt-1">
             <div class="p-3 rounded-xl bg-emerald-950/20 border border-emerald-500/30 space-y-1">
@@ -1300,7 +1262,7 @@
               <p class="text-gray-300">${strength}</p>
             </div>
             <div class="p-3 rounded-xl bg-amber-950/20 border border-amber-500/30 space-y-1">
-              <strong class="text-amber-400 block"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Análise do KM 1:</strong>
+              <strong class="text-amber-400 block"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Análise do KM 1 & Esforço Inicial:</strong>
               <p class="text-gray-300">${weakness} <br><span class="text-amber-300 font-semibold">${errorPlace}</span></p>
             </div>
             <div class="p-3 rounded-xl bg-cyan-950/20 border border-cyan-500/30 space-y-1">
@@ -1482,7 +1444,7 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="text-orange-400 font-bold">${act.distance.toFixed(1)} km</span>
-            <button onclick="viewRunDetails(${act.id})" class="p-2 bg-cyan-500/15 text-cyan-400 rounded-lg" title="Ver Autópsia do KM 1 & FC"><i class="fa-solid fa-eye text-sm"></i></button>
+            <button onclick="viewRunDetails(${act.id})" class="p-2 bg-cyan-500/15 text-cyan-400 rounded-lg" title="Ver Autópsia do KM 1 & FC por KM"><i class="fa-solid fa-eye text-sm"></i></button>
             <button onclick="editManualRun(${act.id})" class="p-2 bg-amber-500/15 text-amber-400 rounded-lg"><i class="fa-solid fa-pen text-sm"></i></button>
             <button onclick="deleteManualRun(${act.id})" class="p-2 bg-rose-500/15 text-rose-400 rounded-lg"><i class="fa-solid fa-trash text-sm"></i></button>
           </div>
