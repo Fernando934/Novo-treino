@@ -133,10 +133,10 @@
         <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-orange-600/10 rounded-full blur-2xl"></div>
         <div class="relative z-10 flex justify-between items-center">
           <div>
-            <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold uppercase tracking-wider">Registo Manual & Previsões</span>
+            <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold uppercase tracking-wider">Registo & Previsões</span>
             <h3 class="text-base font-extrabold text-white mt-2">Central de Atividades e Gráficos</h3>
             <p class="text-xs text-gray-300 mt-1 leading-relaxed">
-              Adicione as suas corridas e acompanhe as previsões de desempenho estimadas.
+              Acompanhe suas corridas manuais e veja previsões de ritmo e frequência cardíaca.
             </p>
           </div>
           <div class="bg-orange-600 text-slate-950 p-3 rounded-2xl shrink-0 ml-3 font-bold">
@@ -230,7 +230,7 @@
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
           <h2 class="text-sm font-bold text-white">Central de Atividades & Backup</h2>
-          <p class="text-xs text-gray-400">Adicione corridas e analise a evolução detalhada.</p>
+          <p class="text-xs text-gray-400">Registo manual de treinos com análise de Ritmo e FC.</p>
         </div>
         <button onclick="switchTab('home')" class="text-xs text-orange-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800">
           <i class="fa-solid fa-arrow-left"></i> Voltar
@@ -246,7 +246,7 @@
             </h3>
             <p class="text-[10px] text-gray-400">Estimativas ajustadas ao seu histórico real de treino.</p>
           </div>
-          <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold">Base Strava / Riegel</span>
+          <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold">Base Riegel / Histórico</span>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -290,7 +290,7 @@
         </div>
       </div>
 
-      <!-- ADICIONAR CORRIDA MANUALMENTE -->
+      <!-- ADICIONAR CORRIDA MANUALMENTE COM CAMPO DE FC -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <h3 class="font-bold text-sm text-orange-400 flex items-center gap-2" id="formRunTitle"><i class="fa-solid fa-plus-circle"></i> Registar Nova Corrida</h3>
         <input type="hidden" id="editRunId" value="" />
@@ -304,20 +304,26 @@
             <input type="date" id="newRunDate" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
           </div>
         </div>
-        <div class="grid grid-cols-3 gap-2">
+        
+        <div class="grid grid-cols-4 gap-2">
           <div>
             <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Distância (km)</label>
             <input type="number" step="0.1" id="newRunDist" placeholder="ex: 5.0" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
           </div>
           <div>
-            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Duração (ex: 25 min)</label>
+            <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Duração</label>
             <input type="text" id="newRunTime" placeholder="ex: 25 min" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
           </div>
           <div>
             <label class="text-[10px] text-gray-400 uppercase font-bold block mb-1">Pace Médio</label>
-            <input type="text" id="newRunPace" placeholder="ex: 5:00 /km" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
+            <input type="text" id="newRunPace" placeholder="ex: 5:00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 outline-none" />
+          </div>
+          <div>
+            <label class="text-[10px] text-rose-400 uppercase font-bold block mb-1">FC Média</label>
+            <input type="number" id="newRunFc" placeholder="ex: 155" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-rose-500 outline-none" />
           </div>
         </div>
+
         <div>
           <label class="text-[10px] text-cyan-400 uppercase font-bold block mb-1"><i class="fa-solid fa-list-ol mr-1"></i> Ritmo por KM (ex: 5:00, 5:30, 5:10, 4:40)</label>
           <input type="text" id="newRunSplits" placeholder="ex: 5:00, 5:30, 5:10, 4:40" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-cyan-500 outline-none" />
@@ -373,7 +379,7 @@
         </div>
       </div>
 
-      <!-- ANÁLISE CRÍTICA COM DIAGNÓSTICO DE CARGA DINÂMICO E PERSONALIZADO -->
+      <!-- ANÁLISE CRÍTICA -->
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
         <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
           <i class="fa-solid fa-brain"></i> ANÁLISE CRÍTICA DE DESEMPENHO & EVOLUÇÃO
@@ -381,10 +387,10 @@
         <div id="monthlyFeedbackContent" class="space-y-4 text-xs leading-relaxed"></div>
       </div>
 
-      <!-- HISTÓRICO COM ÍCONE DE OLHO PARA AUTÓPSIA DE RITMO POR KM -->
+      <!-- HISTÓRICO -->
       <div class="space-y-3">
         <div class="flex justify-between items-center px-1">
-          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Histórico de Corridas (Clique no Olho para Autópsia por KM)</h3>
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Histórico de Corridas (Clique no Olho para Autópsia por KM & FC)</h3>
         </div>
         <div id="manualActivitiesList" class="space-y-2">
           <p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade registada ainda.</p>
@@ -956,135 +962,23 @@
 
       if (w >= 130) {
         return [
-          { 
-            day: 'Segunda-feira', 
-            title: `Caminhada Ativa & Trote Leve (${suggestedLongRun} km)`, 
-            type: 'Base Articular Segura', 
-            altPlan: `• Plano B: Faça apenas 2.5 km de caminhada forte contínua e finalize com alongamento.`,
-            strength: 'Força: Treino C (Core & Postura Antirrotação)', 
-            color: 'text-emerald-400', 
-            detail: `• Estrutura: ${suggestedLongRun} km alternando blocos de 3 min de caminhada forte com 1 min de trote leve.` 
-          },
-          { 
-            day: 'Terça-feira', 
-            title: 'Mobilidade e Trote Regenerativo Leve (3 km)', 
-            type: 'Soltura Ativa', 
-            altPlan: '• Plano B: 20 minutos de caminhada plana leve.',
-            strength: 'Descanso de Força', 
-            color: 'text-cyan-400', 
-            detail: '• 10 min de mobilidade articular seguidos de 3 km de trote extremamente leve e conversacional.' 
-          },
-          { 
-            day: 'Quarta-feira', 
-            title: 'Rodagem Contínua Leve em Piso Plano (4 km)', 
-            type: 'Aeróbico Base', 
-            altPlan: '• Plano B: 2.5 km alternando 1 min trote / 1 min caminhada.',
-            strength: 'Força: Treino B (Glúteos & Mini Band)', 
-            color: 'text-cyan-400', 
-            detail: '• 4 km em ritmo confortável focando na postura ereta e passada curta.' 
-          },
-          { 
-            day: 'Quinta-feira', 
-            title: 'Caminhada de Ritmo Firme (4 km)', 
-            type: 'Baixo Impacto Ativo', 
-            altPlan: '• Plano B: Reduza para 2.5 km de caminhada leve.',
-            strength: 'Trote Leve', 
-            color: 'text-blue-400', 
-            detail: '• 4 km de caminhada rápida sem trote, mantendo frequência cardíaca controlada (Z1).' 
-          },
-          { 
-            day: 'Sexta-feira', 
-            title: 'Fortalecimento Focado em Isometria', 
-            type: 'Força e Estabilidade', 
-            altPlan: '• Plano B: Faça apenas os exercícios deitada (ponte e abdômen).',
-            strength: 'Força: Treino A (Superiores com Elásticos)', 
-            color: 'text-purple-400', 
-            detail: '• Foco em pranchas e exercícios posturais sentados com elásticos.' 
-          },
-          { 
-            day: 'Sábado', 
-            title: 'Caminhada Longa de Resistência (5 km)', 
-            type: 'Resistência Aeróbica', 
-            altPlan: '• Plano B: Reduza para 3.5 km em ritmo constante.',
-            strength: 'Hidratação e Descanso', 
-            color: 'text-orange-400', 
-            detail: `• 5 km de caminhada contínua em ritmo firme e constante.` 
-          },
-          { 
-            day: 'Domingo', 
-            title: 'Descanso Total', 
-            type: 'Regeneração', 
-            altPlan: '• Plano B: Descanso absoluto.',
-            strength: 'Mobilidade', 
-            color: 'text-slate-400', 
-            detail: '• Descanso absoluto.' 
-          }
+          { day: 'Segunda-feira', title: `Caminhada Ativa & Trote Leve (${suggestedLongRun} km)`, type: 'Base Articular Segura', altPlan: `• Plano B: Faça apenas 2.5 km de caminhada forte contínua e finalize com alongamento.`, strength: 'Força: Treino C (Core & Postura Antirrotação)', color: 'text-emerald-400', detail: `• Estrutura: ${suggestedLongRun} km alternando blocos de 3 min de caminhada forte com 1 min de trote leve.` },
+          { day: 'Terça-feira', title: 'Mobilidade e Trote Regenerativo Leve (3 km)', type: 'Soltura Ativa', altPlan: '• Plano B: 20 minutos de caminhada plana leve.', strength: 'Descanso de Força', color: 'text-cyan-400', detail: '• 10 min de mobilidade articular seguidos de 3 km de trote extremamente leve e conversacional.' },
+          { day: 'Quarta-feira', title: 'Rodagem Contínua Leve em Piso Plano (4 km)', type: 'Aeróbico Base', altPlan: '• Plano B: 2.5 km alternando 1 min trote / 1 min caminhada.', strength: 'Força: Treino B (Glúteos & Mini Band)', color: 'text-cyan-400', detail: '• 4 km em ritmo confortável focando na postura ereta e passada curta.' },
+          { day: 'Quinta-feira', title: 'Caminhada de Ritmo Firme (4 km)', type: 'Baixo Impacto Ativo', altPlan: '• Plano B: Reduza para 2.5 km de caminhada leve.', strength: 'Trote Leve', color: 'text-blue-400', detail: '• 4 km de caminhada rápida sem trote, mantendo frequência cardíaca controlada (Z1).' },
+          { day: 'Sexta-feira', title: 'Fortalecimento Focado em Isometria', type: 'Força e Estabilidade', altPlan: '• Plano B: Faça apenas os exercícios deitada (ponte e abdômen).', strength: 'Força: Treino A (Superiores com Elásticos)', color: 'text-purple-400', detail: '• Foco em pranchas e exercícios posturais sentados com elásticos.' },
+          { day: 'Sábado', title: 'Caminhada Longa de Resistência (5 km)', type: 'Resistência Aeróbica', altPlan: '• Plano B: Reduza para 3.5 km em ritmo constante.', strength: 'Hidratação e Descanso', color: 'text-orange-400', detail: `• 5 km de caminhada contínua em ritmo firme e constante.` },
+          { day: 'Domingo', title: 'Descanso Total', type: 'Regeneração', altPlan: '• Plano B: Descanso absoluto.', strength: 'Mobilidade', color: 'text-slate-400', detail: '• Descanso absoluto.' }
         ];
       } else {
         return [
-          { 
-            day: 'Segunda-feira', 
-            title: `Treino Longo Adaptado (${suggestedLongRun} km)`, 
-            type: 'Longão Realista', 
-            altPlan: altPlanText,
-            strength: 'Força: Treino A (Superiores)', 
-            color: 'text-indigo-400', 
-            detail: `• Teto máximo registado: ${maxDistRecorded} km.\n• Base do Longão: ${suggestedLongRun} km contínuos em ritmo confortável (Z2).` 
-          },
-          { 
-            day: 'Terça-feira', 
-            title: 'Rodagem Regenerativa Leve (4 km)', 
-            type: 'Recuperação Ativa', 
-            altPlan: '• Plano B: 3 km leves ou 25 minutos de caminhada forte.',
-            strength: 'Descanso de Força', 
-            color: 'text-emerald-400', 
-            detail: '• 4 km muito leves em Z1 para soltura da musculatura pós-longão.' 
-          },
-          { 
-            day: 'Quarta-feira', 
-            title: 'Rodagem Contínua Moderada (5 km)', 
-            type: 'Aeróbico Base', 
-            altPlan: '• Plano B: 3.5 km contínuos ou fracionados em 2x 2km.',
-            strength: 'Força: Treino B (Pernas & Glúteos)', 
-            color: 'text-cyan-400', 
-            detail: '• 5 km em ritmo constante e conversacional.' 
-          },
-          { 
-            day: 'Quinta-feira', 
-            title: 'Intervalado Curto (Tiros na Pista)', 
-            type: 'Velocidade', 
-            altPlan: '• Plano B: Reduza para 4 tiros em vez de 6, mantendo a pausa longa.',
-            strength: 'Trote Regenerativo', 
-            color: 'text-orange-400', 
-            detail: '• Aquecimento 1.5km + 6x 400m em ritmo forte (com 90s de trote leve entre as séries) + 1km soltura.' 
-          },
-          { 
-            day: 'Sexta-feira', 
-            title: 'Fartlek de Ritmo Variado (4.5 km)', 
-            type: 'Fartlek', 
-            altPlan: '• Plano B: Rodagem contínua leve de 3.5 km sem variações de ritmo.',
-            strength: 'Força: Treino C (Core & Estabilidade)', 
-            color: 'text-blue-400', 
-            detail: '• 4.5 km total: alterne 1 min em ritmo forte com 1 min em trote leve de recuperação.' 
-          },
-          { 
-            day: 'Sábado', 
-            title: 'Rodagem Progressiva (Fortex) (5 km)', 
-            type: 'Progressivo', 
-            altPlan: '• Plano B: 4 km em ritmo constante e confortável.',
-            strength: 'Hidratação e Descanso', 
-            color: 'text-yellow-400', 
-            detail: '• 5 km total: inicie leve e acelere progressivamente nos últimos 2 quilómetros.' 
-          },
-          { 
-            day: 'Domingo', 
-            title: 'Descanso Total', 
-            type: 'Regeneração', 
-            altPlan: '• Plano B: Descanso absoluto.',
-            strength: 'Mobilidade', 
-            color: 'text-slate-400', 
-            detail: '• Descanso absoluto.' 
-          }
+          { day: 'Segunda-feira', title: `Treino Longo Adaptado (${suggestedLongRun} km)`, type: 'Longão Realista', altPlan: altPlanText, strength: 'Força: Treino A (Superiores)', color: 'text-indigo-400', detail: `• Teto máximo registado: ${maxDistRecorded} km.\n• Base do Longão: ${suggestedLongRun} km contínuos em ritmo confortável (Z2).` },
+          { day: 'Terça-feira', title: 'Rodagem Regenerativa Leve (4 km)', type: 'Recuperação Ativa', altPlan: '• Plano B: 3 km leves ou 25 minutos de caminhada forte.', strength: 'Descanso de Força', color: 'text-emerald-400', detail: '• 4 km muito leves em Z1 para soltura da musculatura pós-longão.' },
+          { day: 'Quarta-feira', title: 'Rodagem Contínua Moderada (5 km)', type: 'Aeróbico Base', altPlan: '• Plano B: 3.5 km contínuos ou fracionados em 2x 2km.', strength: 'Força: Treino B (Pernas & Glúteos)', color: 'text-cyan-400', detail: '• 5 km em ritmo constante e conversacional.' },
+          { day: 'Quinta-feira', title: 'Intervalado Curto (Tiros na Pista)', type: 'Velocidade', altPlan: '• Plano B: Reduza para 4 tiros em vez de 6, mantendo a pausa longa.', strength: 'Trote Regenerativo', color: 'text-orange-400', detail: '• Aquecimento 1.5km + 6x 400m em ritmo forte (com 90s de trote leve entre as séries) + 1km soltura.' },
+          { day: 'Sexta-feira', title: 'Fartlek de Ritmo Variado (4.5 km)', type: 'Fartlek', altPlan: '• Plano B: Rodagem contínua leve de 3.5 km sem variações de ritmo.', strength: 'Força: Treino C (Core & Estabilidade)', color: 'text-blue-400', detail: '• 4.5 km total: alterne 1 min em ritmo forte com 1 min em trote leve de recuperação.' },
+          { day: 'Sábado', title: 'Rodagem Progressiva (Fortex) (5 km)', type: 'Progressivo', altPlan: '• Plano B: 4 km em ritmo constante e confortável.', strength: 'Hidratação e Descanso', color: 'text-yellow-400', detail: '• 5 km total: inicie leve e acelere progressivamente nos últimos 2 quilómetros.' },
+          { day: 'Domingo', title: 'Descanso Total', type: 'Regeneração', altPlan: '• Plano B: Descanso absoluto.', strength: 'Mobilidade', color: 'text-slate-400', detail: '• Descanso absoluto.' }
         ];
       }
     }
@@ -1094,10 +988,8 @@
       if (!container) return;
       const dynamicPlan = getDynamicWeeklyPlan();
 
-      // CORRIGIDO: Obtém o dia real do dispositivo (0 = Domingo, 1 = Segunda, ..., 6 = Sábado)
-      // Como o array começa em Segunda-feira (índice 0), ajustamos o índice:
-      let jsDay = new Date().getDay(); // Domingo = 0, Segunda = 1, Terça = 2, Quarta = 3...
-      let todayDayIndex = jsDay === 0 ? 6 : jsDay - 1; // Transforma Domingo em 6, Segunda em 0, Terça em 1, Quarta em 2...
+      let jsDay = new Date().getDay();
+      let todayDayIndex = jsDay === 0 ? 6 : jsDay - 1;
 
       container.innerHTML = dynamicPlan.map((item, index) => {
         const isRunDone = completedRuns.includes(index);
@@ -1198,7 +1090,8 @@
       const date = document.getElementById('newRunDate').value || new Date().toISOString().split('T')[0];
       const distance = parseFloat(document.getElementById('newRunDist').value);
       const timeStr = document.getElementById('newRunTime').value.trim() || "25 min";
-      const pace = document.getElementById('newRunPace').value.trim() || "5:00 /km";
+      const pace = document.getElementById('newRunPace').value.trim() || "5:00";
+      const fc = parseInt(document.getElementById('newRunFc').value) || null;
       const splits = document.getElementById('newRunSplits').value.trim();
 
       if (!distance || isNaN(distance)) {
@@ -1209,11 +1102,11 @@
       if (editId) {
         let index = manualActivities.findIndex(a => a.id == editId);
         if (index !== -1) {
-          manualActivities[index] = { id: parseInt(editId), name, distance, time: timeStr, pace, splits, start_date: date };
+          manualActivities[index] = { id: parseInt(editId), name, distance, time: timeStr, pace, fc, splits, start_date: date };
         }
         cancelEditRun();
       } else {
-        const newRun = { id: Date.now(), name, distance, time: timeStr, pace, splits, start_date: date };
+        const newRun = { id: Date.now(), name, distance, time: timeStr, pace, fc, splits, start_date: date };
         manualActivities.unshift(newRun);
       }
 
@@ -1232,6 +1125,7 @@
       document.getElementById('newRunDist').value = act.distance;
       document.getElementById('newRunTime').value = act.time;
       document.getElementById('newRunPace').value = act.pace;
+      document.getElementById('newRunFc').value = act.fc || '';
       document.getElementById('newRunSplits').value = act.splits || '';
 
       document.getElementById('formRunTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Editar Corrida`;
@@ -1253,6 +1147,7 @@
       document.getElementById('newRunDist').value = '';
       document.getElementById('newRunTime').value = '';
       document.getElementById('newRunPace').value = '';
+      document.getElementById('newRunFc').value = '';
       document.getElementById('newRunSplits').value = '';
       document.getElementById('newRunDate').value = '';
     }
@@ -1326,7 +1221,7 @@
             strength = "Excelente capacidade de Negative Split (acelerou progressivamente na segunda metade).";
             weakness = `O 1º quilómetro (${formatSecondsToPace(firstKmSec)}) foi ${Math.round(diffFromAvg)}s mais lento que a sua média total do treino.`;
             errorPlace = `Pace ideal calculado para o KM 1: <strong>${formatSecondsToPace(idealFirstKmSec)}</strong>.`;
-            improvement = "Inicie aquecimento prévio antes de rodar o relógio para evitar perder tempo excessivo no KM 1.";
+            improvement = "Inicie aquecimento prévio antes de rodar para evitar perder tempo excessivo no KM 1.";
           } else if (secondHalf < firstHalf - 3) {
             strength = "Excelente progressão de ritmo (Negative Split).";
             weakness = "Constância preservada na primeira metade.";
@@ -1348,23 +1243,64 @@
         splitAnalysisHtml = `<p class="text-xs text-gray-400 italic">Nenhum split por km registado nesta atividade.</p>`;
       }
 
+      let fcAnalysisHtml = "";
+      if (act.fc) {
+        let zoneText = "";
+        let zoneColor = "text-emerald-400";
+        let fcDiag = "";
+
+        if (act.fc < 140) {
+          zoneText = "Zona 1/2 (Regenerativo / Aeróbico Leve)";
+          zoneColor = "text-emerald-400";
+          fcDiag = "Excelente trabalho de base aeróbica e queima de gordura. Baixo estresse articular e cardíaco.";
+        } else if (act.fc >= 140 && act.fc < 160) {
+          zoneText = "Zona 3 (Limiar Aeróbico / Moderado)";
+          zoneColor = "text-cyan-400";
+          fcDiag = "Intensidade moderada eficiente. Ótimo equilíbrio entre desenvolvimento de resistência e controle de fadiga.";
+        } else if (act.fc >= 160 && act.fc < 175) {
+          zoneText = "Zona 4 (Limiar Anaeróbico / Tempo Run)";
+          zoneColor = "text-amber-400";
+          fcDiag = "Esforço sustentado forte. Ideal para treinos de ritmo/limiar, mas requer atenção na recuperação pós-treino.";
+        } else {
+          zoneText = "Zona 5 (Esforço Máximo / VAM)";
+          zoneColor = "text-rose-400";
+          fcDiag = "Frequência muito alta. Normal para tiros curtos, mas se foi em rodagem, indica sobrecarga, calor excessivo ou largada forte demais.";
+        }
+
+        fcAnalysisHtml = `
+          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+            <div class="flex justify-between items-center">
+              <strong class="text-rose-400 flex items-center gap-1.5 text-xs">
+                <i class="fa-solid fa-heart-pulse"></i> Frequência Cardíaca Média: ${act.fc} BPM
+              </strong>
+              <span class="text-[10px] font-bold ${zoneColor}">${zoneText}</span>
+            </div>
+            <p class="text-gray-300 text-[11px] leading-relaxed mt-1">${fcDiag}</p>
+          </div>
+        `;
+      }
+
       document.getElementById('modalCategoryBadge').textContent = "Autópsia Científica da Corrida";
       document.getElementById('modalTitle').textContent = act.name;
       document.getElementById('modalBody').innerHTML = `
         <div class="space-y-3 text-xs">
-          <div class="grid grid-cols-3 gap-2 bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
-            <div><span class="text-[9px] text-gray-400 uppercase font-bold">Distância</span><div class="text-sm font-black text-orange-400">${act.distance.toFixed(1)} km</div></div>
-            <div><span class="text-[9px] text-gray-400 uppercase font-bold">Duração</span><div class="text-sm font-black text-white">${act.time}</div></div>
-            <div><span class="text-[9px] text-gray-400 uppercase font-bold">Pace Médio</span><div class="text-sm font-black text-emerald-400">${act.pace}</div></div>
+          <div class="grid grid-cols-4 gap-1.5 bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
+            <div><span class="text-[9px] text-gray-400 uppercase font-bold block">Distância</span><div class="text-xs font-black text-orange-400">${act.distance.toFixed(1)} km</div></div>
+            <div><span class="text-[9px] text-gray-400 uppercase font-bold block">Tempo</span><div class="text-xs font-black text-white">${act.time}</div></div>
+            <div><span class="text-[9px] text-gray-400 uppercase font-bold block">Pace</span><div class="text-xs font-black text-emerald-400">${act.pace}</div></div>
+            <div><span class="text-[9px] text-gray-400 uppercase font-bold block">FC Média</span><div class="text-xs font-black text-rose-400">${act.fc ? act.fc + ' bpm' : '--'}</div></div>
           </div>
+          
+          ${fcAnalysisHtml}
           ${splitAnalysisHtml}
+
           <div class="space-y-2 pt-1">
             <div class="p-3 rounded-xl bg-emerald-950/20 border border-emerald-500/30 space-y-1">
               <strong class="text-emerald-400 block"><i class="fa-solid fa-circle-check mr-1"></i> Ponto Forte:</strong>
               <p class="text-gray-300">${strength}</p>
             </div>
             <div class="p-3 rounded-xl bg-amber-950/20 border border-amber-500/30 space-y-1">
-              <strong class="text-amber-400 block"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Ponto Fraco & Análise do KM 1:</strong>
+              <strong class="text-amber-400 block"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Análise do KM 1:</strong>
               <p class="text-gray-300">${weakness} <br><span class="text-amber-300 font-semibold">${errorPlace}</span></p>
             </div>
             <div class="p-3 rounded-xl bg-cyan-950/20 border border-cyan-500/30 space-y-1">
@@ -1542,12 +1478,11 @@
         <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs flex justify-between items-center">
           <div>
             <strong class="text-white">${act.name}</strong>
-            <div class="text-[10px] text-gray-400">${act.start_date || 'Data N/A'} • ${act.time} • Pace: ${act.pace}</div>
-            ${act.splits ? '<div class="text-[10px] text-cyan-400 mt-0.5">Splits: ' + act.splits + '</div>' : ''}
+            <div class="text-[10px] text-gray-400">${act.start_date || 'Data N/A'} • ${act.time} • Pace: ${act.pace} ${act.fc ? '• <span class="text-rose-400 font-bold">' + act.fc + ' bpm</span>' : ''}</div>
           </div>
           <div class="flex items-center gap-2">
             <span class="text-orange-400 font-bold">${act.distance.toFixed(1)} km</span>
-            <button onclick="viewRunDetails(${act.id})" class="p-2 bg-cyan-500/15 text-cyan-400 rounded-lg" title="Ver Autópsia do KM 1"><i class="fa-solid fa-eye text-sm"></i></button>
+            <button onclick="viewRunDetails(${act.id})" class="p-2 bg-cyan-500/15 text-cyan-400 rounded-lg" title="Ver Autópsia do KM 1 & FC"><i class="fa-solid fa-eye text-sm"></i></button>
             <button onclick="editManualRun(${act.id})" class="p-2 bg-amber-500/15 text-amber-400 rounded-lg"><i class="fa-solid fa-pen text-sm"></i></button>
             <button onclick="deleteManualRun(${act.id})" class="p-2 bg-rose-500/15 text-rose-400 rounded-lg"><i class="fa-solid fa-trash text-sm"></i></button>
           </div>
@@ -1689,7 +1624,7 @@
 
     function calculateCalories() {
       const weight = parseFloat(document.getElementById('calWeight').value) || 75;
-      const dist = parseFloat(document.getElementById('calDist5').value) || 5;
+      const dist = parseFloat(document.getElementById('calDist').value) || 5;
       const cal = Math.round(weight * dist * 1.03);
       const res = document.getElementById('calResult');
       res.textContent = `Gasto Calórico Estimado: ~${cal} kcal`;
