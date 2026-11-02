@@ -162,11 +162,11 @@
       </section>
     </div>
 
-    <!-- TAB 2: PLANO SEMANAL PROGRESSIVO POR CICLOS -->
+    <!-- TAB 2: PLANO SEMANAL ONDULATÓRIO INTELIGENTE -->
     <div id="tab-plan" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
-          <h2 class="text-sm font-bold text-white">Periodização Progressiva (<span id="profileTitleLabel" class="text-orange-400 uppercase">Perfil</span>)</h2>
+          <h2 class="text-sm font-bold text-white">Periodização Ondulatória (<span id="profileTitleLabel" class="text-orange-400 uppercase">Perfil</span>)</h2>
           <p id="cycleWeekLabel" class="text-xs text-orange-400 font-semibold">Ciclo: Semana 1</p>
         </div>
         <div class="flex gap-2">
@@ -182,8 +182,8 @@
       <!-- CONTROLE MANUAL DE AVANÇO DE SEMANA -->
       <div class="p-3 rounded-2xl bg-slate-900 border border-orange-500/30 flex justify-between items-center">
         <div>
-          <span class="text-xs font-bold text-white block"><i class="fa-solid fa-calendar-week mr-1 text-orange-400"></i> Avanço Automático de Ciclo</span>
-          <span class="text-[10px] text-gray-400">Conclua os treinos para avançar ou altere manualmente abaixo:</span>
+          <span class="text-xs font-bold text-white block"><i class="fa-solid fa-calendar-week mr-1 text-orange-400"></i> Variação & Progressão Segura</span>
+          <span class="text-[10px] text-gray-400">Semana com variação de estímulos (Longão, Rodagem, Tiros e Descarga):</span>
         </div>
         <div class="flex items-center gap-1 bg-slate-950 border border-slate-800 px-2 py-1 rounded-xl">
           <button onclick="changeTrainingWeek(-1)" class="px-2 py-0.5 text-xs text-orange-400 font-bold hover:bg-slate-900 rounded"><i class="fa-solid fa-minus"></i></button>
@@ -631,7 +631,7 @@
           </div>
         </div>
         <button onclick="saveBiometricData()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl text-xs font-bold text-white shadow-lg active:scale-95 transition">
-          Salvar & Gerar Periodização Adaptativa
+          Salvar & Gerar Periodização Ondulatória
         </button>
       </div>
     </div>
@@ -746,7 +746,6 @@
       if (currentTrainingWeek < 1) currentTrainingWeek = 1;
       localStorage.setItem(`stamina_training_week_${currentProfile}`, currentTrainingWeek);
       
-      // Recarrega os status salvos para a nova semana
       completedRuns = JSON.parse(localStorage.getItem(`stamina_runs_done_${currentProfile}_w${currentTrainingWeek}`) || '{}');
       completedBands = JSON.parse(localStorage.getItem(`stamina_bands_done_${currentProfile}_w${currentTrainingWeek}`) || '{}');
       postponedDays = JSON.parse(localStorage.getItem(`stamina_postponed_${currentProfile}_w${currentTrainingWeek}`) || '{}');
@@ -789,12 +788,12 @@
       localStorage.setItem(`stamina_bio_data_${currentProfile}`, JSON.stringify(profileBioData));
       closeBiometricModal();
       renderPlan();
-      alert(`Dados biométricos de ${currentProfile.toUpperCase()} salvos! A IA adaptou a periodização.`);
+      alert(`Dados biométricos de ${currentProfile.toUpperCase()} salvos! Periodização atualizada.`);
     }
 
     function handleProfileSelection(val) {
       currentProfile = val;
-      localStorage.setItem('stamina_active_profile', currentProfile);
+      localStorage.setItem(`stamina_active_profile`, currentProfile);
       loadProfileData();
       renderPlan();
       updateDashboardData();
@@ -891,53 +890,114 @@
       `).join('');
     }
 
-    // Gera o plano semanal progressivo adaptado à semana atual do ciclo (Semana 1, Semana 2, etc.)
-    function getProgressiveWeeklyPlan() {
-      let w = profileBioData.weight || 75;
-      let age = profileBioData.age || 30;
-
-      let maxDistRecorded = 0;
-      if (manualActivities.length > 0) {
-        maxDistRecorded = Math.max(...manualActivities.map(a => a.distance || 0));
-      }
-
-      let baseLongRun = 5.0;
-      if (w >= 130) {
-        baseLongRun = maxDistRecorded > 4 ? Math.min(Math.round((maxDistRecorded * 1.1) * 10) / 10, 6.0) : 3.5;
-      } else {
-        baseLongRun = maxDistRecorded >= 8 ? Math.min(Math.round((maxDistRecorded * 1.1) * 10) / 10, 12.0) : 5.0;
-      }
-
-      // Progressão automática de volume com base no número da semana do ciclo
-      let weekMultiplier = 1 + ((currentTrainingWeek - 1) * 0.1); // Aumenta 10% a cada semana avançada
-      let suggestedLongRun = Math.round((baseLongRun * weekMultiplier) * 10) / 10;
-
-      document.getElementById('cycleWeekLabel').textContent = `Ciclo: Semana ${currentTrainingWeek} (${w}kg)`;
-      document.getElementById('currentWeekNumBadge').textContent = `Semana ${currentTrainingWeek}`;
-
-      // Calcula as datas exatas avançadas com base na Semana Atual do Ciclo
+    // Geração inteligente e ondulatória do plano para evitar saltos absurdos e garantir variação de treinos
+    function getWaveWeeklyPlan() {
       let mondayDate = getCurrentMondayDate();
       mondayDate.setDate(mondayDate.getDate() + ((currentTrainingWeek - 1) * 7));
 
-      let experienceLevel = w >= 130 ? "Progressão Articular Segura" : "Evolução Contínua de Ciclo";
-      let altPlanText = `• Fracione em 2 blocos de ${(suggestedLongRun/2).toFixed(1)} km ou reduza 1.5 km completando com caminhada firme.`;
+      document.getElementById('currentWeekNumBadge').textContent = `Semana ${currentTrainingWeek}`;
+      document.getElementById('cycleWeekLabel').textContent = `Ciclo Ondulatório: Semana ${currentTrainingWeek} (Meta: 15-20km / 5K Rápido)`;
 
-      let baseTemplates = w >= 130 ? [
-        { dayName: 'Segunda-feira', title: `Caminhada Ativa & Trote Leve (${suggestedLongRun} km)`, type: `Semana ${currentTrainingWeek} - Base Segura`, altPlan: `• Plano B: Caminhada forte de 3 km.`, strength: 'Força: Treino C (Core & Postura)', color: 'text-emerald-400', detail: `• Estrutura: ${suggestedLongRun} km alternando blocos de 3 min forte / 1 min leve.` },
-        { dayName: 'Terça-feira', title: 'Mobilidade e Trote Leve (3 km)', type: 'Soltura Ativa', altPlan: '• Plano B: 20 min caminhada.', strength: 'Descanso', color: 'text-cyan-400', detail: '• Mobilidade + 3 km trote leve.' },
-        { dayName: 'Quarta-feira', title: 'Rodagem Contínua Leve (4 km)', type: 'Aeróbico Base', altPlan: '• Plano B: 2.5 km fracionado.', strength: 'Força: Treino B (Glúteos)', color: 'text-cyan-400', detail: '• 4 km em ritmo confortável.' },
-        { dayName: 'Quinta-feira', title: 'Caminhada de Ritmo Firme (4 km)', type: 'Baixo Impacto', altPlan: '• Plano B: 2.5 km leve.', strength: 'Trote Leve', color: 'text-blue-400', detail: '• 4 km caminhada rápida Z1.' },
-        { dayName: 'Sexta-feira', title: 'Fortalecimento Isométrico', type: 'Estabilidade', altPlan: '• Plano B: Exercícios deitada.', strength: 'Força: Treino A (Superiores)', color: 'text-purple-400', detail: '• Pranchas e posturais com elásticos.' },
-        { dayName: 'Sábado', title: `Caminhada Longa (${Math.min(suggestedLongRun, 6.0)} km)`, type: 'Resistência', altPlan: '• Plano B: 3.5 km.', strength: 'Hidratação', color: 'text-orange-400', detail: `• Caminhada contínua firme.` },
-        { dayName: 'Domingo', title: 'Descanso Total', type: 'Regeneração', altPlan: 'Descanso', strength: 'Mobilidade', color: 'text-slate-400', detail: 'Descanso absoluto.' }
-      ] : [
-        { dayName: 'Segunda-feira', title: `Treino Longo Adaptado (${suggestedLongRun} km)`, type: `Semana ${currentTrainingWeek} - Longão`, altPlan: altPlanText, strength: 'Força: Treino A (Superiores)', color: 'text-indigo-400', detail: `• Ciclo Semana ${currentTrainingWeek}.\n• Meta do Longão: ${suggestedLongRun} km contínuos (Z2).` },
-        { dayName: 'Terça-feira', title: 'Rodagem Regenerativa Leve (4 km)', type: 'Recuperação Ativa', altPlan: '• Plano B: 3 km leves.', strength: 'Descanso', color: 'text-emerald-400', detail: '• 4 km muito leves em Z1.' },
-        { dayName: 'Quarta-feira', title: 'Rodagem Contínua Moderada (5 km)', type: 'Aeróbico Base', altPlan: '• Plano B: 3.5 km.', strength: 'Força: Treino B (Pernas)', color: 'text-cyan-400', detail: '• 5 km ritmo conversacional.' },
-        { dayName: 'Quinta-feira', title: 'Intervalado Curto (Tiros na Pista)', type: 'Velocidade', altPlan: '• Plano B: 4 tiros em vez de 6.', strength: 'Trote', color: 'text-orange-400', detail: '• Aquecimento + 6x 400m forte (90s pausa).' },
-        { dayName: 'Sexta-feira', title: 'Fartlek Variado (4.5 km)', type: 'Fartlek', altPlan: '• Plano B: 3.5 km leves.', strength: 'Força: Treino C (Core)', color: 'text-blue-400', detail: '• 1 min forte / 1 min leve.' },
-        { dayName: 'Sábado', title: 'Rodagem Progressiva (Fortex) (5 km)', type: 'Progressivo', altPlan: '• Plano B: 4 km constantes.', strength: 'Descanso', color: 'text-yellow-400', detail: '• Acelere nos últimos 2 km.' },
-        { dayName: 'Domingo', title: 'Descanso Total', type: 'Regeneração', altPlan: 'Descanso', strength: 'Mobilidade', color: 'text-slate-400', detail: 'Descanso absoluto.' }
+      // Lógica de variação e progressão segura de volume (máximo +0.5km a +1km por semana)
+      // Ciclo de 4 semanas com ondulação: S1 (10km), S2 (10.5km), S3 (11.5km), S4 (9km - Descarga)
+      let longRunDist = 10.0;
+      let mondayTitle = "Rodagem Contínua de Base (10 km)";
+      let mondayType = "Rodagem de Base";
+      let mondayDetail = "10 km em ritmo moderado e constante (Z2) para consolidar a base atual.";
+
+      let cycleMod = (currentTrainingWeek - 1) % 4;
+
+      if (cycleMod === 0) {
+        // Semana 1: Segunda é Rodagem 10km (ou Longão moderado de 10km), Terça é Tiro/Velocidade, Quinta é Rodagem
+        longRunDist = 10.0;
+        mondayTitle = "Rodagem Sólida de Base (10 km)";
+        mondayType = "Consolidação (10K)";
+        mondayDetail = "10 km contínuos em ritmo constante (Z2). Mantendo o volume sem saltos bruscos.";
+      } else if (cycleMod === 1) {
+        // Semana 2: Variação! Segunda é Rodagem Moderada 8km / Terça é Fartlek / Quinta é Longuinho 11km
+        longRunDist = 11.0;
+        mondayTitle = "Rodagem Moderada de Suporte (8 km)";
+        mondayType = "Rodagem Variada";
+        mondayDetail = "8 km em ritmo confortável para descanso ativo e variação de estímulo.";
+      } else if (cycleMod === 2) {
+        // Semana 3: O famoso salto seguro (11.5 km), bem longe daquele pulo direto para 13 ou 15km
+        longRunDist = 11.5;
+        mondayTitle = "Longão Progressivo Controlado (11.5 km)";
+        mondayType = "Progressão Segura";
+        mondayDetail = "11.5 km totais: inicie os primeiros 8 km leves e feche os últimos 3.5 km em ritmo firme.";
+      } else {
+        // Semana 4: Semana de Descarga (Recuperação para absorver o treino e evitar lesão)
+        longRunDist = 8.0;
+        mondayTitle = "Semana de Descarga - Rodagem Leve (8 km)";
+        mondayType = "Recuperação Ativa";
+        mondayDetail = "8 km leves para regeneração muscular e frescor físico antes do próximo ciclo.";
+      }
+
+      // Semana templates com variações reais na segunda, terça, quinta e sábado
+      let baseTemplates = [
+        { 
+          dayName: 'Segunda-feira', 
+          title: mondayTitle, 
+          type: mondayType, 
+          altPlan: '• Plano B: Reduza 2 km e finalize com 10 min de caminhada forte.', 
+          strength: 'Força: Treino A (Superiores)', 
+          color: 'text-indigo-400', 
+          detail: mondayDetail 
+        },
+        { 
+          dayName: 'Terça-feira', 
+          title: 'Treino de Velocidade / Tiros Curtos (5 km total)', 
+          type: 'Foco em Baixar os 5K', 
+          altPlan: '• Plano B: 4 km de rodagem contínua moderada.', 
+          strength: 'Descanso de Força', 
+          color: 'text-orange-400', 
+          detail: '• Aquecimento 1.5 km + 5x 400m em ritmo forte (visando pace abaixo de 5:00/km) com 90s de trote leve de pausa + 1 km soltura.' 
+        },
+        { 
+          dayName: 'Quarta-feira', 
+          title: 'Rodagem Regenerativa Leve (4 km)', 
+          type: 'Recuperação Ativa', 
+          altPlan: '• Plano B: 30 minutos de caminhada rápida.', 
+          strength: 'Força: Treino B (Pernas & Glúteos)', 
+          color: 'text-emerald-400', 
+          detail: '• 4 km muito leves em Z1 para irrigação sanguínea e soltura das pernas.' 
+        },
+        { 
+          dayName: 'Quinta-feira', 
+          title: 'Fartlek de Ritmo Variado (6 km)', 
+          type: 'Variação de Estímulo', 
+          altPlan: '• Plano B: 5 km em ritmo contínuo leve.', 
+          strength: 'Trote Leve', 
+          color: 'text-cyan-400', 
+          detail: '• Alterne 1 minuto em ritmo forte com 1 minuto em trote leve durante 6 km.' 
+        },
+        { 
+          dayName: 'Sexta-feira', 
+          title: 'Fortalecimento de Core e Estabilidade', 
+          type: 'Prevenção de Lesões', 
+          altPlan: '• Plano B: Apenas mobilidade de quadril e tornozelo.', 
+          strength: 'Força: Treino C (Core & Postura)', 
+          color: 'text-purple-400', 
+          detail: '• Foco em pranchas, Pallof Press e estabilização de pelve para suportar maiores quilometragens.' 
+        },
+        { 
+          dayName: 'Sábado', 
+          title: `Longão de Resistência Aeróbica (${longRunDist} km)`, 
+          type: 'Resistência de Base', 
+          altPlan: `• Plano B: Fracione em dois blocos de ${(longRunDist/2).toFixed(1)} km com 3 min de intervalo.`, 
+          strength: 'Hidratação e Descanso', 
+          color: 'text-amber-400', 
+          detail: `• Corrida contínua de ${longRunDist} km em ritmo totalmente conversacional (Z2) para ensinar seu corpo a queimar gordura e ganhar estamina.` 
+        },
+        { 
+          dayName: 'Domingo', 
+          title: 'Descanso Total / Regeneração', 
+          type: 'Regeneração', 
+          altPlan: '• Plano B: Descanso absoluto.', 
+          strength: 'Mobilidade leve', 
+          color: 'text-slate-400', 
+          detail: '• Descanso absoluto para consolidação das adaptações fisiológicas da semana.' 
+        }
       ];
 
       return baseTemplates.map((item, idx) => {
@@ -956,7 +1016,7 @@
     function renderPlan() {
       const container = document.getElementById('planContainer');
       if (!container) return;
-      const dynamicPlan = getProgressiveWeeklyPlan();
+      const dynamicPlan = getWaveWeeklyPlan();
       const todayIso = new Date().toISOString().split('T')[0];
 
       container.innerHTML = dynamicPlan.map((item, index) => {
@@ -1003,7 +1063,6 @@
       localStorage.setItem(`stamina_runs_done_${currentProfile}_w${currentTrainingWeek}`, JSON.stringify(completedRuns));
       renderPlan();
 
-      // VERIFICA SE TODOS OS TREINOS FORAM CONCLUÍDOS PARA AVANÇAR AUTOMATICAMENTE PARA A PRÓXIMA SEMANA
       let totalItems = 7;
       let allDone = true;
       for (let i = 0; i < totalItems; i++) {
@@ -1012,7 +1071,7 @@
 
       if (allDone) {
         setTimeout(() => {
-          if (confirm(`Parabéns! Concluiu todos os treinos da Semana ${currentTrainingWeek}! Deseja avançar automaticamente para a Semana ${currentTrainingWeek + 1} com novas metas de volume?`)) {
+          if (confirm(`Excelente! Semana ${currentTrainingWeek} concluída com sucesso! Deseja avançar para a Semana ${currentTrainingWeek + 1} do seu ciclo de evolução?`)) {
             currentTrainingWeek++;
             localStorage.setItem(`stamina_training_week_${currentProfile}`, currentTrainingWeek);
             completedRuns = {};
@@ -1175,12 +1234,6 @@
 
       let splitAnalysisHtml = "";
       let fcSplitsAnalysisHtml = "";
-      let strength = "Bom controlo geral da distância planeada.";
-      let weakness = "Sem desvios críticos aparentes nos ritmos parciais.";
-      let errorPlace = "Nenhum desvio drástico detetado.";
-      let improvement = "Mantenha a consistência nos treinos.";
-
-      let avgPaceSec = parsePaceToSeconds(act.pace) || 340;
       let workoutType = act.name || "Rodagem";
 
       if (act.splits && act.splits.includes(',')) {
@@ -1188,14 +1241,10 @@
         let splitSecs = rawSplits.map(s => parsePaceToSeconds(s)).filter(s => s > 0);
 
         if (splitSecs.length >= 2) {
-          let firstKmSec = splitSecs[0];
           let fastest = Math.min(...splitSecs);
           let slowest = Math.max(...splitSecs);
           let fastestKm = splitSecs.indexOf(fastest) + 1;
           let slowestKm = splitSecs.indexOf(slowest) + 1;
-
-          let firstHalf = splitSecs.slice(0, Math.floor(splitSecs.length / 2)).reduce((a,b)=>a+b,0) / Math.floor(splitSecs.length / 2);
-          let secondHalf = splitSecs.slice(Math.floor(splitSecs.length / 2)).reduce((a,b)=>a+b,0) / (splitSecs.length - Math.floor(splitSecs.length / 2));
 
           splitAnalysisHtml = `
             <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1">
@@ -1215,9 +1264,6 @@
       if (act.fcSplits && act.fcSplits.includes(',')) {
         let rawFcSplits = act.fcSplits.split(',').map(s => parseInt(s.trim())).filter(s => !isNaN(s));
         if (rawFcSplits.length >= 2) {
-          let firstKmFc = rawFcSplits[0];
-          let maxFcKm = Math.max(...rawFcSplits);
-          let peakKm = rawFcSplits.indexOf(maxFcKm) + 1;
           fcSplitsAnalysisHtml = `
             <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1">
               <span class="text-rose-400 font-bold block flex items-center gap-1.5"><i class="fa-solid fa-heart-pulse"></i> Batimentos (FC) por KM:</span>
@@ -1280,7 +1326,7 @@
       document.getElementById('statMonthKm').textContent = `${totalPeriodKm.toFixed(1)} km`;
 
       renderWeeklyChart();
-      renderSmartComparativeFeedback(filteredActivities, period, currentMonth, currentYear);
+      renderSmartComparativeFeedback(filteredActivities, period);
       renderManualActivitiesList(filteredActivities);
       updatePerformancePredictions();
     }
@@ -1331,7 +1377,7 @@
       return (bestPaceSec * distKm) * Math.pow(distKm / 5, 0.07);
     }
 
-    function renderSmartComparativeFeedback(filteredActs, period, currentMonth, currentYear) {
+    function renderSmartComparativeFeedback(filteredActs, period) {
       const container = document.getElementById('monthlyFeedbackContent');
       if (!container) return;
       if (filteredActs.length === 0) {
@@ -1523,7 +1569,7 @@
         <div class="p-2 bg-slate-950 rounded-lg text-orange-400 font-mono">Z4 (Limiar Anaeróbico): ${Math.round(hrr * 0.8 + fcRest)} - ${Math.round(hrr * 0.9 + fcRest)} BPM</div>
         <div class="p-2 bg-slate-950 rounded-lg text-rose-400 font-mono">Z5 (Pico de VAM): ${Math.round(hrr * 0.9 + fcRest)} - ${fcMax} BPM</div>
       `;
-      res.classList.remove('hidden');
+      res.classList.get('hidden') ? res.classList.remove('hidden') : null;
     }
 
     function calculateCalories() {
@@ -1536,7 +1582,7 @@
     }
 
     function generatePaceSplits() {
-      const dist = parseFloat(document.getElementById('splitDist').value);
+      const dist = parseFloat(document.getElementById('splitDist'].value);
       const targetTimeStr = document.getElementById('splitTargetTime').value.trim();
       const parts = targetTimeStr.split(':').map(Number);
       let totalSec = parts.length === 3 ? (parts[0] * 3600) + (parts[1] * 60) + parts[2] : (parts[0] * 60) + parts[1];
