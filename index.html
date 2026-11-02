@@ -52,6 +52,19 @@
       -webkit-backdrop-filter: blur(12px);
     }
   </style>
+<!-- STAMINALAB 360 - Conexão Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://lbokpoabfbjajwamesxp.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY = "COLE_AQUI_SUA_PUBLISHABLE_KEY";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+</script>
 </head>
 <body class="pb-28 pt-3 min-h-screen select-none">
 
