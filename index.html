@@ -706,8 +706,19 @@
       completedRuns = JSON.parse(localStorage.getItem(`stamina_runs_done_${currentProfile}`) || '[]');
       completedBands = JSON.parse(localStorage.getItem(`stamina_bands_done_${currentProfile}`) || '[]');
       postponedDays = JSON.parse(localStorage.getItem(`stamina_postponed_${currentProfile}`) || '{}');
-      manualActivities = JSON.parse(localStorage.getItem(`stamina_manual_runs_${currentProfile}`) || '[]');
       
+      // BLINDAGEM DE COMPATIBILIDADE: Lê os dados salvos e converte se necessário para evitar perda de histórico
+      let rawSavedRuns = localStorage.getItem(`stamina_manual_runs_${currentProfile}`);
+      if (rawSavedRuns) {
+        try {
+          manualActivities = JSON.parse(rawSavedRuns);
+        } catch(e) {
+          manualActivities = [];
+        }
+      } else {
+        manualActivities = [];
+      }
+
       let defaultBio = currentProfile === 'raiza' ? { weight: 150, height: 165, age: 32, lastUpdate: '2026-10-01' } : { weight: 94, height: 178, age: 30, lastUpdate: '2026-10-01' };
       profileBioData = JSON.parse(localStorage.getItem(`stamina_bio_data_${currentProfile}`) || JSON.stringify(defaultBio));
 
@@ -1018,7 +1029,7 @@
 
     function saveOrUpdateManualRun() {
       const editId = document.getElementById('editRunId').value;
-      const name = document.getElementById('newRunType').value; // Salva o tipo de treino selecionado
+      const name = document.getElementById('newRunType').value; 
       const date = document.getElementById('newRunDate').value || new Date().toISOString().split('T')[0];
       const distance = parseFloat(document.getElementById('newRunDist').value);
       const timeStr = document.getElementById('newRunTime').value.trim() || "25 min";
@@ -1125,7 +1136,6 @@
       let avgPaceSec = parsePaceToSeconds(act.pace) || 340;
       let workoutType = act.name || "Rodagem";
 
-      // 1. ANÁLISE DE RITMO POR KM (SPLITS) CONTEXTUALIZADA AO TIPO DE TREINO
       if (act.splits && act.splits.includes(',')) {
         let rawSplits = act.splits.split(',').map(s => s.trim());
         let splitSecs = rawSplits.map(s => parsePaceToSeconds(s)).filter(s => s > 0);
@@ -1189,16 +1199,13 @@
         splitAnalysisHtml = `<p class="text-xs text-gray-400 italic">Nenhum split de ritmo registado nesta atividade.</p>`;
       }
 
-      // 2. ANÁLISE DE FREQUÊNCIA CARDÍACA POR KM (SPLITS DE FC)
       if (act.fcSplits && act.fcSplits.includes(',')) {
         let rawFcSplits = act.fcSplits.split(',').map(s => parseInt(s.trim())).filter(s => !isNaN(s));
 
         if (rawFcSplits.length >= 2) {
           let firstKmFc = rawFcSplits[0];
           let maxFcKm = Math.max(...rawFcSplits);
-          let minFcKm = Math.min(...rawFcSplits);
           let peakKm = rawFcSplits.indexOf(maxFcKm) + 1;
-
           let fcDiff = maxFcKm - firstKmFc;
           let fcTrendDiag = "";
 
@@ -1241,7 +1248,6 @@
         `;
       }
 
-      // 3. RENDERIZAÇÃO NO MODAL
       document.getElementById('modalCategoryBadge').textContent = `Autópsia • ${workoutType}`;
       document.getElementById('modalTitle').textContent = act.name;
       document.getElementById('modalBody').innerHTML = `
@@ -1590,7 +1596,7 @@
       const cal = Math.round(weight * dist * 1.03);
       const res = document.getElementById('calResult');
       res.textContent = `Gasto Calórico Estimado: ~${cal} kcal`;
-      res.classList.format('hidden');
+      res.classList.remove('hidden');
     }
 
     function generatePaceSplits() {
@@ -1599,7 +1605,7 @@
       const parts = targetTimeStr.split(':').map(Number);
       let totalSec = parts.length === 3 ? (parts[0] * 3600) + (parts[1] * 60) + parts[2] : (parts[0] * 60) + parts[1];
       let baseSecPerKm = totalSec / dist;
-      let html = '';
+      html = '';
       for (let i = 1; i <= Math.ceil(dist); i++) {
         let pMin = Math.floor(baseSecPerKm / 60);
         let pSec = Math.round(baseSecPerKm % 60);
@@ -1607,7 +1613,7 @@
       }
       let res = document.getElementById('splitsResult');
       res.innerHTML = html;
-      res.classList.remove('hidden');
+      res.classList.add('hidden');
     }
   </script>
 </body>
