@@ -358,9 +358,9 @@
       <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-3 rounded-2xl">
         <span class="text-xs font-bold text-gray-300">Período de Análise:</span>
         <select id="periodFilter" onchange="updateDashboardData()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-orange-400 font-bold outline-none">
-          <option value="current_month">Outubro / 2026 (Atual)</option>
+          <option value="current_month">Novembro / 2026 (Atual)</option>
+          <option value="october">Outubro / 2026</option>
           <option value="september">Setembro / 2026</option>
-          <option value="august">Agosto / 2026</option>
           <option value="all">Histórico Completo (Levantamento Geral)</option>
         </select>
       </div>
@@ -642,6 +642,17 @@
     let profileBioData = {}; 
     let timerInterval = null;
 
+    // Função utilitária para descobrir o número da semana atual do ano
+    function getWeekNumber(d) {
+      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+      var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+      var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+      return `${d.getUTCFullYear()}-W${weekNo}`;
+    }
+
+    const currentWeekKey = getWeekNumber(new Date());
+
     function initProfileSelector() {
       const select = document.getElementById('activeProfileSelect');
       if (!select) return;
@@ -682,9 +693,9 @@
       if (confirm(`Tem certeza de que deseja excluir o perfil '${currentProfile}' e todos os seus registos salvos?`)) {
         let profileToDelete = currentProfile;
 
-        localStorage.removeItem(`stamina_runs_done_${profileToDelete}`);
-        localStorage.removeItem(`stamina_bands_done_${profileToDelete}`);
-        localStorage.removeItem(`stamina_postponed_${profileToDelete}`);
+        localStorage.removeItem(`stamina_runs_done_${profileToDelete}_${currentWeekKey}`);
+        localStorage.removeItem(`stamina_bands_done_${profileToDelete}_${currentWeekKey}`);
+        localStorage.removeItem(`stamina_postponed_${profileToDelete}_${currentWeekKey}`);
         localStorage.removeItem(`stamina_manual_runs_${profileToDelete}`);
         localStorage.removeItem(`stamina_bio_data_${profileToDelete}`);
 
@@ -703,11 +714,11 @@
     }
 
     function loadProfileData() {
-      completedRuns = JSON.parse(localStorage.getItem(`stamina_runs_done_${currentProfile}`) || '[]');
-      completedBands = JSON.parse(localStorage.getItem(`stamina_bands_done_${currentProfile}`) || '[]');
-      postponedDays = JSON.parse(localStorage.getItem(`stamina_postponed_${currentProfile}`) || '{}');
+      // Chaves atreladas à semana atual para resetar o status de marcados/adiados toda segunda-feira nova
+      completedRuns = JSON.parse(localStorage.getItem(`stamina_runs_done_${currentProfile}_${currentWeekKey}`) || '[]');
+      completedBands = JSON.parse(localStorage.getItem(`stamina_bands_done_${currentProfile}_${currentWeekKey}`) || '[]');
+      postponedDays = JSON.parse(localStorage.getItem(`stamina_postponed_${currentProfile}_${currentWeekKey}`) || '{}');
       
-      // BLINDAGEM DE COMPATIBILIDADE: Lê o histórico com segurança
       let rawSavedRuns = localStorage.getItem(`stamina_manual_runs_${currentProfile}`);
       if (rawSavedRuns) {
         try {
@@ -976,20 +987,20 @@
     function toggleRunDone(index) {
       if (completedRuns.includes(index)) completedRuns = completedRuns.filter(i => i !== index);
       else completedRuns.push(index);
-      localStorage.setItem(`stamina_runs_done_${currentProfile}`, JSON.stringify(completedRuns));
+      localStorage.setItem(`stamina_runs_done_${currentProfile}_${currentWeekKey}`, JSON.stringify(completedRuns));
       renderPlan();
     }
 
     function toggleBandDone(index) {
       if (completedBands.includes(index)) completedBands = completedBands.filter(i => i !== index);
       else completedBands.push(index);
-      localStorage.setItem(`stamina_bands_done_${currentProfile}`, JSON.stringify(completedBands));
+      localStorage.setItem(`stamina_bands_done_${currentProfile}_${currentWeekKey}`, JSON.stringify(completedBands));
       renderPlan();
     }
 
     function togglePostpone(index) {
       postponedDays[index] = !postponedDays[index];
-      localStorage.setItem(`stamina_postponed_${currentProfile}`, JSON.stringify(postponedDays));
+      localStorage.setItem(`stamina_postponed_${currentProfile}_${currentWeekKey}`, JSON.stringify(postponedDays));
       renderPlan();
     }
 
@@ -1294,8 +1305,8 @@
         const month = d.getMonth();
         const year = d.getFullYear();
         if (period === 'current_month') return month === currentMonth && year === currentYear;
-        if (period === 'september') return month === currentMonth - 1 && year === currentYear;
-        if (period === 'august') return month === currentMonth - 2 && year === currentYear;
+        if (period === 'october') return month === currentMonth - 1 && year === currentYear;
+        if (period === 'september') return month === currentMonth - 2 && year === currentYear;
         return true;
       });
 
@@ -1587,7 +1598,7 @@
         <div class="p-2 bg-slate-950 rounded-lg text-orange-400 font-mono">Z4 (Limiar Anaeróbico): ${Math.round(hrr * 0.8 + fcRest)} - ${Math.round(hrr * 0.9 + fcRest)} BPM</div>
         <div class="p-2 bg-slate-950 rounded-lg text-rose-400 font-mono">Z5 (Pico de VAM): ${Math.round(hrr * 0.9 + fcRest)} - ${fcMax} BPM</div>
       `;
-      res.classList.remove('hidden');
+      res.classList.add('hidden');
     }
 
     function calculateCalories() {
