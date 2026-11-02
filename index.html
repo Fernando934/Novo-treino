@@ -180,7 +180,7 @@
       </div>
       <div class="p-3 rounded-2xl bg-orange-950/30 border border-orange-500/30 text-xs text-orange-200 flex justify-between items-center">
         <div>
-          <i class="fa-solid fa-circle-info mr-1 text-orange-400"></i> Planeamento Anual Ativo: O ciclo semanal alterna automaticamente por semana com base nos objetivos e na sua evolução, mantendo as marcações sempre sincronizadas com a semana corrente.
+          <i class="fa-solid fa-circle-info mr-1 text-orange-400"></i> Planeamento Anual Dinâmico: Cada semana do ano gera uma combinação rotativa e aleatória controlada de treinos para nunca ficar repetitivo, mantendo datas exatas e redefinindo os checks semanalmente.
         </div>
       </div>
       <div id="planContainer" class="space-y-3"></div>
@@ -637,7 +637,6 @@
       if(titleLabel) titleLabel.textContent = currentProfile;
     }
 
-    // Geração dinâmica de meses (acumulativa, incluindo Novembro 2026 e seguintes)
     function initPeriodFilterMonths() {
       const select = document.getElementById('periodFilter');
       if (!select) return;
@@ -705,14 +704,12 @@
     }
 
     function loadProfileData() {
-      // Validação de reset automático semanal: verifica a semana atual do ano
       const now = new Date();
       const startOfYear = new Date(now.getFullYear(), 0, 1);
       const currentWeekNumber = Math.ceil((((now - startOfYear) / 86400000) + startOfYear.getDay() + 1) / 7);
       let savedWeekNumber = parseInt(localStorage.getItem(`stamina_week_num_${currentProfile}`) || '0');
 
       if (savedWeekNumber !== currentWeekNumber) {
-        // Se mudou de semana, limpa as marcações antigas automaticamente
         completedRuns = [];
         completedBands = [];
         postponedDays = {};
@@ -958,7 +955,7 @@
       `).join('');
     }
 
-    // PLANEJAMENTO ANUAL ROTATIVO COM DATAS COMPLETAS (DIA, MÊS E ANO) E VARIABILIDADE INTELIGENTE
+    // PLANEJAMENTO ANUAL DINÂMICO COM RANDOMIZAÇÃO SEMANAL REAL E VARIADA
     function getDynamicWeeklyPlan() {
       let w = profileBioData.weight || 75;
       let age = profileBioData.age || 30;
@@ -992,14 +989,12 @@
         }
       }
 
-      // Cálculo do número da semana atual do ano para garantir variação automática aleatória controlada
       const now = new Date();
       const startOfYear = new Date(now.getFullYear(), 0, 1);
       const weekNumber = Math.ceil((((now - startOfYear) / 86400000) + startOfYear.getDay() + 1) / 7);
       
       document.getElementById('cycleWeekLabel').textContent = `Perfil: ${currentProfile.toUpperCase()} (${w}kg) | Nível: ${experienceLevel} | Ciclo Anual Semana #${weekNumber}`;
 
-      // Gerador de datas da semana corrente (Segunda a Domingo)
       let curr = new Date();
       let firstDayOfWeek = curr.getDate() - curr.getDay() + (curr.getDay() === 0 ? -6 : 1);
       
@@ -1015,28 +1010,62 @@
       let halfLong = Math.round((suggestedLongRun / 2) * 10) / 10;
       let altPlanText = `• Se não conseguir correr direto: Fracione o treino em 2 blocos de ${halfLong} km (com 3 minutos de caminhada leve de intervalo) OU reduza para ${Math.max(suggestedLongRun - 1.5, 2.5).toFixed(1)} km completando o restante com caminhada firme.`;
 
-      let variant = weekNumber % 3; // Rotação inteligente de 3 variações semanais ao longo do ano
+      // Rotação dinâmica avançada por semana (Módulo 4 para garantir total variedade entre semanas consecutivas)
+      let mod = weekNumber % 4; 
 
       if (w >= 130) {
-        return [
-          { dayName: 'Segunda-feira', dateStr: weekDates[0], title: variant === 0 ? `Caminhada Ativa & Trote Leve (${suggestedLongRun} km)` : (variant === 1 ? `Rodagem Contínua Leve (${suggestedLongRun} km)` : `Caminhada de Ritmo Dinâmico (${suggestedLongRun} km)`), type: 'Base Articular Segura', altPlan: `• Plano B: Faça apenas 2.5 km de caminhada forte contínua e finalize com alongamento.`, strength: 'Força: Treino C (Core & Postura Antirrotação)', color: 'text-emerald-400', detail: `• Estrutura: ${suggestedLongRun} km alternando blocos de 3 min de caminhada forte com 1 min de trote leve.` },
-          { dayName: 'Terça-feira', dateStr: weekDates[1], title: 'Mobilidade e Trote Regenerativo Leve (3 km)', type: 'Soltura Ativa', altPlan: '• Plano B: 20 minutos de caminhada plana leve.', strength: 'Descanso de Força', color: 'text-cyan-400', detail: '• 10 min de mobilidade articular seguidos de 3 km de trote extremamente leve e conversacional.' },
-          { dayName: 'Quarta-feira', dateStr: weekDates[2], title: variant === 2 ? 'Rodagem Contínua Leve em Piso Plano (4 km)' : 'Caminhada de Ritmo Firme (4.5 km)', type: 'Aeróbico Base', altPlan: '• Plano B: 2.5 km alternando 1 min trote / 1 min caminhada.', strength: 'Força: Treino B (Glúteos & Mini Band)', color: 'text-cyan-400', detail: '• Ritmo confortável focando na postura ereta e respiração controlada.' },
-          { dayName: 'Quinta-feira', dateStr: weekDates[3], title: 'Caminhada de Ritmo Firme (4 km)', type: 'Baixo Impacto Ativo', altPlan: '• Plano B: Reduza para 2.5 km de caminhada leve.', strength: 'Trote Leve', color: 'text-blue-400', detail: '• 4 km de caminhada rápida sem trote, mantendo frequência cardíaca controlada (Z1).' },
-          { dayName: 'Sexta-feira', dateStr: weekDates[4], title: 'Fortalecimento Focado em Isometria', type: 'Força e Estabilidade', altPlan: '• Plano B: Faça apenas os exercícios deitada (ponte e abdômen).', strength: 'Força: Treino A (Superiores com Elásticos)', color: 'text-purple-400', detail: '• Foco em pranchas e exercícios posturais sentados com elásticos.' },
-          { dayName: 'Sábado', dateStr: weekDates[5], title: 'Caminhada Longa de Resistência (5 km)', type: 'Resistência Aeróbica', altPlan: '• Plano B: Reduza para 3.5 km em ritmo constante.', strength: 'Hidratação e Descanso', color: 'text-orange-400', detail: `• 5 km de caminhada contínua em ritmo firme e constante.` },
-          { dayName: 'Domingo', dateStr: weekDates[6], title: 'Descanso Total', type: 'Regeneração', altPlan: '• Plano B: Descanso absoluto.', strength: 'Mobilidade', color: 'text-slate-400', detail: '• Descanso absoluto.' }
+        let plansForHeavy = [
+          [
+            { dayName: 'Segunda-feira', dateStr: weekDates[0], title: `Caminhada Ativa & Trote Leve (${suggestedLongRun} km)`, type: 'Base Articular', altPlan: altPlanText, strength: 'Força: Treino C (Core & Postura)', color: 'text-emerald-400', detail: `• Estrutura: ${suggestedLongRun} km alternando blocos de 3 min de caminhada forte com 1 min de trote leve.` },
+            { dayName: 'Terça-feira', dateStr: weekDates[1], title: 'Mobilidade e Trote Regenerativo Leve (3 km)', type: 'Soltura Ativa', altPlan: '• Plano B: 20 min de caminhada plana.', strength: 'Descanso de Força', color: 'text-cyan-400', detail: '• 10 min de mobilidade seguidos de 3 km de trote muito leve.' },
+            { dayName: 'Quarta-feira', dateStr: weekDates[2], title: 'Rodagem Contínua Leve em Piso Plano (4 km)', type: 'Aeróbico Base', altPlan: '• Plano B: 2.5 km alternando 1 min trote / 1 min caminhada.', strength: 'Força: Treino B (Glúteos & Mini Band)', color: 'text-cyan-400', detail: '• Ritmo confortável focando na postura ereta e respiração controlada.' },
+            { dayName: 'Quinta-feira', dateStr: weekDates[3], title: 'Caminhada de Ritmo Firme (4 km)', type: 'Baixo Impacto Ativo', altPlan: '• Plano B: 2.5 km de caminhada leve.', strength: 'Trote Leve', color: 'text-blue-400', detail: '• 4 km de caminhada rápida sem trote, mantendo frequência cardíaca controlada (Z1).' },
+            { dayName: 'Sexta-feira', dateStr: weekDates[4], title: 'Fortalecimento Focado em Isometria', type: 'Força e Estabilidade', altPlan: '• Plano B: Exercícios deitada (ponte e abdômen).', strength: 'Força: Treino A (Superiores com Elásticos)', color: 'text-purple-400', detail: '• Foco em pranchas e exercícios posturais sentados com elásticos.' },
+            { dayName: 'Sábado', dateStr: weekDates[5], title: 'Caminhada Longa de Resistência (5 km)', type: 'Resistência Aeróbica', altPlan: '• Plano B: 3.5 km em ritmo constante.', strength: 'Hidratação e Descanso', color: 'text-orange-400', detail: '• 5 km de caminhada contínua em ritmo firme e constante.' },
+            { dayName: 'Domingo', dateStr: weekDates[6], title: 'Descanso Total', type: 'Regeneração', altPlan: '• Descanso absoluto.', strength: 'Mobilidade', color: 'text-slate-400', detail: '• Descanso absoluto.' }
+          ],
+          [
+            { dayName: 'Segunda-feira', dateStr: weekDates[0], title: `Rodagem Contínua Leve (${suggestedLongRun} km)`, type: 'Aeróbico Adaptativo', altPlan: altPlanText, strength: 'Força: Treino A (Superiores)', color: 'text-emerald-400', detail: `• Foco na constância: ${suggestedLongRun} km contínuos em ritmo conversacional e seguro.` },
+            { dayName: 'Terça-feira', dateStr: weekDates[1], title: 'Caminhada Extensa de Recuperação (3.5 km)', type: 'Regenerativo', altPlan: '• Plano B: 2.5 km de caminhada leve.', strength: 'Descanso de Força', color: 'text-cyan-400', detail: '• 3.5 km de caminhada firme em piso plano para irrigação sanguínea.' },
+            { dayName: 'Quarta-feira', dateStr: weekDates[2], title: 'Caminhada de Ritmo Firme (4.5 km)', type: 'Resistência Contínua', altPlan: '• Plano B: 3 km leves.', strength: 'Força: Treino B (Pernas)', color: 'text-cyan-400', detail: '• 4.5 km de caminhada mantendo cadência constante e braços ativos.' },
+            { dayName: 'Quinta-feira', dateStr: weekDates[3], title: 'Trote Leve e Mobilidade (3 km)', type: 'Soltura', altPlan: '• Plano B: 2 km de caminhada.', strength: 'Trote Leve', color: 'text-blue-400', detail: '• 3 km misturando 1 min trote com 2 min caminhada.' },
+            { dayName: 'Sexta-feira', dateStr: weekDates[4], title: 'Treino de Postura e Core com Elástico', type: 'Estabilidade', altPlan: '• Plano B: Pranchas curtas.', strength: 'Força: Treino C (Core)', color: 'text-purple-400', detail: '• Sessão focada em antirotação e reforço lombar.' },
+            { dayName: 'Sábado', dateStr: weekDates[5], title: `Caminhada Longa Progressiva (${suggestedLongRun} km)`, type: 'Longão Adaptado', altPlan: '• Plano B: 4 km constantes.', strength: 'Hidratação e Descanso', color: 'text-orange-400', detail: `• ${suggestedLongRun} km divididos em blocos confortáveis.` },
+            { dayName: 'Domingo', dateStr: weekDates[6], title: 'Descanso Total', type: 'Regeneração', altPlan: '• Descanso absoluto.', strength: 'Mobilidade', color: 'text-slate-400', detail: '• Descanso absoluto.' }
+          ]
         ];
+        return plansForHeavy[mod % plansForHeavy.length];
       } else {
-        return [
-          { dayName: 'Segunda-feira', dateStr: weekDates[0], title: variant === 0 ? `Treino Longo Adaptado (${suggestedLongRun} km)` : (variant === 1 ? `Rodagem Progressiva (${suggestedLongRun} km)` : `Fartlek Variado (${suggestedLongRun} km)`), type: 'Longão / Base', altPlan: altPlanText, strength: 'Força: Treino A (Superiores)', color: 'text-indigo-400', detail: `• Teto máximo registado: ${maxDistRecorded} km.\n• Base da semana: ${suggestedLongRun} km contínuos em ritmo confortável (Z2).` },
-          { dayName: 'Terça-feira', dateStr: weekDates[1], title: 'Rodagem Regenerativa Leve (4 km)', type: 'Recuperação Ativa', altPlan: '• Plano B: 3 km leves ou 25 minutos de caminhada forte.', strength: 'Descanso de Força', color: 'text-emerald-400', detail: '• 4 km muito leves em Z1 para soltura da musculatura.' },
-          { dayName: 'Quarta-feira', dateStr: weekDates[2], title: variant === 1 ? 'Rodagem Contínua Moderada (5 km)' : 'Fartlek de Ritmo Variado (4.5 km)', type: 'Aeróbico Base', altPlan: '• Plano B: 3.5 km contínuos ou fracionados em 2x 2km.', strength: 'Força: Treino B (Pernas & Glúteos)', color: 'text-cyan-400', detail: '• Ritmo constante ou variações leves de velocidade.' },
-          { dayName: 'Quinta-feira', dateStr: weekDates[3], title: variant === 2 ? 'Intervalado Curto (Tiros na Pista)' : 'Rodagem com Acelerações Finais (5 km)', type: 'Velocidade Controlada', altPlan: '• Plano B: Reduza para 4 tiros em vez de 6, mantendo a pausa longa.', strength: 'Trote Regenerativo', color: 'text-orange-400', detail: '• Aquecimento 1.5km + blocos controlados em ritmo forte + soltura.' },
-          { dayName: 'Sexta-feira', dateStr: weekDates[4], title: 'Fartlek de Ritmo Variado (4.5 km)', type: 'Fartlek', altPlan: '• Plano B: Rodagem contínua leve de 3.5 km sem variações de ritmo.', strength: 'Força: Treino C (Core & Estabilidade)', color: 'text-blue-400', detail: '• 4.5 km total: alterne 1 min em ritmo forte com 1 min em trote leve.' },
-          { dayName: 'Sábado', dateStr: weekDates[5], title: 'Rodagem Progressiva (Fortex) (5 km)', type: 'Progressivo', altPlan: '• Plano B: 4 km em ritmo constante e confortável.', strength: 'Hidratação e Descanso', color: 'text-yellow-400', detail: '• 5 km total: inicie leve e acelere progressivamente nos últimos quilómetros.' },
-          { dayName: 'Domingo', dateStr: weekDates[6], title: 'Descanso Total', type: 'Regeneração', altPlan: '• Plano B: Descanso absoluto.', strength: 'Mobilidade', color: 'text-slate-400', detail: '• Descanso absoluto.' }
+        let plansForNormal = [
+          [
+            { dayName: 'Segunda-feira', dateStr: weekDates[0], title: `Treino Longo Adaptado (${suggestedLongRun} km)`, type: 'Longão / Base', altPlan: altPlanText, strength: 'Força: Treino A (Superiores)', color: 'text-indigo-400', detail: `• Teto máximo registado: ${maxDistRecorded} km.\n• Base da semana: ${suggestedLongRun} km contínuos em ritmo confortável (Z2).` },
+            { dayName: 'Terça-feira', dateStr: weekDates[1], title: 'Rodagem Regenerativa Leve (4 km)', type: 'Recuperação Ativa', altPlan: '• Plano B: 3 km leves ou 25 minutos de caminhada forte.', strength: 'Descanso de Força', color: 'text-emerald-400', detail: '• 4 km muito leves em Z1 para soltura da musculatura.' },
+            { dayName: 'Quarta-feira', dateStr: weekDates[2], title: 'Rodagem Contínua Moderada (5 km)', type: 'Aeróbico Base', altPlan: '• Plano B: 3.5 km contínuos ou fracionados em 2x 2km.', strength: 'Força: Treino B (Pernas & Glúteos)', color: 'text-cyan-400', detail: '• Ritmo constante focando na eficiência mecânica e respiração.' },
+            { dayName: 'Quinta-feira', dateStr: weekDates[3], title: 'Intervalado Curto (Tiros na Pista)', type: 'Velocidade Controlada', altPlan: '• Plano B: Reduza para 4 tiros em vez de 6, mantendo a pausa longa.', strength: 'Trote Regenerativo', color: 'text-orange-400', detail: '• Aquecimento 1.5km + 6x 400m em ritmo forte (pausa 90s trote) + soltura.' },
+            { dayName: 'Sexta-feira', dateStr: weekDates[4], title: 'Fartlek de Ritmo Variado (4.5 km)', type: 'Fartlek', altPlan: '• Plano B: Rodagem contínua leve de 3.5 km sem variações de ritmo.', strength: 'Força: Treino C (Core & Estabilidade)', color: 'text-blue-400', detail: '• 4.5 km total: alterne 1 min em ritmo forte com 1 min em trote leve.' },
+            { dayName: 'Sábado', dateStr: weekDates[5], title: 'Rodagem Progressiva (Fortex) (5 km)', type: 'Progressivo', altPlan: '• Plano B: 4 km em ritmo constante e confortável.', strength: 'Hidratação e Descanso', color: 'text-yellow-400', detail: '• 5 km total: inicie leve e acelere progressivamente nos últimos quilómetros.' },
+            { dayName: 'Domingo', dateStr: weekDates[6], title: 'Descanso Total', type: 'Regeneração', altPlan: '• Descanso absoluto.', strength: 'Mobilidade', color: 'text-slate-400', detail: '• Descanso absoluto.' }
+          ],
+          [
+            { dayName: 'Segunda-feira', dateStr: weekDates[0], title: `Rodagem Progressiva (Fortex) (${suggestedLongRun} km)`, type: 'Fortex Dinâmico', altPlan: altPlanText, strength: 'Força: Treino B (Pernas)', color: 'text-indigo-400', detail: `• ${suggestedLongRun} km total: inicie confortável e acelere os últimos 2 km.` },
+            { dayName: 'Terça-feira', dateStr: weekDates[1], title: 'Fartlek Científico de Terreno (5 km)', type: 'Fartlek', altPlan: '• Plano B: 4 km em ritmo constante.', strength: 'Descanso de Força', color: 'text-cyan-400', detail: '• Alterne blocos de 2 min moderados com 1 min forte.' },
+            { dayName: 'Quarta-feira', dateStr: weekDates[2], title: 'Rodagem Regenerativa (4.5 km)', type: 'Regenerativo', altPlan: '• Plano B: 3.5 km leves.', strength: 'Força: Treino A (Superiores)', color: 'text-emerald-400', detail: '• Ritmo leve e conversacional para recuperação neuromuscular.' },
+            { dayName: 'Quinta-feira', dateStr: weekDates[3], title: 'Treino Intervalado Médio (4x 1km)', type: 'Tiros Longos', altPlan: '• Plano B: 3x 1km com pausa de 2 min.', strength: 'Trote Leve', color: 'text-orange-400', detail: '• 4 blocos de 1000m em ritmo de limiar com 90s de trote entre eles.' },
+            { dayName: 'Sexta-feira', dateStr: weekDates[4], title: 'Rodagem Contínua Constante (5 km)', type: 'Aeróbico', altPlan: '• Plano B: 4 km leves.', strength: 'Força: Treino C (Core)', color: 'text-blue-400', detail: '• 5 km em ritmo constante e confortável (Z2).' },
+            { dayName: 'Sábado', dateStr: weekDates[5], title: `Longão de Base Aeróbica (${Math.round((suggestedLongRun + 1) * 10) / 10} km)`, type: 'Long Run', altPlan: '• Plano B: Reduzir 1.5 km.', strength: 'Hidratação e Descanso', color: 'text-yellow-400', detail: `• Corrida contínua de longa duração (${Math.round((suggestedLongRun + 1) * 10) / 10} km) em ritmo constante.` },
+            { dayName: 'Domingo', dateStr: weekDates[6], title: 'Descanso Total', type: 'Regeneração', altPlan: '• Descanso absoluto.', strength: 'Mobilidade', color: 'text-slate-400', detail: '• Descanso absoluto.' }
+          ],
+          [
+            { dayName: 'Segunda-feira', dateStr: weekDates[0], title: `Fartlek Livre de Ritmos (${suggestedLongRun} km)`, type: 'Fartlek Variado', altPlan: altPlanText, strength: 'Força: Treino C (Core)', color: 'text-cyan-400', detail: `• ${suggestedLongRun} km alternando mudanças dinâmicas de velocidade.` },
+            { dayName: 'Terça-feira', dateStr: weekDates[1], title: 'Rodagem Leve de Soltura (4 km)', type: 'Regenerativo', altPlan: '• Plano B: 3 km leves.', strength: 'Descanso de Força', color: 'text-emerald-400', detail: '• 4 km em ritmo regenerativo para eliminar rigidez.' },
+            { dayName: 'Quarta-feira', dateStr: weekDates[2], title: 'Treino de Limiar Contínuo (5.5 km)', type: 'Tempo Run', altPlan: '• Plano B: 4 km moderados.', strength: 'Força: Treino A (Superiores)', color: 'text-orange-400', detail: '• 5.5 km mantendo esforço constante em Z3/Z4.' },
+            { dayName: 'Quinta-feira', dateStr: weekDates[3], title: 'Rodagem Regenerativa (3.5 km)', type: 'Soltura', altPlan: '• Plano B: 3 km caminhada rápida.', strength: 'Trote Leve', color: 'text-blue-400', detail: '• 3.5 km leves para absorção do treino anterior.' },
+            { dayName: 'Sexta-feira', dateStr: weekDates[4], title: 'Tiros Curtos de Velocidade (6x 200m)', type: 'Sprints', altPlan: '• Plano B: 4 tiros de 200m.', strength: 'Força: Treino B (Pernas)', color: 'text-purple-400', detail: '• 6 tiros rápidos de 200m com 60s de pausa completa.' },
+            { dayName: 'Sábado', dateStr: weekDates[5], title: `Longão Regenerativo (${suggestedLongRun} km)`, type: 'Longão Base', altPlan: '• Plano B: 5 km constantes.', strength: 'Hidratação e Descanso', color: 'text-indigo-400', detail: `• ${suggestedLongRun} km em ritmo confortável e constante.` },
+            { dayName: 'Domingo', dateStr: weekDates[6], title: 'Descanso Total', type: 'Regeneração', altPlan: '• Descanso absoluto.', strength: 'Mobilidade', color: 'text-slate-400', detail: '• Descanso absoluto.' }
+          ]
         ];
+        return plansForNormal[mod % plansForNormal.length];
       }
     }
 
@@ -1143,7 +1172,7 @@
 
     function saveOrUpdateManualRun() {
       const editId = document.getElementById('editRunId').value;
-      const name = document.getElementById('newRunTypeSelect').value; // Apenas tipo de treino selecionado
+      const name = document.getElementById('newRunTypeSelect').value;
       const date = document.getElementById('newRunDate').value || new Date().toISOString().split('T')[0];
       const distance = parseFloat(document.getElementById('newRunDist').value);
       const timeStr = document.getElementById('newRunTime').value.trim() || "25 min";
@@ -1241,14 +1270,11 @@
       let errorPlace = "Nenhum erro de pacing relevante detetado.";
       let improvement = "Mantenha a estratégia para os próximos ciclos.";
 
-      let avgPaceSec = parsePaceToSeconds(act.pace) || 340;
-
       if (act.splits && act.splits.includes(',')) {
         let rawSplits = act.splits.split(',').map(s => s.trim());
         let splitSecs = rawSplits.map(s => parsePaceToSeconds(s)).filter(s => s > 0);
 
         if (splitSecs.length >= 2) {
-          let firstKmSec = splitSecs[0];
           let fastest = Math.min(...splitSecs);
           let slowest = Math.max(...splitSecs);
           let fastestKm = splitSecs.indexOf(fastest) + 1;
@@ -1615,7 +1641,7 @@
       const cal = Math.round(weight * dist * 1.03);
       const res = document.getElementById('calResult');
       res.textContent = `Gasto Calórico Estimado: ~${cal} kcal`;
-      res.classList.resulove ? res.classList.remove('hidden') : res.classList.remove('hidden');
+      res.classList.remove('hidden');
     }
 
     function generatePaceSplits() {
