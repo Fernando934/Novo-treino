@@ -707,7 +707,7 @@
       completedBands = JSON.parse(localStorage.getItem(`stamina_bands_done_${currentProfile}`) || '[]');
       postponedDays = JSON.parse(localStorage.getItem(`stamina_postponed_${currentProfile}`) || '{}');
       
-      // BLINDAGEM DE COMPATIBILIDADE: Lê os dados salvos e converte se necessário para evitar perda de histórico
+      // BLINDAGEM DE COMPATIBILIDADE: Lê o histórico com segurança
       let rawSavedRuns = localStorage.getItem(`stamina_manual_runs_${currentProfile}`);
       if (rawSavedRuns) {
         try {
@@ -1180,7 +1180,7 @@
             if (secondHalf < firstHalf - 3) {
               strength = "Excelente progressão de ritmo (Negative Split).";
               weakness = "Constância preservada na primeira metade.";
-              errorPlace = `KM 1 executado na janela ideal de tolerância.`;
+              errorPlace = `KM 1 executado na ideal tolerância.`;
               improvement = "Mantenha a estratégia de dosagem de esforço.";
             } else if (secondHalf > firstHalf + 5) {
               strength = "Largada agressiva e forte.";
@@ -1605,7 +1605,7 @@
       const parts = targetTimeStr.split(':').map(Number);
       let totalSec = parts.length === 3 ? (parts[0] * 3600) + (parts[1] * 60) + parts[2] : (parts[0] * 60) + parts[1];
       let baseSecPerKm = totalSec / dist;
-      html = '';
+      let html = '';
       for (let i = 1; i <= Math.ceil(dist); i++) {
         let pMin = Math.floor(baseSecPerKm / 60);
         let pSec = Math.round(baseSecPerKm % 60);
@@ -1613,7 +1613,7 @@
       }
       let res = document.getElementById('splitsResult');
       res.innerHTML = html;
-      res.classList.add('hidden');
+      res.classList.remove('hidden');
     }
   </script>
 </body>
