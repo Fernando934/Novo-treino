@@ -246,7 +246,7 @@
             </h3>
             <p class="text-[10px] text-gray-400">Estimativas ajustadas ao seu histórico real de treino.</p>
           </div>
-          <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold">Base Riegel</span>
+          <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold">Base Strava / Riegel</span>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -332,11 +332,14 @@
         </div>
       </div>
 
-      <!-- PERÍODO DE ANÁLISE DINÂMICO E ACUMULATIVO -->
+      <!-- PERÍODO DE ANÁLISE -->
       <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-3 rounded-2xl">
         <span class="text-xs font-bold text-gray-300">Período de Análise:</span>
         <select id="periodFilter" onchange="updateDashboardData()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-orange-400 font-bold outline-none">
-          <!-- Gerado dinamicamente via JS incluindo mês atual e anteriores sem perder nada -->
+          <option value="current_month">Outubro / 2026 (Atual)</option>
+          <option value="september">Setembro / 2026</option>
+          <option value="august">Agosto / 2026</option>
+          <option value="all">Histórico Completo (Levantamento Geral)</option>
         </select>
       </div>
 
@@ -381,7 +384,7 @@
       <!-- HISTÓRICO COM ÍCONE DE OLHO PARA AUTÓPSIA DE RITMO POR KM -->
       <div class="space-y-3">
         <div class="flex justify-between items-center px-1">
-          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Histórico de Corridas (Autópsia por KM)</h3>
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Histórico de Corridas (Clique no Olho para Autópsia por KM)</h3>
         </div>
         <div id="manualActivitiesList" class="space-y-2">
           <p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade registada ainda.</p>
@@ -689,67 +692,7 @@
       const titleLabel = document.getElementById('profileTitleLabel');
       if(titleLabel) titleLabel.textContent = currentProfile.toUpperCase();
 
-      populatePeriodFilterOptions();
       checkMonthlyBiometricPrompt();
-    }
-
-    // GERAÇÃO AUTOMÁTICA E ACUMULATIVA DE MESES SEM APAGAR NADA
-    function populatePeriodFilterOptions() {
-      const select = document.getElementById('periodFilter');
-      if (!select) return;
-
-      let monthsMap = {
-        0: 'Janeiro', 1: 'Fevereiro', 2: 'Março', 3: 'Abril', 4: 'Maio', 5: 'Junho',
-        6: 'Julho', 7: 'Agosto', 8: 'Setembro', 9: 'Outubro', 10: 'Novembro', 11: 'Dezembro'
-      };
-
-      // Recolher todos os anos/meses presentes nas atividades e adicionar os últimos 6 meses + mês atual
-      let availableMonths = new Set();
-      let now = new Date();
-      
-      // Sempre incluir os últimos 6 meses a partir de agora
-      for (let i = 0; i < 6; i++) {
-        let d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        availableMonths.add(`${d.getFullYear()}-${d.getMonth()}`);
-      }
-
-      // Incluir meses das atividades existentes para garantir que NADA se perca
-      manualActivities.forEach(act => {
-        if (act.start_date) {
-          let d = new Date(act.start_date);
-          if (!isNaN(d.getTime())) {
-            availableMonths.add(`${d.getFullYear()}-${d.getMonth()}`);
-          }
-        }
-      });
-
-      // Ordenar decrescente (mais recente primeiro)
-      let sortedKeys = Array.from(availableMonths).sort((a, b) => {
-        let [y1, m1] = a.split('-').map(Number);
-        let [y2, m2] = b.split('-').map(Number);
-        if (y1 !== y2) return y2 - y1;
-        return m2 - m1;
-      });
-
-      let currentKey = `${now.getFullYear()}-${now.getMonth()}`;
-
-      let html = '';
-      sortedKeys.forEach(key => {
-        let [y, m] = key.split('-').map(Number);
-        let monthName = monthsMap[m];
-        let isCurrent = (key === currentKey);
-        html += `<option value="${key}">${monthName} / ${y} ${isCurrent ? '(Atual)' : ''}</option>`;
-      });
-
-      html += `<option value="all">Histórico Completo (Levantamento Geral)</option>`;
-      
-      let previousVal = select.value;
-      select.innerHTML = html;
-      if (previousVal && select.querySelector(`option[value="${previousVal}"]`)) {
-        select.value = previousVal;
-      } else {
-        select.value = currentKey;
-      }
     }
 
     function checkMonthlyBiometricPrompt() {
@@ -1151,8 +1094,10 @@
       if (!container) return;
       const dynamicPlan = getDynamicWeeklyPlan();
 
-      let jsDay = new Date().getDay(); 
-      let todayDayIndex = jsDay === 0 ? 6 : jsDay - 1; 
+      // CORRIGIDO: Obtém o dia real do dispositivo (0 = Domingo, 1 = Segunda, ..., 6 = Sábado)
+      // Como o array começa em Segunda-feira (índice 0), ajustamos o índice:
+      let jsDay = new Date().getDay(); // Domingo = 0, Segunda = 1, Terça = 2, Quarta = 3...
+      let todayDayIndex = jsDay === 0 ? 6 : jsDay - 1; // Transforma Domingo em 6, Segunda em 0, Terça em 1, Quarta em 2...
 
       container.innerHTML = dynamicPlan.map((item, index) => {
         const isRunDone = completedRuns.includes(index);
@@ -1239,7 +1184,6 @@
             profileBioData = data.bio;
             localStorage.setItem(`stamina_bio_data_${currentProfile}`, JSON.stringify(profileBioData));
           }
-          populatePeriodFilterOptions();
           updateDashboardData();
           renderPlan();
           alert("Backup restaurado com sucesso para este perfil!");
@@ -1275,7 +1219,6 @@
 
       localStorage.setItem(`stamina_manual_runs_${currentProfile}`, JSON.stringify(manualActivities));
       clearRunForm();
-      populatePeriodFilterOptions();
       updateDashboardData();
       renderPlan();
     }
@@ -1318,7 +1261,6 @@
       if (confirm("Deseja apagar esta atividade?")) {
         manualActivities = manualActivities.filter(act => act.id !== id);
         localStorage.setItem(`stamina_manual_runs_${currentProfile}`, JSON.stringify(manualActivities));
-        populatePeriodFilterOptions();
         updateDashboardData();
         renderPlan();
       }
@@ -1435,25 +1377,28 @@
       document.getElementById('detailModal').classList.remove('hidden');
     }
 
-    // FILTRAGEM AUTOMÁTICA POR CHAVE ANO-MÊS (EX: "2026-10", "2026-11", "2026-12") SEM PERDER NADA
     function updateDashboardData() {
-      const periodSelect = document.getElementById('periodFilter');
-      const period = periodSelect ? periodSelect.value : 'all';
+      const period = document.getElementById('periodFilter') ? document.getElementById('periodFilter').value : 'current_month';
+      const now = new Date();
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
 
       let filteredActivities = manualActivities.filter(act => {
         if (period === 'all') return true;
-        if (!act.start_date) return false;
+        if (!act.start_date) return true;
         const d = new Date(act.start_date);
-        if (isNaN(d.getTime())) return false;
-        let actKey = `${d.getFullYear()}-${d.getMonth()}`;
-        return actKey === period;
+        const month = d.getMonth();
+        const year = d.getFullYear();
+        if (period === 'current_month') return month === currentMonth && year === currentYear;
+        if (period === 'september') return month === currentMonth - 1 && year === currentYear;
+        if (period === 'august') return month === currentMonth - 2 && year === currentYear;
+        return true;
       });
 
       document.getElementById('statRunsCount').textContent = filteredActivities.length;
 
       let totalWeekKm = 0;
       let totalPeriodKm = filteredActivities.reduce((acc, curr) => acc + (curr.distance || 0), 0);
-      const now = new Date();
 
       manualActivities.forEach(act => {
         if (act.start_date) {
@@ -1466,7 +1411,7 @@
       document.getElementById('statMonthKm').textContent = `${totalPeriodKm.toFixed(1)} km`;
 
       renderWeeklyChart();
-      renderSmartComparativeFeedback(filteredActivities, period);
+      renderSmartComparativeFeedback(filteredActivities, period, currentMonth, currentYear);
       renderManualActivitiesList(filteredActivities);
       updatePerformancePredictions();
     }
@@ -1517,7 +1462,7 @@
       return (bestPaceSec * distKm) * Math.pow(distKm / 5, 0.07);
     }
 
-    function renderSmartComparativeFeedback(filteredActs, period) {
+    function renderSmartComparativeFeedback(filteredActs, period, currentMonth, currentYear) {
       const container = document.getElementById('monthlyFeedbackContent');
       if (!container) return;
       if (filteredActs.length === 0) {
@@ -1531,7 +1476,7 @@
       let formattedAvgPace = formatSecondsToPace(avgPaceSec);
 
       let isGeneral = (period === 'all');
-      let diagnosticTitle = isGeneral ? "Diagnóstico Histórico Geral (Carga Acumulada):" : "Diagnóstico do Período Selecionado:";
+      let diagnosticTitle = isGeneral ? "Diagnóstico Histórico Geral (Carga Acumulada):" : "Diagnóstico do Treino Mensal:";
       let diagnosticText = "";
 
       if (isGeneral) {
@@ -1539,7 +1484,8 @@
         let totalGlobalKm = manualActivities.reduce((acc, curr) => acc + (curr.distance || 0), 0);
         diagnosticText = `Sua bagagem total acumula <strong>${totalGlobalKm.toFixed(1)} km</strong> em <strong>${totalGlobalRuns} treinos</strong>, com pace médio histórico de <strong>${formattedAvgPace}</strong>.`;
       } else {
-        diagnosticText = `Período ativo (${currentProfile.toUpperCase()}): <strong>${filteredActs.length} sessões</strong>, <strong>${totalKm.toFixed(1)} km</strong> total. Ritmo médio fixado em <strong>${formattedAvgPace}</strong>.`;
+        let runsCount = filteredActs.length;
+        diagnosticText = `Mês atual (${currentProfile.toUpperCase()}): <strong>${runsCount} sessões</strong>, <strong>${totalKm.toFixed(1)} km</strong> total. Ritmo médio fixado em <strong>${formattedAvgPace}</strong>.`;
       }
 
       container.innerHTML = `
@@ -1743,11 +1689,11 @@
 
     function calculateCalories() {
       const weight = parseFloat(document.getElementById('calWeight').value) || 75;
-      const dist = parseFloat(document.getElementById('calDist').value) || 5;
+      const dist = parseFloat(document.getElementById('calDist5').value) || 5;
       const cal = Math.round(weight * dist * 1.03);
       const res = document.getElementById('calResult');
       res.textContent = `Gasto Calórico Estimado: ~${cal} kcal`;
-      res.classList.0 ? null : res.classList.remove('hidden');
+      res.classList.remove('hidden');
     }
 
     function generatePaceSplits() {
