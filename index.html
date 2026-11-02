@@ -372,7 +372,9 @@
         <span class="text-xs font-bold text-gray-300">Período de Análise:</span>
         <select id="periodFilter" onchange="updateDashboardData()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-orange-400 font-bold outline-none">
           <option value="current_month">Novembro / 2026 (Atual)</option>
-          <option value="all">Histórico Completo (Levantamento Geral)</option>
+          <option value="october">Outubro / 2026</option>
+          <option value="september">Setembro / 2026</option>
+          <option value="all" selected>Histórico Completo (Levantamento Geral)</option>
         </select>
       </div>
 
@@ -899,16 +901,20 @@
     const DATABASE = {
       protocols: [
         { id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos em pista aferida.', whatItMeasures: 'Capacidade aeróbica máxima, VAM e estimativa de VO2máx.', stepByStep: '1. Aquecimento leve de 5 a 10 min.\n2. Corra a maior distância possível em 12 min mantendo ritmo contínuo.\n3. Anote a distância total.' },
-        { id: 'proto-tc3k', category: 'Protocolo de Teste', title: 'Teste de 3.200 Metros (2 Milhas)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Avaliação militar e de performance', icon: 'fa-person-running', description: 'Corrida cronometrada cobrindo exatamente 3.200 metros no menor tempo possível.', whatItMeasures: 'Velocidade aeróbica máxima e eficiência de ritmo.', stepByStep: '1. Aquecimento dinâmico.\n2. Execute 3.200m no menor tempo possível.' }
+        { id: 'proto-tc3k', category: 'Protocolo de Teste', title: 'Teste de 3.200 Metros (2 Milhas)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Avaliação militar e de performance', icon: 'fa-person-running', description: 'Corrida cronometrada cobrindo exatamente 3.200 metros no menor tempo possível.', whatItMeasures: 'Velocidade aeróbica máxima e eficiência de ritmo.', stepByStep: '1. Aquecimento dinâmico.\n2. Execute 3.200m no menor tempo possível.' },
+        { id: 'proto-tc1k', category: 'Protocolo de Teste', title: 'Teste de 1.000 Metros (1 km Máximo)', badgeColor: 'bg-orange-500/20 text-orange-300', subtitle: 'Potência anaeróbica lática', icon: 'fa-gauge-high', description: 'Avaliação de tiro em distância média.', whatItMeasures: 'Potência anaeróbica lática.', stepByStep: '1. Aquecimento completo.\n2. Corra 1000m na máxima intensidade.' },
+        { id: 'proto-t5k', category: 'Protocolo de Teste', title: 'Corrida de 5 Quilómetros (5K Time Trial)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Padrão ouro de limiar', icon: 'fa-stopwatch', description: 'Corrida contínua de 5 km em esforço máximo.', whatItMeasures: 'VO2máx funcional e limiar.', stepByStep: '1. Trote leve.\n2. 5K máximo.' }
       ],
       physiology: [
         { id: 'phys-atp', category: 'Fisiologia & Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) alimenta todas as contrações.', howToApply: '1. Tiros curtos para ATP-CP.\n2. Rodagens longas em Z2.' },
-        { id: 'phys-lactic', category: 'Fisiologia & Bioenergética', title: 'Limiar Anaeróbico & Lactato', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'O ponto de virada', icon: 'fa-chart-area', description: 'O lactato é subproduto e tampão vital.', howToApply: '1. Tempo Run.\n2. Intervalados longos.' }
+        { id: 'phys-lactic', category: 'Fisiologia & Bioenergética', title: 'Limiar Anaeróbico & Lactato', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'O ponto de virada', icon: 'fa-chart-area', description: 'O lactato é subproduto e tampão vital.', howToApply: '1. Tempo Run.\n2. Intervalados longos.' },
+        { id: 'phys-drift', category: 'Fisiologia & Bioenergética', title: 'Deriva Cardíaca', badgeColor: 'bg-blue-500/20 text-blue-300', subtitle: 'Aumento da FC em treinos longos', icon: 'fa-heart-pulse', description: 'Elevação gradual da FC no mesmo ritmo.', howToApply: '1. Hidratação rigorosa.' }
       ],
       workouts: [
         { id: 'work-fartlek', category: 'Método de Treino', title: 'Fartlek', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Variações de ritmo', icon: 'fa-wind', description: 'Mudanças contínuas de velocidade.', stepByStep: 'Alterne 1 min forte com 1 min leve.' },
         { id: 'work-intervalado', category: 'Método de Treino', title: 'Treino Intervalado', badgeColor: 'bg-orange-500/20 text-orange-300', subtitle: 'Tiros e pausas', icon: 'fa-bolt', description: 'Séries em alta velocidade.', stepByStep: 'Tiros de 400m com 90s pausa.' },
-        { id: 'work-longao', category: 'Método de Treino', title: 'O Longão', badgeColor: 'bg-indigo-500/20 text-indigo-300', subtitle: 'Resistência de base', icon: 'fa-route', description: 'Longa distância constante.', stepByStep: 'Ritmo Z2 constante.' }
+        { id: 'work-longao', category: 'Método de Treino', title: 'O Longão', badgeColor: 'bg-indigo-500/20 text-indigo-300', subtitle: 'Resistência de base', icon: 'fa-route', description: 'Longa distância constante.', stepByStep: 'Ritmo Z2 constante.' },
+        { id: 'work-rodagem', category: 'Método de Treino', title: 'Rodagem Regenerativa', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Corrida leve', icon: 'fa-person-running', description: 'Volume leve de soltura.', stepByStep: 'Z1/Z2 conversacional.' }
       ]
     };
 
@@ -1010,20 +1016,47 @@
     }
 
     function updateDashboardData() {
-      document.getElementById('statRunsCount').textContent = manualActivities.length;
-      let totalKm = manualActivities.reduce((acc, curr) => acc + (curr.distance || 0), 0);
-      document.getElementById('statMonthKm').textContent = `${totalKm.toFixed(1)} km`;
-      document.getElementById('statWeekKm').textContent = `${totalKm.toFixed(1)} km`;
-      renderManualActivitiesList();
+      const period = document.getElementById('periodFilter') ? document.getElementById('periodFilter').value : 'all';
+      const now = new Date();
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+
+      let filteredActivities = manualActivities.filter(act => {
+        if (period === 'all') return true;
+        if (!act.start_date) return true;
+        const d = new Date(act.start_date);
+        const month = d.getMonth();
+        const year = d.getFullYear();
+        if (period === 'current_month') return month === currentMonth && year === currentYear;
+        if (period === 'october') return month === currentMonth - 1 && year === currentYear;
+        if (period === 'september') return month === currentMonth - 2 && year === currentYear;
+        return true;
+      });
+
+      document.getElementById('statRunsCount').textContent = filteredActivities.length;
+      let totalPeriodKm = filteredActivities.reduce((acc, curr) => acc + (curr.distance || 0), 0);
+      
+      let totalWeekKm = 0;
+      manualActivities.forEach(act => {
+        if (act.start_date) {
+          const d = new Date(act.start_date);
+          if ((now - d) <= (7 * 86400000)) totalWeekKm += (act.distance || 0);
+        }
+      });
+
+      document.getElementById('statWeekKm').textContent = `${totalWeekKm.toFixed(1)} km`;
+      document.getElementById('statMonthKm').textContent = `${totalPeriodKm.toFixed(1)} km`;
+
+      renderManualActivitiesList(filteredActivities);
       renderWeeklyChart();
       updatePerformancePredictions();
     }
 
-    function renderManualActivitiesList() {
+    function renderManualActivitiesList(listToRender) {
       const container = document.getElementById('manualActivitiesList');
       if (!container) return;
-      if (manualActivities.length === 0) { container.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade registada.</p>`; return; }
-      container.innerHTML = manualActivities.map(act => `
+      if (listToRender.length === 0) { container.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">Nenhuma atividade registada.</p>`; return; }
+      container.innerHTML = listToRender.map(act => `
         <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs flex justify-between items-center">
           <div>
             <strong class="text-orange-400 uppercase">${act.name}</strong>
@@ -1128,7 +1161,7 @@
       }
       let res = document.getElementById('splitsResult');
       res.innerHTML = html;
-      res.classList.remove('hidden');
+      res.classList.get('hidden') ? res.classList.remove('hidden') : null;
     }
 
     function exportBackupData() {
