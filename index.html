@@ -162,7 +162,7 @@
       </section>
     </div>
 
-    <!-- TAB 2: PLANO SEMANAL AUTOMÁTICO -->
+    <!-- TAB 2: PLANO SEMANAL AUTOMÁTICO INTELIGENTE -->
     <div id="tab-plan" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -180,7 +180,7 @@
       </div>
       <div class="p-3 rounded-2xl bg-orange-950/30 border border-orange-500/30 text-xs text-orange-200 flex justify-between items-center">
         <div>
-          <i class="fa-solid fa-circle-info mr-1 text-orange-400"></i> Foco Total em Corrida e Caminhada: Sem dependência de piscina ou bike. Cada dia conta com opções principais e Planos B de fracionamento.
+          <i class="fa-solid fa-circle-info mr-1 text-orange-400"></i> Foco Total em Corrida e Caminhada Adaptativa: Periodização ajustada ao biotipo com Plano B integrado de fracionamento.
         </div>
       </div>
       <div id="planContainer" class="space-y-3"></div>
@@ -916,6 +916,7 @@
       `).join('');
     }
 
+    // ALTERAÇÃO CIRÚRGICA INTELIGENTE DO PLANO DE TREINO (ADAPTATIVO POR PERFIL/BIOTIPO + PLANO B)
     function getDynamicWeeklyPlan() {
       let w = profileBioData.weight || 75;
       let age = profileBioData.age || 30;
@@ -1094,10 +1095,8 @@
       if (!container) return;
       const dynamicPlan = getDynamicWeeklyPlan();
 
-      // CORRIGIDO: Obtém o dia real do dispositivo (0 = Domingo, 1 = Segunda, ..., 6 = Sábado)
-      // Como o array começa em Segunda-feira (índice 0), ajustamos o índice:
-      let jsDay = new Date().getDay(); // Domingo = 0, Segunda = 1, Terça = 2, Quarta = 3...
-      let todayDayIndex = jsDay === 0 ? 6 : jsDay - 1; // Transforma Domingo em 6, Segunda em 0, Terça em 1, Quarta em 2...
+      let jsDay = new Date().getDay(); 
+      let todayDayIndex = jsDay === 0 ? 6 : jsDay - 1; 
 
       container.innerHTML = dynamicPlan.map((item, index) => {
         const isRunDone = completedRuns.includes(index);
@@ -1689,7 +1688,7 @@
 
     function calculateCalories() {
       const weight = parseFloat(document.getElementById('calWeight').value) || 75;
-      const dist = parseFloat(document.getElementById('calDist5').value) || 5;
+      const dist = parseFloat(document.getElementById('calDist').value) || 5;
       const cal = Math.round(weight * dist * 1.03);
       const res = document.getElementById('calResult');
       res.textContent = `Gasto Calórico Estimado: ~${cal} kcal`;
