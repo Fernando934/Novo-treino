@@ -162,12 +162,12 @@
       </section>
     </div>
 
-    <!-- TAB 2: PLANO SEMANAL AUTOMÁTICO POR DATA REAL -->
+    <!-- TAB 2: PLANO SEMANAL PROGRESSIVO POR CICLOS -->
     <div id="tab-plan" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
-          <h2 class="text-sm font-bold text-white">Plano Semanal por Data (<span id="profileTitleLabel" class="text-orange-400 uppercase">Perfil</span>)</h2>
-          <p id="cycleWeekLabel" class="text-xs text-orange-400 font-semibold">Análise de Perfil: Calculando...</p>
+          <h2 class="text-sm font-bold text-white">Periodização Progressiva (<span id="profileTitleLabel" class="text-orange-400 uppercase">Perfil</span>)</h2>
+          <p id="cycleWeekLabel" class="text-xs text-orange-400 font-semibold">Ciclo: Semana 1</p>
         </div>
         <div class="flex gap-2">
           <button onclick="openBiometricModal()" class="text-xs text-emerald-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800" title="Atualizar Dados Biométricos Mensais">
@@ -178,11 +178,20 @@
           </button>
         </div>
       </div>
-      <div class="p-3 rounded-2xl bg-orange-950/30 border border-orange-500/30 text-xs text-orange-200 flex justify-between items-center">
+      
+      <!-- CONTROLE MANUAL DE AVANÇO DE SEMANA -->
+      <div class="p-3 rounded-2xl bg-slate-900 border border-orange-500/30 flex justify-between items-center">
         <div>
-          <i class="fa-solid fa-circle-info mr-1 text-orange-400"></i> Foco Total em Corrida e Caminhada: Cada dia exibe a sua data real do calendário e opções de Planos B.
+          <span class="text-xs font-bold text-white block"><i class="fa-solid fa-calendar-week mr-1 text-orange-400"></i> Avanço Automático de Ciclo</span>
+          <span class="text-[10px] text-gray-400">Conclua os treinos para avançar ou altere manualmente abaixo:</span>
+        </div>
+        <div class="flex items-center gap-1 bg-slate-950 border border-slate-800 px-2 py-1 rounded-xl">
+          <button onclick="changeTrainingWeek(-1)" class="px-2 py-0.5 text-xs text-orange-400 font-bold hover:bg-slate-900 rounded"><i class="fa-solid fa-minus"></i></button>
+          <span id="currentWeekNumBadge" class="text-xs font-bold text-white px-2">Semana 1</span>
+          <button onclick="changeTrainingWeek(1)" class="px-2 py-0.5 text-xs text-orange-400 font-bold hover:bg-slate-900 rounded"><i class="fa-solid fa-plus"></i></button>
         </div>
       </div>
+
       <div id="planContainer" class="space-y-3"></div>
     </div>
 
@@ -635,6 +644,7 @@
     let profilesList = JSON.parse(localStorage.getItem('stamina_profiles_list') || '["fernando", "raiza"]');
     if (!profilesList.includes(currentProfile)) profilesList.push(currentProfile);
 
+    let currentTrainingWeek = 1;
     let completedRuns = {};
     let completedBands = {};
     let postponedDays = {};
@@ -642,16 +652,13 @@
     let profileBioData = {}; 
     let timerInterval = null;
 
-    // Retorna a segunda-feira da semana atual em formato YYYY-MM-DD
     function getCurrentMondayDate() {
       let d = new Date();
       let day = d.getDay();
-      let diff = d.getDate() - day + (day === 0 ? -6 : 1); // Ajusta para segunda-feira
+      let diff = d.getDate() - day + (day === 0 ? -6 : 1);
       let monday = new Date(d.setDate(diff));
-      return monday.toISOString().split('T')[0];
+      return monday;
     }
-
-    const currentMondayKey = getCurrentMondayDate();
 
     function initProfileSelector() {
       const select = document.getElementById('activeProfileSelect');
@@ -693,9 +700,10 @@
       if (confirm(`Tem certeza de que deseja excluir o perfil '${currentProfile}' e todos os seus registos salvos?`)) {
         let profileToDelete = currentProfile;
 
-        localStorage.removeItem(`stamina_runs_done_${profileToDelete}_${currentMondayKey}`);
-        localStorage.removeItem(`stamina_bands_done_${profileToDelete}_${currentMondayKey}`);
-        localStorage.removeItem(`stamina_postponed_${profileToDelete}_${currentMondayKey}`);
+        localStorage.removeItem(`stamina_training_week_${profileToDelete}`);
+        localStorage.removeItem(`stamina_runs_done_${profileToDelete}`);
+        localStorage.removeItem(`stamina_bands_done_${profileToDelete}`);
+        localStorage.removeItem(`stamina_postponed_${profileToDelete}`);
         localStorage.removeItem(`stamina_manual_runs_${profileToDelete}`);
         localStorage.removeItem(`stamina_bio_data_${profileToDelete}`);
 
@@ -714,21 +722,15 @@
     }
 
     function loadProfileData() {
-      // Estado salvo por chave exata de data de cada segunda-feira da semana
-      completedRuns = JSON.parse(localStorage.getItem(`stamina_runs_done_${currentProfile}_${currentMondayKey}`) || '{}');
-      completedBands = JSON.parse(localStorage.getItem(`stamina_bands_done_${currentProfile}_${currentMondayKey}`) || '{}');
-      postponedDays = JSON.parse(localStorage.getItem(`stamina_postponed_${currentProfile}_${currentMondayKey}`) || '{}');
+      currentTrainingWeek = parseInt(localStorage.getItem(`stamina_training_week_${currentProfile}`) || '1');
+      completedRuns = JSON.parse(localStorage.getItem(`stamina_runs_done_${currentProfile}_w${currentTrainingWeek}`) || '{}');
+      completedBands = JSON.parse(localStorage.getItem(`stamina_bands_done_${currentProfile}_w${currentTrainingWeek}`) || '{}');
+      postponedDays = JSON.parse(localStorage.getItem(`stamina_postponed_${currentProfile}_w${currentTrainingWeek}`) || '{}');
       
       let rawSavedRuns = localStorage.getItem(`stamina_manual_runs_${currentProfile}`);
       if (rawSavedRuns) {
-        try {
-          manualActivities = JSON.parse(rawSavedRuns);
-        } catch(e) {
-          manualActivities = [];
-        }
-      } else {
-        manualActivities = [];
-      }
+        try { manualActivities = JSON.parse(rawSavedRuns); } catch(e) { manualActivities = []; }
+      } else { manualActivities = []; }
 
       let defaultBio = currentProfile === 'raiza' ? { weight: 150, height: 165, age: 32, lastUpdate: '2026-10-01' } : { weight: 94, height: 178, age: 30, lastUpdate: '2026-10-01' };
       profileBioData = JSON.parse(localStorage.getItem(`stamina_bio_data_${currentProfile}`) || JSON.stringify(defaultBio));
@@ -739,6 +741,19 @@
       checkMonthlyBiometricPrompt();
     }
 
+    function changeTrainingWeek(delta) {
+      currentTrainingWeek += delta;
+      if (currentTrainingWeek < 1) currentTrainingWeek = 1;
+      localStorage.setItem(`stamina_training_week_${currentProfile}`, currentTrainingWeek);
+      
+      // Recarrega os status salvos para a nova semana
+      completedRuns = JSON.parse(localStorage.getItem(`stamina_runs_done_${currentProfile}_w${currentTrainingWeek}`) || '{}');
+      completedBands = JSON.parse(localStorage.getItem(`stamina_bands_done_${currentProfile}_w${currentTrainingWeek}`) || '{}');
+      postponedDays = JSON.parse(localStorage.getItem(`stamina_postponed_${currentProfile}_w${currentTrainingWeek}`) || '{}');
+
+      renderPlan();
+    }
+
     function checkMonthlyBiometricPrompt() {
       if (!profileBioData.lastUpdate) return;
       let lastDate = new Date(profileBioData.lastUpdate);
@@ -746,7 +761,7 @@
       let diffDays = Math.floor((now - lastDate) / (1000 * 60 * 60 * 24));
       if (diffDays >= 30) {
         setTimeout(() => {
-          if (confirm(`Olá ${currentProfile.toUpperCase()}! Já passou um mês desde a última atualização dos seus dados. Deseja atualizar agora para recalcular a periodização do próximo mês?`)) {
+          if (confirm(`Olá ${currentProfile.toUpperCase()}! Já passou um mês desde a última atualização dos seus dados. Deseja atualizar agora?`)) {
             openBiometricModal();
           }
         }, 1000);
@@ -774,7 +789,7 @@
       localStorage.setItem(`stamina_bio_data_${currentProfile}`, JSON.stringify(profileBioData));
       closeBiometricModal();
       renderPlan();
-      alert(`Dados biométricos de ${currentProfile.toUpperCase()} salvos! A IA adaptou os volumes e objetivos para este perfil.`);
+      alert(`Dados biométricos de ${currentProfile.toUpperCase()} salvos! A IA adaptou a periodização.`);
     }
 
     function handleProfileSelection(val) {
@@ -811,23 +826,23 @@
 
     const DATABASE = {
       protocols: [
-        { id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos em pista aferida.', whatItMeasures: 'Capacidade aeróbica máxima, VAM e estimativa de VO2máx.', physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico durante todo o teste.', stepByStep: '1. Aquecimento leve de 5 a 10 min.\n2. Corra a maior distância possível em 12 min mantendo ritmo contínuo e forte.\n3. Anote a distância total percorrida.', howToUseResult: '• Calcule o seu VO2máx estimado com a fórmula: (Distância em metros - 504.9) / 44.73.\n• Use a distância total para classificar sua aptidão cardiorrespiratória em tabelas normativas.\n• Direcione o resultado para ajustar os ritmos dos treinos de rodagem e limiar.' },
-        { id: 'proto-tc3k', category: 'Protocolo de Teste', title: 'Teste de 3.200 Metros (2 Milhas)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Avaliação militar e de performance', icon: 'fa-person-running', description: 'Corrida cronometrada cobrindo exatamente 3.200 metros no menor tempo possível.', whatItMeasures: 'Velocidade aeróbica máxima e eficiência de ritmo.', physiology: 'Alto estresse cardiovascular com recrutamento intenso do sistema oxidativo e glicolítico.', stepByStep: '1. Aquecimento dinâmico.\n2. Execute 3.200m no menor tempo possível.\n3. Anote o tempo total final.', howToUseResult: '• Pegue o tempo total obtido e insira na Calculadora de Pace para descobrir o seu pace médio por quilómetro.\n• Utilize este pace médio para estruturar os seus treinos intervalados e metas de provas de média distância.' },
-        { id: 'proto-tc1k', category: 'Protocolo de Teste', title: 'Teste de 1.000 Metros (1 km Máximo)', badgeColor: 'bg-orange-500/20 text-orange-300', subtitle: 'Potência anaeróbica lática', icon: 'fa-gauge-high', description: 'Avaliação de tiro em distância média para estimar velocidade pura e limiar superior.', whatItMeasures: 'Potência anaeróbica lática e velocidade máxima sustentada.', physiology: 'Altíssima exigência dos sistemas glicolítico e ATP-CP.', stepByStep: '1. Aquecimento completo e progressivo.\n2. Corra 1000m na máxima intensidade suportada.\n3. Registre o tempo final.', howToUseResult: '• O tempo obtido nos 1.000m serve como referência exata para o pace dos seus tiros curtos e intervalados intensos (Z5).\n• Se o tempo caiu em relação ao teste anterior, indica ganho de potência neuromuscular e velocidade pura.' },
-        { id: 'proto-t5k', category: 'Protocolo de Teste', title: 'Corrida de 5 Quilómetros (5K Time Trial)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Padrão ouro de limiar e ritmo de prova', icon: 'fa-stopwatch', description: 'Corrida contínua de 5 km em esforço máximo para calibrar todas as zonas de treino.', whatItMeasures: 'VO2máx funcional e limiar anaeróbico real de prova.', physiology: 'Equilíbrio ideal entre capacidade oxidativa e tolerância ao lactato.', stepByStep: '1. Trote leve de 10 min + educativos.\n2. Largada controlada para evitar quebra no primeiro km.\n3. Ritmo progressivo até o sprint final.', howToUseResult: '• Insira o tempo final dos 5K na ferramenta de Previsões e Calculadora de Pace.\n• O sistema recalculará automaticamente os seus tempos estimados para 10K, Meia Maratona e Maratona.\n• Utilize o pace médio dos 5K para definir o ritmo exato dos treinos de limiar (Tempo Run).' }
+        { id: 'proto-cooper', category: 'Protocolo de Teste', title: 'Teste de Cooper (12 Minutos)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Estimativa prática do VO2 Máximo', icon: 'fa-stopwatch', description: 'Mede a maior distância possível percorrida em 12 minutos contínuos em pista aferida.', whatItMeasures: 'Capacidade aeróbica máxima, VAM e estimativa de VO2máx.', physiology: 'Exige sustentação de ritmo próximo ao Limiar Anaeróbico durante todo o teste.', stepByStep: '1. Aquecimento leve de 5 a 10 min.\n2. Corra a maior distância possível em 12 min mantendo ritmo contínuo e forte.\n3. Anote a distância total percorrida.', howToUseResult: '• Calcule o seu VO2máx estimado com a fórmula: (Distância em metros - 504.9) / 44.73.' },
+        { id: 'proto-tc3k', category: 'Protocolo de Teste', title: 'Teste de 3.200 Metros (2 Milhas)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Avaliação militar e de performance', icon: 'fa-person-running', description: 'Corrida cronometrada cobrindo exatamente 3.200 metros no menor tempo possível.', whatItMeasures: 'Velocidade aeróbica máxima e eficiência de ritmo.', physiology: 'Alto estresse cardiovascular.', stepByStep: '1. Aquecimento dinâmico.\n2. Execute 3.200m no menor tempo possível.', howToUseResult: '• Descubra seu pace médio por km.' },
+        { id: 'proto-tc1k', category: 'Protocolo de Teste', title: 'Teste de 1.000 Metros (1 km Máximo)', badgeColor: 'bg-orange-500/20 text-orange-300', subtitle: 'Potência anaeróbica lática', icon: 'fa-gauge-high', description: 'Avaliação de tiro em distância média.', whatItMeasures: 'Potência anaeróbica lática.', physiology: 'Altíssima exigência glicolítica.', stepByStep: '1. Aquecimento completo.\n2. Corra 1000m na máxima intensidade.', howToUseResult: '• Referência para tiros curtos.' },
+        { id: 'proto-t5k', category: 'Protocolo de Teste', title: 'Corrida de 5 Quilómetros (5K Time Trial)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Padrão ouro de limiar', icon: 'fa-stopwatch', description: 'Corrida contínua de 5 km em esforço máximo.', whatItMeasures: 'VO2máx funcional e limiar.', physiology: 'Equilíbrio oxidativo.', stepByStep: '1. Trote leve.\n2. 5K máximo.', howToUseResult: '• Calibra zonas de treino.' }
       ],
       physiology: [
-        { id: 'phys-atp', category: 'Fisiologia & Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) alimenta todas as contrações musculares na corrida através de vias metabólicas.', whatItMeasures: 'Capacidade de ressíntese de energia rápida (ATP-CP), glicolítica e oxidativa.', physiology: 'Transição entre vias anaeróbicas e aeróbicas conforme a intensidade e duração do esforço.', howToApply: '1. Para treinar o sistema ATP-CP (explosão): faça tiros curtos de 10 a 20 segundos com repouso completo (90s).\n2. Para o sistema glicolítico (alta intensidade): faça tiros médios de 1 a 2 minutos.\n3. Para o sistema oxidativo (base): mantenha rodagens longas em ritmo conversacional (Z2).', utility: 'Ajuda a estruturar a semana de treinos equilibrando velocidade pura, tiros e resistência, garantindo que o corpo saiba gerar energia eficientemente em qualquer distância.' },
-        { id: 'phys-lactic', category: 'Fisiologia & Bioenergética', title: 'Limiar Anaeróbico & Lactato', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'O ponto de virada metabólica', icon: 'fa-chart-area', description: 'O lactato é um subproduto energético vital e tampão, e não um vilão causador de fadiga.', whatItMeasures: 'Tolerância à fadiga e sustentação de pace forte sem acúmulo descontrolado de metabólitos.', physiology: 'Equilíbrio exato entre a produção e a remoção de lactato sanguíneo pelos músculos ativos e fígado.', howToApply: '1. Realize treinos de "Tempo Run" ou limiar contínuo (20 a 30 min em ritmo forte sustentável).\n2. Execute blocos intervalados longos (ex: 4x 2000m) na zona de limiar (Z4).\n3. Monitore a constância da respiração (deve ser rítmica e controlada).', utility: 'Serve para elevar a velocidade que você consegue manter antes de "quebrar", permitindo correr provas de 5K, 10K e Meia Maratona em um ritmo médio muito superior.' },
-        { id: 'phys-drift', category: 'Fisiologia & Bioenergética', title: 'Deriva Cardíaca (Cardiovascular Drift)', badgeColor: 'bg-blue-500/20 text-blue-300', subtitle: 'Aumento da FC em treinos longos', icon: 'fa-heart-pulse', description: 'Elevação gradual da frequência cardíaca mantendo exatamente o mesmo ritmo constante.', whatItMeasures: 'Eficiência termorreguladora, nível de hidratação e fadiga cardiovascular.', physiology: 'Desvio no volume sistólico devido à perda de líquidos (suor) e desvio de sangue para resfriamento da pele.', howToApply: '1. Monitore a sua FC e o pace em treinos longos (> 60 minutos).\n2. Estabeleça uma rotina rigorosa de hidratação a cada 20-30 minutos durante o exercício.\n3. Realize treinos longos nos horários mais frescos do dia (manhã cedo ou fim de tarde).', utility: 'Ajuda a diferenciar se o aumento da frequência cardíaca no final de um treino longo foi fadiga aeróbica real ou apenas desidratação/calor, permitindo ajustar a estratégia nutricional e de prova.' }
+        { id: 'phys-atp', category: 'Fisiologia & Bioenergética', title: 'Sistemas Energéticos & ATP', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'A moeda de troca celular', icon: 'fa-bolt', description: 'A Adenosina Trifosfato (ATP) alimenta todas as contrações.', whatItMeasures: 'Ressíntese de energia rápida.', physiology: 'Via aeróbica e anaeróbica.', howToApply: '1. Tiros curtos para ATP-CP.\n2. Rodagens longas em Z2.', utility: 'Equilíbrio de treinos.' },
+        { id: 'phys-lactic', category: 'Fisiologia & Bioenergética', title: 'Limiar Anaeróbico & Lactato', badgeColor: 'bg-amber-500/20 text-amber-300', subtitle: 'O ponto de virada', icon: 'fa-chart-area', description: 'O lactato é subproduto e tampão vital.', whatItMeasures: 'Tolerância à fadiga.', physiology: 'Remoção de lactato sanguíneo.', howToApply: '1. Tempo Run.\n2. Intervalados longos.', utility: 'Eleva pace de prova.' },
+        { id: 'phys-drift', category: 'Fisiologia & Bioenergética', title: 'Deriva Cardíaca', badgeColor: 'bg-blue-500/20 text-blue-300', subtitle: 'Aumento da FC em treinos longos', icon: 'fa-heart-pulse', description: 'Elevação gradual da FC no mesmo ritmo.', whatItMeasures: 'Eficiência termorreguladora.', physiology: 'Desvio sistólico por suor.', howToApply: '1. Hidratação rigorosa.', utility: 'Ajuste nutricional.' }
       ],
       workouts: [
-        { id: 'work-fartlek', category: 'Método de Treino', title: 'Fartlek (Brincadeira de Ritmos)', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Variações livres de velocidade e terreno', icon: 'fa-wind', description: 'Treino estruturado com mudanças contínuas de ritmo sem pausas completas.', whatItMeasures: 'Versatilidade aeróbica.', physiology: 'Tolerância ao ácido lático de forma dinâmica.', stepByStep: '1. Aquecimento 10 min.\n2. Alterne tiros de 1 min forte com 1 min trote leve.\n3. Desaquecimento 5 min.' },
-        { id: 'work-intervalado', category: 'Método de Treino', title: 'Treino Intervalado (Tiros)', badgeColor: 'bg-orange-500/20 text-orange-300', subtitle: 'Estímulos intensos com pausas controladas', icon: 'fa-bolt', description: 'Séries de corrida em alta velocidade intercaladas por períodos de descanso ativo.', whatItMeasures: 'Potência aeróbica (VAM) e velocidade máxima.', physiology: 'Estresse máximo sobre o VO2máx e adaptações cardíacas.', stepByStep: '1. Aquecimento progressivo 15 min.\n2. Execute tiros de 400m ou 1000m em ritmo forte.\n3. Faça trote leve na mesma distância ou tempo de pausa.\n4. Desaquecimento.' },
-        { id: 'work-longao', category: 'Método de Treino', title: 'O Longão (Long Run)', badgeColor: 'bg-indigo-500/20 text-indigo-300', subtitle: 'Construção de resistência de base', icon: 'fa-route', description: 'Corrida contínua de longa distância em ritmo moderado e constante.', whatItMeasures: 'Resistência aeróbica de longa duração e estoques de glicogênio.', physiology: 'Oxidação de gorduras como principal fonte de combustível e adaptação estrutural.', stepByStep: '1. Hidratação prévia adequada.\n2. Inicie em ritmo confortável (Z2).\n3. Mantenha constância até a quilometragem alvo.\n4. Caminhada final e recuperação nutricional.' },
-        { id: 'work-rodagem', category: 'Método de Treino', title: 'Rodagem Regenerativa (Z1/Z2)', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Corrida leve de recuperação muscular', icon: 'fa-person-running', description: 'Sessão de volume leve destinada à recuperação ativa e fluxo sanguíneo.', whatItMeasures: 'Recuperação muscular e capilarização.', physiology: 'Estímulo oxidativo sem acúmulo de lactato ou fadiga do sistema nervoso central.', stepByStep: '1. Ritmo totalmente conversacional (Z1/Z2).\n2. Duração entre 30 a 50 minutos.\n3. Alongamento e liberação ao finalizar.' },
-        { id: 'work-fortex', category: 'Método de Treino', title: 'Fortex (Progressivo / Forte-Leve)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Treino de aceleração progressiva', icon: 'fa-chart-line', description: 'Início moderado com fechamento em ritmo forte simulando final de prova.', whatItMeasures: 'Resistência mental e capacidade de fechar forte sob fadiga.', physiology: 'Recrutamento de fibras de contração rápida na segunda metade do esforço.', stepByStep: '1. Primeiro terço em Z2 confortável.\n2. Segundo terço no limiar (Z3/Z4).\n3. Último terço em ritmo de força máxima (Z5).' },
-        { id: 'work-tiros', category: 'Método de Treino', title: 'Tiros Curtos de Velocidade (Sprints)', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'Sprints máximos de curta duração', icon: 'fa-bolt', description: 'Tiros de 100m a 200m em velocidade máxima com pausa completa.', whatItMeasures: 'Potência neuromuscular, passada e economia de corrida.', physiology: 'Ativação exclusiva do sistema ATP-CP com recrutamento máximo motor.', stepByStep: '1. Aquecimento e educativos de corrida.\n2. Tiros de 100m a 85-90% de esforço máximo.\n3. Caminhada completa de retorno à calma (90 segundos de pausa entre cada tiro).' }
+        { id: 'work-fartlek', category: 'Método de Treino', title: 'Fartlek', badgeColor: 'bg-cyan-500/20 text-cyan-300', subtitle: 'Variações de ritmo', icon: 'fa-wind', description: 'Mudanças contínuas de velocidade.', whatItMeasures: 'Versatilidade.', physiology: 'Lático dinâmico.', stepByStep: 'Alterne 1 min forte com 1 min leve.' },
+        { id: 'work-intervalado', category: 'Método de Treino', title: 'Treino Intervalado', badgeColor: 'bg-orange-500/20 text-orange-300', subtitle: 'Tiros e pausas', icon: 'fa-bolt', description: 'Séries em alta velocidade.', whatItMeasures: 'Potência aeróbica.', physiology: 'Estresse VO2máx.', stepByStep: 'Tiros de 400m com 90s pausa.' },
+        { id: 'work-longao', category: 'Método de Treino', title: 'O Longão', badgeColor: 'bg-indigo-500/20 text-indigo-300', subtitle: 'Resistência de base', icon: 'fa-route', description: 'Longa distância constante.', whatItMeasures: 'Resistência.', physiology: 'Oxidação de gorduras.', stepByStep: 'Ritmo Z2 constante.' },
+        { id: 'work-rodagem', category: 'Método de Treino', title: 'Rodagem Regenerativa', badgeColor: 'bg-emerald-500/20 text-emerald-300', subtitle: 'Corrida leve', icon: 'fa-person-running', description: 'Volume leve de soltura.', whatItMeasures: 'Recuperação.', physiology: 'Capilarização.', stepByStep: 'Z1/Z2 conversacional.' },
+        { id: 'work-fortex', category: 'Método de Treino', title: 'Fortex (Progressivo)', badgeColor: 'bg-purple-500/20 text-purple-300', subtitle: 'Aceleração final', icon: 'fa-chart-line', description: 'Início leve e fim forte.', whatItMeasures: 'Resistência mental.', physiology: 'Fibras rápidas.', stepByStep: 'Acelere nos últimos km.' },
+        { id: 'work-tiros', category: 'Método de Treino', title: 'Tiros Curtos', badgeColor: 'bg-rose-500/20 text-rose-300', subtitle: 'Sprints máximos', icon: 'fa-bolt', description: '100m a 200m máximos.', whatItMeasures: 'Neuromuscular.', physiology: 'ATP-CP.', stepByStep: 'Sprints com pausa completa.' }
       ]
     };
 
@@ -876,8 +891,8 @@
       `).join('');
     }
 
-    // Calcula os dias exatos e formata as datas reais (dia/mês/ano) da semana atual
-    function getRealDateWeeklyPlan() {
+    // Gera o plano semanal progressivo adaptado à semana atual do ciclo (Semana 1, Semana 2, etc.)
+    function getProgressiveWeeklyPlan() {
       let w = profileBioData.weight || 75;
       let age = profileBioData.age || 30;
 
@@ -886,54 +901,43 @@
         maxDistRecorded = Math.max(...manualActivities.map(a => a.distance || 0));
       }
 
-      let suggestedLongRun = 5.0;
-      let experienceLevel = "Iniciante / Retomada";
-
+      let baseLongRun = 5.0;
       if (w >= 130) {
-        if (maxDistRecorded > 4) {
-          suggestedLongRun = Math.min(Math.round((maxDistRecorded * 1.1) * 10) / 10, 6.0);
-          experienceLevel = "Em progressão assistida";
-        } else {
-          suggestedLongRun = 3.5;
-          experienceLevel = "Iniciante Absoluto (Foco Articular)";
-        }
+        baseLongRun = maxDistRecorded > 4 ? Math.min(Math.round((maxDistRecorded * 1.1) * 10) / 10, 6.0) : 3.5;
       } else {
-        if (maxDistRecorded >= 8) {
-          suggestedLongRun = Math.min(Math.round((maxDistRecorded * 1.1) * 10) / 10, 12.0);
-          experienceLevel = "Corredor Intermediário";
-        } else if (maxDistRecorded >= 4) {
-          suggestedLongRun = Math.min(Math.round((maxDistRecorded * 1.1) * 10) / 10, 8.0);
-          experienceLevel = "Em Construção de Base";
-        } else {
-          suggestedLongRun = 5.0;
-          experienceLevel = "Base Inicial";
-        }
+        baseLongRun = maxDistRecorded >= 8 ? Math.min(Math.round((maxDistRecorded * 1.1) * 10) / 10, 12.0) : 5.0;
       }
 
-      document.getElementById('cycleWeekLabel').textContent = `Perfil: ${currentProfile.toUpperCase()} (${w}kg, ${age} anos) | Nível: ${experienceLevel} | Teto: ${maxDistRecorded}km`;
+      // Progressão automática de volume com base no número da semana do ciclo
+      let weekMultiplier = 1 + ((currentTrainingWeek - 1) * 0.1); // Aumenta 10% a cada semana avançada
+      let suggestedLongRun = Math.round((baseLongRun * weekMultiplier) * 10) / 10;
 
-      let halfLong = Math.round((suggestedLongRun / 2) * 10) / 10;
-      let altPlanText = `• Se não conseguir correr direto: Fracione o treino em 2 blocos de ${halfLong} km (com 3 minutos de caminhada leve de intervalo) OU reduza para ${Math.max(suggestedLongRun - 1.5, 2.5).toFixed(1)} km completando o restante com caminhada firme.`;
+      document.getElementById('cycleWeekLabel').textContent = `Ciclo: Semana ${currentTrainingWeek} (${w}kg)`;
+      document.getElementById('currentWeekNumBadge').textContent = `Semana ${currentTrainingWeek}`;
 
-      // Gerar as datas reais da semana a partir da segunda-feira atual
-      let mondayDate = new Date(currentMondayKey + 'T00:00:00');
-      
+      // Calcula as datas exatas avançadas com base na Semana Atual do Ciclo
+      let mondayDate = getCurrentMondayDate();
+      mondayDate.setDate(mondayDate.getDate() + ((currentTrainingWeek - 1) * 7));
+
+      let experienceLevel = w >= 130 ? "Progressão Articular Segura" : "Evolução Contínua de Ciclo";
+      let altPlanText = `• Fracione em 2 blocos de ${(suggestedLongRun/2).toFixed(1)} km ou reduza 1.5 km completando com caminhada firme.`;
+
       let baseTemplates = w >= 130 ? [
-        { dayName: 'Segunda-feira', title: `Caminhada Ativa & Trote Leve (${suggestedLongRun} km)`, type: 'Base Articular Segura', altPlan: `• Plano B: Faça apenas 2.5 km de caminhada forte contínua e finalize com alongamento.`, strength: 'Força: Treino C (Core & Postura Antirrotação)', color: 'text-emerald-400', detail: `• Estrutura: ${suggestedLongRun} km alternando blocos de 3 min de caminhada forte com 1 min de trote leve.` },
-        { dayName: 'Terça-feira', title: 'Mobilidade e Trote Regenerativo Leve (3 km)', type: 'Soltura Ativa', altPlan: '• Plano B: 20 minutos de caminhada plana leve.', strength: 'Descanso de Força', color: 'text-cyan-400', detail: '• 10 min de mobilidade articular seguidos de 3 km de trote extremamente leve e conversacional.' },
-        { dayName: 'Quarta-feira', title: 'Rodagem Contínua Leve em Piso Plano (4 km)', type: 'Aeróbico Base', altPlan: '• Plano B: 2.5 km alternando 1 min trote / 1 min caminhada.', strength: 'Força: Treino B (Glúteos & Mini Band)', color: 'text-cyan-400', detail: '• 4 km em ritmo confortável focando na postura ereta e passada curta.' },
-        { dayName: 'Quinta-feira', title: 'Caminhada de Ritmo Firme (4 km)', type: 'Baixo Impacto Ativo', altPlan: '• Plano B: Reduza para 2.5 km de caminhada leve.', strength: 'Trote Leve', color: 'text-blue-400', detail: '• 4 km de caminhada rápida sem trote, mantendo frequência cardíaca controlada (Z1).' },
-        { dayName: 'Sexta-feira', title: 'Fortalecimento Focado em Isometria', type: 'Força e Estabilidade', altPlan: '• Plano B: Faça apenas os exercícios deitada (ponte e abdômen).', strength: 'Força: Treino A (Superiores com Elásticos)', color: 'text-purple-400', detail: '• Foco em pranchas e exercícios posturais sentados com elásticos.' },
-        { dayName: 'Sábado', title: 'Caminhada Longa de Resistência (5 km)', type: 'Resistência Aeróbica', altPlan: '• Plano B: Reduza para 3.5 km em ritmo constante.', strength: 'Hidratação e Descanso', color: 'text-orange-400', detail: `• 5 km de caminhada contínua em ritmo firme e constante.` },
-        { dayName: 'Domingo', title: 'Descanso Total', type: 'Regeneração', altPlan: '• Plano B: Descanso absoluto.', strength: 'Mobilidade', color: 'text-slate-400', detail: '• Descanso absoluto.' }
+        { dayName: 'Segunda-feira', title: `Caminhada Ativa & Trote Leve (${suggestedLongRun} km)`, type: `Semana ${currentTrainingWeek} - Base Segura`, altPlan: `• Plano B: Caminhada forte de 3 km.`, strength: 'Força: Treino C (Core & Postura)', color: 'text-emerald-400', detail: `• Estrutura: ${suggestedLongRun} km alternando blocos de 3 min forte / 1 min leve.` },
+        { dayName: 'Terça-feira', title: 'Mobilidade e Trote Leve (3 km)', type: 'Soltura Ativa', altPlan: '• Plano B: 20 min caminhada.', strength: 'Descanso', color: 'text-cyan-400', detail: '• Mobilidade + 3 km trote leve.' },
+        { dayName: 'Quarta-feira', title: 'Rodagem Contínua Leve (4 km)', type: 'Aeróbico Base', altPlan: '• Plano B: 2.5 km fracionado.', strength: 'Força: Treino B (Glúteos)', color: 'text-cyan-400', detail: '• 4 km em ritmo confortável.' },
+        { dayName: 'Quinta-feira', title: 'Caminhada de Ritmo Firme (4 km)', type: 'Baixo Impacto', altPlan: '• Plano B: 2.5 km leve.', strength: 'Trote Leve', color: 'text-blue-400', detail: '• 4 km caminhada rápida Z1.' },
+        { dayName: 'Sexta-feira', title: 'Fortalecimento Isométrico', type: 'Estabilidade', altPlan: '• Plano B: Exercícios deitada.', strength: 'Força: Treino A (Superiores)', color: 'text-purple-400', detail: '• Pranchas e posturais com elásticos.' },
+        { dayName: 'Sábado', title: `Caminhada Longa (${Math.min(suggestedLongRun, 6.0)} km)`, type: 'Resistência', altPlan: '• Plano B: 3.5 km.', strength: 'Hidratação', color: 'text-orange-400', detail: `• Caminhada contínua firme.` },
+        { dayName: 'Domingo', title: 'Descanso Total', type: 'Regeneração', altPlan: 'Descanso', strength: 'Mobilidade', color: 'text-slate-400', detail: 'Descanso absoluto.' }
       ] : [
-        { dayName: 'Segunda-feira', title: `Treino Longo Adaptado (${suggestedLongRun} km)`, type: 'Longão Realista', altPlan: altPlanText, strength: 'Força: Treino A (Superiores)', color: 'text-indigo-400', detail: `• Teto máximo registado: ${maxDistRecorded} km.\n• Base do Longão: ${suggestedLongRun} km contínuos em ritmo confortável (Z2).` },
-        { dayName: 'Terça-feira', title: 'Rodagem Regenerativa Leve (4 km)', type: 'Recuperação Ativa', altPlan: '• Plano B: 3 km leves ou 25 minutos de caminhada forte.', strength: 'Descanso de Força', color: 'text-emerald-400', detail: '• 4 km muito leves em Z1 para soltura da musculatura pós-longão.' },
-        { dayName: 'Quarta-feira', title: 'Rodagem Contínua Moderada (5 km)', type: 'Aeróbico Base', altPlan: '• Plano B: 3.5 km contínuos ou fracionados em 2x 2km.', strength: 'Força: Treino B (Pernas & Glúteos)', color: 'text-cyan-400', detail: '• 5 km em ritmo constante e conversacional.' },
-        { dayName: 'Quinta-feira', title: 'Intervalado Curto (Tiros na Pista)', type: 'Velocidade', altPlan: '• Plano B: Reduza para 4 tiros em vez de 6, mantendo a pausa longa.', strength: 'Trote Regenerativo', color: 'text-orange-400', detail: '• Aquecimento 1.5km + 6x 400m em ritmo forte (com 90s de trote leve entre as séries) + 1km soltura.' },
-        { dayName: 'Sexta-feira', title: 'Fartlek de Ritmo Variado (4.5 km)', type: 'Fartlek', altPlan: '• Plano B: Rodagem contínua leve de 3.5 km sem variações de ritmo.', strength: 'Força: Treino C (Core & Estabilidade)', color: 'text-blue-400', detail: '• 4.5 km total: alterne 1 min em ritmo forte com 1 min em trote leve de recuperação.' },
-        { dayName: 'Sábado', title: 'Rodagem Progressiva (Fortex) (5 km)', type: 'Progressivo', altPlan: '• Plano B: 4 km em ritmo constante e confortável.', strength: 'Hidratação e Descanso', color: 'text-yellow-400', detail: '• 5 km total: inicie leve e acelere progressivamente nos últimos 2 quilómetros.' },
-        { dayName: 'Domingo', title: 'Descanso Total', type: 'Regeneração', altPlan: '• Plano B: Descanso absoluto.', strength: 'Mobilidade', color: 'text-slate-400', detail: '• Descanso absoluto.' }
+        { dayName: 'Segunda-feira', title: `Treino Longo Adaptado (${suggestedLongRun} km)`, type: `Semana ${currentTrainingWeek} - Longão`, altPlan: altPlanText, strength: 'Força: Treino A (Superiores)', color: 'text-indigo-400', detail: `• Ciclo Semana ${currentTrainingWeek}.\n• Meta do Longão: ${suggestedLongRun} km contínuos (Z2).` },
+        { dayName: 'Terça-feira', title: 'Rodagem Regenerativa Leve (4 km)', type: 'Recuperação Ativa', altPlan: '• Plano B: 3 km leves.', strength: 'Descanso', color: 'text-emerald-400', detail: '• 4 km muito leves em Z1.' },
+        { dayName: 'Quarta-feira', title: 'Rodagem Contínua Moderada (5 km)', type: 'Aeróbico Base', altPlan: '• Plano B: 3.5 km.', strength: 'Força: Treino B (Pernas)', color: 'text-cyan-400', detail: '• 5 km ritmo conversacional.' },
+        { dayName: 'Quinta-feira', title: 'Intervalado Curto (Tiros na Pista)', type: 'Velocidade', altPlan: '• Plano B: 4 tiros em vez de 6.', strength: 'Trote', color: 'text-orange-400', detail: '• Aquecimento + 6x 400m forte (90s pausa).' },
+        { dayName: 'Sexta-feira', title: 'Fartlek Variado (4.5 km)', type: 'Fartlek', altPlan: '• Plano B: 3.5 km leves.', strength: 'Força: Treino C (Core)', color: 'text-blue-400', detail: '• 1 min forte / 1 min leve.' },
+        { dayName: 'Sábado', title: 'Rodagem Progressiva (Fortex) (5 km)', type: 'Progressivo', altPlan: '• Plano B: 4 km constantes.', strength: 'Descanso', color: 'text-yellow-400', detail: '• Acelere nos últimos 2 km.' },
+        { dayName: 'Domingo', title: 'Descanso Total', type: 'Regeneração', altPlan: 'Descanso', strength: 'Mobilidade', color: 'text-slate-400', detail: 'Descanso absoluto.' }
       ];
 
       return baseTemplates.map((item, idx) => {
@@ -952,8 +956,7 @@
     function renderPlan() {
       const container = document.getElementById('planContainer');
       if (!container) return;
-      const dynamicPlan = getRealDateWeeklyPlan();
-
+      const dynamicPlan = getProgressiveWeeklyPlan();
       const todayIso = new Date().toISOString().split('T')[0];
 
       container.innerHTML = dynamicPlan.map((item, index) => {
@@ -997,24 +1000,44 @@
 
     function toggleRunDone(index) {
       completedRuns[index] = !completedRuns[index];
-      localStorage.setItem(`stamina_runs_done_${currentProfile}_${currentMondayKey}`, JSON.stringify(completedRuns));
+      localStorage.setItem(`stamina_runs_done_${currentProfile}_w${currentTrainingWeek}`, JSON.stringify(completedRuns));
       renderPlan();
+
+      // VERIFICA SE TODOS OS TREINOS FORAM CONCLUÍDOS PARA AVANÇAR AUTOMATICAMENTE PARA A PRÓXIMA SEMANA
+      let totalItems = 7;
+      let allDone = true;
+      for (let i = 0; i < totalItems; i++) {
+        if (!completedRuns[i]) { allDone = false; break; }
+      }
+
+      if (allDone) {
+        setTimeout(() => {
+          if (confirm(`Parabéns! Concluiu todos os treinos da Semana ${currentTrainingWeek}! Deseja avançar automaticamente para a Semana ${currentTrainingWeek + 1} com novas metas de volume?`)) {
+            currentTrainingWeek++;
+            localStorage.setItem(`stamina_training_week_${currentProfile}`, currentTrainingWeek);
+            completedRuns = {};
+            completedBands = {};
+            postponedDays = {};
+            renderPlan();
+          }
+        }, 300);
+      }
     }
 
     function toggleBandDone(index) {
       completedBands[index] = !completedBands[index];
-      localStorage.setItem(`stamina_bands_done_${currentProfile}_${currentMondayKey}`, JSON.stringify(completedBands));
+      localStorage.setItem(`stamina_bands_done_${currentProfile}_w${currentTrainingWeek}`, JSON.stringify(completedBands));
       renderPlan();
     }
 
     function togglePostpone(index) {
       postponedDays[index] = !postponedDays[index];
-      localStorage.setItem(`stamina_postponed_${currentProfile}_${currentMondayKey}`, JSON.stringify(postponedDays));
+      localStorage.setItem(`stamina_postponed_${currentProfile}_w${currentTrainingWeek}`, JSON.stringify(postponedDays));
       renderPlan();
     }
 
     function exportBackupData() {
-      const backup = { profile: currentProfile, manualRuns: manualActivities, bio: profileBioData, exportDate: new Date().toISOString() };
+      const backup = { profile: currentProfile, manualRuns: manualActivities, bio: profileBioData, week: currentTrainingWeek, exportDate: new Date().toISOString() };
       const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -1038,6 +1061,10 @@
           if (data.bio) {
             profileBioData = data.bio;
             localStorage.setItem(`stamina_bio_data_${currentProfile}`, JSON.stringify(profileBioData));
+          }
+          if (data.week) {
+            currentTrainingWeek = data.week;
+            localStorage.setItem(`stamina_training_week_${currentProfile}`, currentTrainingWeek);
           }
           updateDashboardData();
           renderPlan();
@@ -1180,40 +1207,6 @@
               </div>
             </div>
           `;
-
-          let idealFirstKmSec = Math.round(avgPaceSec * 1.05);
-          let diffFromAvg = firstKmSec - avgPaceSec;
-
-          if (workoutType.includes('Longão') || workoutType.includes('Regenerativa')) {
-            if (firstKmSec > avgPaceSec + 25) {
-              strength = "Excelente aquecimento progressivo adequado para preservar as articulações.";
-              weakness = `O 1º quilómetro (${formatSecondsToPace(firstKmSec)}) foi ${Math.round(diffFromAvg)}s mais lento, o que é ótimo para evitar picos de esforço precoce.`;
-              errorPlace = "Aquecimento executado perfeitamente na zona de base.";
-              improvement = "Mantenha essa cautela inicial nos próximos treinos longos.";
-            } else {
-              strength = "Boa constância aeróbica.";
-              weakness = "Largada um pouco acelerada para um treino de base/longão.";
-              errorPlace = `Cuidado para não desgastar energia cedo demais. Tente iniciar o 1º KM mais leve.`;
-              improvement = "Lembre-se: treinos longos e regenerativos exigem controle absoluto no início.";
-            }
-          } else {
-            if (secondHalf < firstHalf - 3) {
-              strength = "Excelente progressão de ritmo (Negative Split).";
-              weakness = "Constância preservada na primeira metade.";
-              errorPlace = `KM 1 executado na ideal tolerância.`;
-              improvement = "Mantenha a estratégia de dosagem de esforço.";
-            } else if (secondHalf > firstHalf + 5) {
-              strength = "Largada agressiva e forte.";
-              weakness = "Perda de ritmo na metade final devido a fadiga precoce.";
-              errorPlace = `Erro de intensidade no KM 1. Ajuste a saída para <strong>${formatSecondsToPace(idealFirstKmSec)}</strong>.`;
-              improvement = "Controle o entusiasmo no início para ter gás na reta final.";
-            } else {
-              strength = "Ritmo extremamente homogêneo e linear do início ao fim.";
-              weakness = "Pouca variação tática de velocidade.";
-              errorPlace = "Nenhum erro de pacing relevante detetado.";
-              improvement = "Mantenha a consistência.";
-            }
-          }
         }
       } else {
         splitAnalysisHtml = `<p class="text-xs text-gray-400 italic">Nenhum split de ritmo registado nesta atividade.</p>`;
@@ -1221,51 +1214,19 @@
 
       if (act.fcSplits && act.fcSplits.includes(',')) {
         let rawFcSplits = act.fcSplits.split(',').map(s => parseInt(s.trim())).filter(s => !isNaN(s));
-
         if (rawFcSplits.length >= 2) {
           let firstKmFc = rawFcSplits[0];
           let maxFcKm = Math.max(...rawFcSplits);
           let peakKm = rawFcSplits.indexOf(maxFcKm) + 1;
-          let fcDiff = maxFcKm - firstKmFc;
-          let fcTrendDiag = "";
-
-          if (workoutType.includes('Longão') || workoutType.includes('Regenerativa')) {
-            if (fcDiff > 15) {
-              fcTrendDiag = `Atenção: Deriva cardíaca acentuada para um treino de ${workoutType} (+${fcDiff} bpm). Seus batimentos subiram muito ao longo dos quilómetros, indicando possível desidratação, calor ou ritmo forte demais.`;
-            } else {
-              fcTrendDiag = `Excelente controle cardiovascular para um treino de ${workoutType}. Batimentos estáveis e dentro da zona aeróbica de base.`;
-            }
-          } else {
-            if (fcDiff > 20) {
-              fcTrendDiag = `Deriva Cardíaca Alta (+${fcDiff} bpm até o KM ${peakKm}). Desgaste cardiovascular elevado.`;
-            } else {
-              fcTrendDiag = "Resposta cardíaca consistente com a proposta do treino intervalado/moderado.";
-            }
-          }
-
           fcSplitsAnalysisHtml = `
             <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1">
-              <span class="text-rose-400 font-bold block flex items-center gap-1.5">
-                <i class="fa-solid fa-heart-pulse"></i> Batimentos (FC) por KM:
-              </span>
+              <span class="text-rose-400 font-bold block flex items-center gap-1.5"><i class="fa-solid fa-heart-pulse"></i> Batimentos (FC) por KM:</span>
               <p class="font-mono text-gray-200 text-xs">${rawFcSplits.map(f => f + ' bpm').join(' ➔ ')}</p>
-              <div class="text-[11px] text-gray-400 mt-1.5 pt-1 border-t border-slate-800/80">
-                <span class="block">KM 1: <strong class="text-white">${firstKmFc} bpm</strong> | Pico: <strong class="text-rose-400">KM ${peakKm} (${maxFcKm} bpm)</strong></span>
-                <p class="text-gray-300 mt-1 leading-relaxed">${fcTrendDiag}</p>
-              </div>
             </div>
           `;
         }
       } else if (act.fc) {
-        fcSplitsAnalysisHtml = `
-          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-            <div class="flex justify-between items-center">
-              <strong class="text-rose-400 flex items-center gap-1.5 text-xs">
-                <i class="fa-solid fa-heart-pulse"></i> Frequência Cardíaca Média: ${act.fc} BPM
-              </strong>
-            </div>
-          </div>
-        `;
+        fcSplitsAnalysisHtml = `<div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-rose-400 font-bold text-xs"><i class="fa-solid fa-heart-pulse"></i> Frequência Cardíaca Média: ${act.fc} BPM</div>`;
       }
 
       document.getElementById('modalCategoryBadge').textContent = `Autópsia • ${workoutType}`;
@@ -1278,24 +1239,8 @@
             <div><span class="text-[9px] text-gray-400 uppercase font-bold block">Pace</span><div class="text-xs font-black text-emerald-400">${act.pace}</div></div>
             <div><span class="text-[9px] text-gray-400 uppercase font-bold block">FC Média</span><div class="text-xs font-black text-rose-400">${act.fc ? act.fc + ' bpm' : '--'}</div></div>
           </div>
-          
           ${splitAnalysisHtml}
           ${fcSplitsAnalysisHtml}
-
-          <div class="space-y-2 pt-1">
-            <div class="p-3 rounded-xl bg-emerald-950/20 border border-emerald-500/30 space-y-1">
-              <strong class="text-emerald-400 block"><i class="fa-solid fa-circle-check mr-1"></i> Ponto Forte:</strong>
-              <p class="text-gray-300">${strength}</p>
-            </div>
-            <div class="p-3 rounded-xl bg-amber-950/20 border border-amber-500/30 space-y-1">
-              <strong class="text-amber-400 block"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Análise Contextualizada (${workoutType}):</strong>
-              <p class="text-gray-300">${weakness} <br><span class="text-amber-300 font-semibold">${errorPlace}</span></p>
-            </div>
-            <div class="p-3 rounded-xl bg-cyan-950/20 border border-cyan-500/30 space-y-1">
-              <strong class="text-cyan-400 block"><i class="fa-solid fa-crosshairs mr-1"></i> Recomendação Técnica:</strong>
-              <p class="text-gray-300">${improvement}</p>
-            </div>
-          </div>
         </div>
       `;
       document.getElementById('detailModal').classList.remove('hidden');
@@ -1399,26 +1344,13 @@
       let avgPaceSec = validPaces.length > 0 ? (validPaces.reduce((a,b)=>a+b,0) / validPaces.length) : 0;
       let formattedAvgPace = formatSecondsToPace(avgPaceSec);
 
-      let isGeneral = (period === 'all');
-      let diagnosticTitle = isGeneral ? "Diagnóstico Histórico Geral (Carga Acumulada):" : "Diagnóstico do Treino Mensal:";
-      let diagnosticText = "";
-
-      if (isGeneral) {
-        let totalGlobalRuns = manualActivities.length;
-        let totalGlobalKm = manualActivities.reduce((acc, curr) => acc + (curr.distance || 0), 0);
-        diagnosticText = `Sua bagagem total acumula <strong>${totalGlobalKm.toFixed(1)} km</strong> em <strong>${totalGlobalRuns} treinos</strong>, com pace médio histórico de <strong>${formattedAvgPace}</strong>.`;
-      } else {
-        let runsCount = filteredActs.length;
-        diagnosticText = `Mês atual (${currentProfile.toUpperCase()}): <strong>${runsCount} sessões</strong>, <strong>${totalKm.toFixed(1)} km</strong> total. Ritmo médio fixado em <strong>${formattedAvgPace}</strong>.`;
-      }
-
       container.innerHTML = `
         <p class="text-gray-300">Neste período selecionado, registou <strong>${filteredActs.length} sessões</strong> totalizando <strong>${totalKm.toFixed(1)} km</strong> para o perfil <strong>${currentProfile.toUpperCase()}</strong>.</p>
         <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1.5 mt-2">
           <strong class="text-cyan-400 block flex items-center gap-1.5">
-            <i class="fa-solid fa-chart-pie"></i> ${diagnosticTitle}
+            <i class="fa-solid fa-chart-pie"></i> Diagnóstico do Treino:
           </strong>
-          <p class="text-gray-300 leading-relaxed">${diagnosticText}</p>
+          <p class="text-gray-300 leading-relaxed">Ritmo médio fixado em <strong>${formattedAvgPace}</strong> com volume acumulado de <strong>${totalKm.toFixed(1)} km</strong>.</p>
         </div>
       `;
     }
@@ -1509,7 +1441,7 @@
               <div class="w-9 h-9 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-400"><i class="fa-solid ${item.icon}"></i></div>
               <div><h4 class="text-xs font-bold text-white">${item.title}</h4><p class="text-[10px] text-gray-400">${item.subtitle}</p></div>
             </div>
-            <p class="text-[11px] text-gray-300 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 whitespace-pre-line"><strong>Como Aplicar na Prática:</strong><br>${item.howToApply}</p>
+            <p class="text-[11px] text-gray-300 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 whitespace-pre-line"><strong>Como Aplicar:</strong><br>${item.howToApply}</p>
           </div>
         `).join('');
       }
@@ -1552,26 +1484,10 @@
       if (!item) return;
       document.getElementById('modalCategoryBadge').textContent = item.category || 'Detalhes';
       document.getElementById('modalTitle').textContent = item.title;
-
-      let extraHtml = '';
-      if (item.stepByStep) {
-        extraHtml += `<div class="p-3 bg-slate-950 rounded-xl border border-slate-800 whitespace-pre-line text-gray-200 text-xs"><strong>Passo a Passo Prático:</strong><br>${item.stepByStep}</div>`;
-      }
-      if (item.howToUseResult) {
-        extraHtml += `<div class="p-3 bg-slate-950 rounded-xl border border-slate-800 whitespace-pre-line text-gray-200 text-xs"><strong>Como Usar o Resultado / Utilidade Prática:</strong><br>${item.howToUseResult}</div>`;
-      }
-      if (item.howToApply) {
-        extraHtml += `<div class="p-3 bg-slate-950 rounded-xl border border-slate-800 whitespace-pre-line text-gray-200 text-xs"><strong>Como Aplicar na Prática:</strong><br>${item.howToApply}</div>`;
-      }
-      if (item.utility) {
-        extraHtml += `<div class="p-3 bg-slate-950 rounded-xl border border-slate-800 text-gray-200 text-xs"><strong>Para que serve / Utilidade Prática:</strong><br>${item.utility}</div>`;
-      }
-
       document.getElementById('modalBody').innerHTML = `
         <p class="text-gray-200 text-xs">${item.description}</p>
-        ${extraHtml}
-        <p class="text-gray-400 text-xs mt-2"><strong>O que mede:</strong> ${item.whatItMeasures}</p>
-        <p class="text-gray-400 text-xs mt-1"><strong>Fisiologia / Base:</strong> ${item.physiology}</p>
+        ${item.stepByStep ? `<div class="p-3 bg-slate-950 rounded-xl border border-slate-800 whitespace-pre-line text-gray-200 text-xs mt-2"><strong>Passo a Passo:</strong><br>${item.stepByStep}</div>` : ''}
+        <p class="text-gray-400 text-xs mt-2"><strong>O que mede:</strong> ${item.whatItMeasures || 'N/A'}</p>
       `;
       document.getElementById('detailModal').classList.remove('hidden');
     }
@@ -1607,7 +1523,7 @@
         <div class="p-2 bg-slate-950 rounded-lg text-orange-400 font-mono">Z4 (Limiar Anaeróbico): ${Math.round(hrr * 0.8 + fcRest)} - ${Math.round(hrr * 0.9 + fcRest)} BPM</div>
         <div class="p-2 bg-slate-950 rounded-lg text-rose-400 font-mono">Z5 (Pico de VAM): ${Math.round(hrr * 0.9 + fcRest)} - ${fcMax} BPM</div>
       `;
-      res.classList.add('hidden');
+      res.classList.remove('hidden');
     }
 
     function calculateCalories() {
