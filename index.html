@@ -246,9 +246,10 @@
             </h3>
             <p class="text-[10px] text-gray-400">Estimativas ajustadas ao seu histórico real de treino.</p>
           </div>
-          <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold">Base Strava / Riegel</span>
+          <span class="px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold">Estimativa Riegel</span>
         </div>
 
+        <p class="text-[10px] text-amber-300">Estimativas matemáticas, não garantias de desempenho. Só são exibidas quando existe atividade recente válida (3–15 km); distâncias muito maiores que a referência ficam sem previsão.</p>
         <div class="grid grid-cols-2 gap-3">
           <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 text-center space-y-1">
             <div class="inline-block px-2 py-0.5 rounded-lg bg-orange-500/20 text-orange-400 font-black text-[10px]">5K</div>
@@ -613,8 +614,12 @@
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     let currentProfile = urlParams.get('perfil') || localStorage.getItem('stamina_active_profile') || 'fernando';
+    if (typeof currentProfile !== 'string' || !/^[a-z0-9_-]{1,32}$/i.test(currentProfile)) currentProfile = 'fernando';
 
-    let profilesList = JSON.parse(localStorage.getItem('stamina_profiles_list') || '["fernando", "raiza"]');
+    let profilesList = readStoredJSON('stamina_profiles_list', ['fernando', 'raiza']);
+    if (!Array.isArray(profilesList)) profilesList = ['fernando', 'raiza'];
+    profilesList = profilesList.filter(p => typeof p === 'string' && /^[a-z0-9_-]{1,32}$/i.test(p));
+    if (!profilesList.length) profilesList = ['atleta'];
     if (!profilesList.includes(currentProfile)) profilesList.push(currentProfile);
 
     let completedRuns = [];
@@ -624,12 +629,57 @@
     let profileBioData = {}; 
     let timerInterval = null;
 
+    // Leitura defensiva: dados locais corrompidos não devem impedir a abertura da plataforma.
+    function readStoredJSON(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch (error) {
+        console.warn(`Dados inválidos em ${key}; usando valor seguro.`, error);
+        return fallback;
+      }
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? '').replace(/[&<>\"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[char]);
+    }
+
+    function parseDurationToSeconds(value) {
+      if (typeof value !== 'string' && typeof value !== 'number') return 0;
+      const raw = String(value).trim();
+      if (!raw) return 0;
+      if (/^\d+(?:\.\d+)?\s*min(?:utos?)?$/i.test(raw)) return Math.round(parseFloat(raw) * 60);
+      const parts = raw.split(':').map(Number);
+      if (parts.some(n => !Number.isFinite(n) || n < 0)) return 0;
+      if (parts.length === 2 && parts[1] < 60) return parts[0] * 60 + parts[1];
+      if (parts.length === 3 && parts[1] < 60 && parts[2] < 60) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+      return 0;
+    }
+
+    function localDateISO(date = new Date()) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function getActivityDate(activity) {
+      if (!activity?.start_date) return null;
+      const value = String(activity.start_date);
+      const date = /^\d{4}-\d{2}-\d{2}$/.test(value)
+        ? new Date(`${value}T12:00:00`)
+        : new Date(value);
+      return Number.isNaN(date.getTime()) ? null : date;
+    }
+
     function initProfileSelector() {
       const select = document.getElementById('activeProfileSelect');
       if (!select) return;
       select.innerHTML = profilesList.map(p => `
-        <option value="${p}" class="bg-slate-900" ${p === currentProfile ? 'selected' : ''}>
-          Perfil: ${p.charAt(0).toUpperCase() + p.slice(1)}
+        <option value="${escapeHTML(p)}" class="bg-slate-900" ${p === currentProfile ? 'selected' : ''}>
+          Perfil: ${escapeHTML(p.charAt(0).toUpperCase() + p.slice(1))}
         </option>
       `).join('');
       select.value = currentProfile;
@@ -640,26 +690,20 @@
     function initPeriodFilterMonths() {
       const select = document.getElementById('periodFilter');
       if (!select) return;
-      
-      const monthsCatalog = [
-        { val: 'current_month', label: 'Novembro / 2026 (Atual)' },
-        { val: 'december_2026', label: 'Dezembro / 2026' },
-        { val: 'january_2027', label: 'Janeiro / 2027' },
-        { val: 'february_2027', label: 'Fevereiro / 2027' },
-        { val: 'march_2027', label: 'Março / 2027' },
-        { val: 'october', label: 'Outubro / 2026' },
-        { val: 'september', label: 'Setembro / 2026' },
-        { val: 'august', label: 'Agosto / 2026' },
-        { val: 'all', label: 'Histórico Completo (Levantamento Geral)' }
-      ];
-
-      select.innerHTML = monthsCatalog.map(m => `<option value="${m.val}">${m.label}</option>`).join('');
+      const now = new Date();
+      const options = [{ val: 'current_month', label: `${now.toLocaleDateString('pt-BR', { month: 'long' })} / ${now.getFullYear()} (Atual)` }];
+      for (let offset = 1; offset <= 11; offset++) {
+        const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+        options.push({ val: `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`, label: d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) });
+      }
+      options.push({ val: 'all', label: 'Histórico Completo' });
+      select.innerHTML = options.map(m => `<option value="${m.val}">${m.label}</option>`).join('');
     }
 
     function createNewProfilePrompt() {
       let nome = prompt("Digite o nome do novo atleta/perfil:");
       if (!nome) return;
-      let key = nome.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
+      let key = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/[^a-z0-9_-]/g, '_').slice(0, 32);
       if (!key) return;
 
       if (!profilesList.includes(key)) {
@@ -707,26 +751,31 @@
       const now = new Date();
       const startOfYear = new Date(now.getFullYear(), 0, 1);
       const currentWeekNumber = Math.ceil((((now - startOfYear) / 86400000) + startOfYear.getDay() + 1) / 7);
-      let savedWeekNumber = parseInt(localStorage.getItem(`stamina_week_num_${currentProfile}`) || '0');
+      const weekKey = `${now.getFullYear()}-${String(currentWeekNumber).padStart(2, '0')}`;
+      let savedWeekNumber = localStorage.getItem(`stamina_week_num_${currentProfile}`) || ''; 
 
-      if (savedWeekNumber !== currentWeekNumber) {
+      if (savedWeekNumber !== weekKey) {
         completedRuns = [];
         completedBands = [];
         postponedDays = {};
         localStorage.setItem(`stamina_runs_done_${currentProfile}`, JSON.stringify(completedRuns));
         localStorage.setItem(`stamina_bands_done_${currentProfile}`, JSON.stringify(completedBands));
         localStorage.setItem(`stamina_postponed_${currentProfile}`, JSON.stringify(postponedDays));
-        localStorage.setItem(`stamina_week_num_${currentProfile}`, currentWeekNumber);
+        localStorage.setItem(`stamina_week_num_${currentProfile}`, weekKey);
       } else {
-        completedRuns = JSON.parse(localStorage.getItem(`stamina_runs_done_${currentProfile}`) || '[]');
-        completedBands = JSON.parse(localStorage.getItem(`stamina_bands_done_${currentProfile}`) || '[]');
-        postponedDays = JSON.parse(localStorage.getItem(`stamina_postponed_${currentProfile}`) || '{}');
+        completedRuns = readStoredJSON(`stamina_runs_done_${currentProfile}`, []);
+        completedBands = readStoredJSON(`stamina_bands_done_${currentProfile}`, []);
+        postponedDays = readStoredJSON(`stamina_postponed_${currentProfile}`, {});
       }
 
-      manualActivities = JSON.parse(localStorage.getItem(`stamina_manual_runs_${currentProfile}`) || '[]');
+      manualActivities = readStoredJSON(`stamina_manual_runs_${currentProfile}`, []);
+      if (!Array.isArray(manualActivities)) manualActivities = [];
+      manualActivities = manualActivities.filter(a => a && Number.isFinite(Number(a.distance)) && Number(a.distance) > 0);
       
-      let defaultBio = currentProfile === 'raiza' ? { weight: 150, height: 165, age: 32, lastUpdate: '2026-10-01' } : { weight: 94, height: 178, age: 30, lastUpdate: '2026-10-01' };
-      profileBioData = JSON.parse(localStorage.getItem(`stamina_bio_data_${currentProfile}`) || JSON.stringify(defaultBio));
+      // Não presumir peso, altura ou idade: perfis novos começam sem biometria fictícia.
+      const defaultBio = { weight: null, height: null, age: null, lastUpdate: null };
+      profileBioData = readStoredJSON(`stamina_bio_data_${currentProfile}`, defaultBio);
+      if (!profileBioData || typeof profileBioData !== 'object' || Array.isArray(profileBioData)) profileBioData = defaultBio;
 
       const titleLabel = document.getElementById('profileTitleLabel');
       if(titleLabel) titleLabel.textContent = currentProfile.toUpperCase();
@@ -749,9 +798,9 @@
     }
 
     function openBiometricModal() {
-      document.getElementById('bioWeight').value = profileBioData.weight || 75;
-      document.getElementById('bioHeight').value = profileBioData.height || 175;
-      document.getElementById('bioAge').value = profileBioData.age || 30;
+      document.getElementById('bioWeight').value = profileBioData.weight ?? '';
+      document.getElementById('bioHeight').value = profileBioData.height ?? '';
+      document.getElementById('bioAge').value = profileBioData.age ?? '';
       document.getElementById('biometricModal').classList.remove('hidden');
     }
 
@@ -760,16 +809,18 @@
     }
 
     function saveBiometricData() {
-      profileBioData = {
-        weight: parseFloat(document.getElementById('bioWeight').value) || 75,
-        height: parseInt(document.getElementById('bioHeight').value) || 175,
-        age: parseInt(document.getElementById('bioAge').value) || 30,
-        lastUpdate: new Date().toISOString().split('T')[0]
-      };
+      const weight = Number(document.getElementById('bioWeight').value);
+      const height = Number(document.getElementById('bioHeight').value);
+      const age = Number(document.getElementById('bioAge').value);
+      if (!Number.isFinite(weight) || weight < 25 || weight > 300 || !Number.isInteger(height) || height < 100 || height > 230 || !Number.isInteger(age) || age < 10 || age > 100) {
+        alert('Confira os dados: peso entre 25 e 300 kg, altura entre 100 e 230 cm e idade entre 10 e 100 anos.');
+        return;
+      }
+      profileBioData = { weight, height, age, lastUpdate: localDateISO() };
       localStorage.setItem(`stamina_bio_data_${currentProfile}`, JSON.stringify(profileBioData));
       closeBiometricModal();
       renderPlan();
-      alert(`Dados biométricos de ${currentProfile.toUpperCase()} salvos! A IA adaptou os volumes e objetivos para este perfil.`);
+      alert(`Dados biométricos de ${currentProfile.toUpperCase()} salvos. Eles foram registrados; o plano ainda precisa ser ajustado com base no histórico de treino, disponibilidade e recuperação.`);
     }
 
     function handleProfileSelection(val) {
@@ -957,8 +1008,9 @@
 
     // PLANEJAMENTO ANUAL DINÂMICO COM RANDOMIZAÇÃO SEMANAL REAL E VARIADA
     function getDynamicWeeklyPlan() {
-      let w = profileBioData.weight || 75;
-      let age = profileBioData.age || 30;
+      const w = Number.isFinite(Number(profileBioData.weight)) && Number(profileBioData.weight) > 0
+        ? Number(profileBioData.weight) : null;
+      const age = Number.isFinite(Number(profileBioData.age)) ? Number(profileBioData.age) : null;
 
       let maxDistRecorded = 0;
       if (manualActivities.length > 0) {
@@ -993,7 +1045,7 @@
       const startOfYear = new Date(now.getFullYear(), 0, 1);
       const weekNumber = Math.ceil((((now - startOfYear) / 86400000) + startOfYear.getDay() + 1) / 7);
       
-      document.getElementById('cycleWeekLabel').textContent = `Perfil: ${currentProfile.toUpperCase()} (${w}kg) | Nível: ${experienceLevel} | Ciclo Anual Semana #${weekNumber}`;
+      document.getElementById('cycleWeekLabel').textContent = `Perfil: ${currentProfile.toUpperCase()} (${w === null ? 'peso não informado' : `${w}kg`}) | Nível: ${experienceLevel} | Ciclo Anual Semana #${weekNumber}`;
 
       let curr = new Date();
       let firstDayOfWeek = curr.getDate() - curr.getDay() + (curr.getDay() === 0 ? -6 : 1);
@@ -1154,12 +1206,17 @@
       reader.onload = function(e) {
         try {
           const data = JSON.parse(e.target.result);
-          if (data.manualRuns) {
-            manualActivities = data.manualRuns;
+          if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Formato de backup inválido');
+          if (data.manualRuns !== undefined) {
+            if (!Array.isArray(data.manualRuns) || data.manualRuns.length > 10000) throw new Error('Lista de atividades inválida');
+            const validRuns = data.manualRuns.filter(a => a && Number.isFinite(Number(a.distance)) && Number(a.distance) > 0 && Number(a.distance) <= 500 && typeof a.start_date === 'string');
+            manualActivities = validRuns.map(a => ({ id: Number(a.id) || Date.now() + Math.random(), name: String(a.name || 'Corrida').slice(0, 60), distance: Number(a.distance), time: String(a.time || '').slice(0, 20), pace: String(a.pace || '').slice(0, 20), splits: String(a.splits || '').slice(0, 500), start_date: a.start_date }));
             localStorage.setItem(`stamina_manual_runs_${currentProfile}`, JSON.stringify(manualActivities));
           }
-          if (data.bio) {
-            profileBioData = data.bio;
+          if (data.bio !== undefined) {
+            const b = data.bio;
+            if (!b || typeof b !== 'object' || !Number.isFinite(Number(b.weight)) || Number(b.weight) <= 0 || Number(b.weight) > 500 || !Number.isFinite(Number(b.height)) || Number(b.height) < 50 || Number(b.height) > 250 || !Number.isFinite(Number(b.age)) || Number(b.age) < 10 || Number(b.age) > 110) throw new Error('Dados biométricos inválidos');
+            profileBioData = { weight: Number(b.weight), height: Number(b.height), age: Number(b.age), lastUpdate: typeof b.lastUpdate === 'string' ? b.lastUpdate : localDateISO() };
             localStorage.setItem(`stamina_bio_data_${currentProfile}`, JSON.stringify(profileBioData));
           }
           updateDashboardData();
@@ -1173,14 +1230,32 @@
     function saveOrUpdateManualRun() {
       const editId = document.getElementById('editRunId').value;
       const name = document.getElementById('newRunTypeSelect').value;
-      const date = document.getElementById('newRunDate').value || new Date().toISOString().split('T')[0];
-      const distance = parseFloat(document.getElementById('newRunDist').value);
-      const timeStr = document.getElementById('newRunTime').value.trim() || "25 min";
-      const pace = document.getElementById('newRunPace').value.trim() || "5:00 /km";
+      const date = document.getElementById('newRunDate').value || localDateISO();
+      const distance = Number(document.getElementById('newRunDist').value);
+      const timeStr = document.getElementById('newRunTime').value.trim();
+      let pace = document.getElementById('newRunPace').value.trim();
       const splits = document.getElementById('newRunSplits').value.trim();
 
-      if (!distance || isNaN(distance)) {
-        alert("Insira uma distância válida em quilómetros.");
+      if (!Number.isFinite(distance) || distance <= 0 || distance > 300) {
+        alert('Insira uma distância válida entre 0 e 300 km.');
+        return;
+      }
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !getActivityDate({ start_date: date })) {
+        alert('Informe uma data válida para a atividade.');
+        return;
+      }
+      const durationSeconds = parseDurationToSeconds(timeStr);
+      if (timeStr && !durationSeconds) {
+        alert('Duração inválida. Use mm:ss, hh:mm:ss ou, por exemplo, 25 min.');
+        return;
+      }
+      if (pace && !parsePaceToSeconds(pace)) {
+        alert('Ritmo inválido. Use o formato 5:30.');
+        return;
+      }
+      if (!pace && durationSeconds) pace = formatSecondsToPace(durationSeconds / distance);
+      if (!timeStr && !pace) {
+        alert('Informe a duração ou o ritmo médio. Não vamos inventar um valor padrão.');
         return;
       }
 
@@ -1245,18 +1320,21 @@
     }
 
     function parsePaceToSeconds(paceStr) {
-      if (!paceStr) return 0;
-      let clean = paceStr.replace(/[^0-9:]/g, '');
-      let parts = clean.split(':').map(Number);
-      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) return (parts[0] * 60) + parts[1];
-      if (parts.length === 1 && !isNaN(parts[0])) return parts[0] * 60;
-      return 0;
+      if (typeof paceStr !== 'string' || !paceStr.trim()) return 0;
+      const match = paceStr.trim().match(/^(\d{1,2}):(\d{1,2})/);
+      if (!match) return 0;
+      const minutes = Number(match[1]);
+      const seconds = Number(match[2]);
+      if (!Number.isInteger(minutes) || !Number.isInteger(seconds) || seconds >= 60) return 0;
+      const total = minutes * 60 + seconds;
+      return total >= 120 && total <= 1800 ? total : 0;
     }
 
     function formatSecondsToPace(sec) {
       if (!sec || isNaN(sec)) return "--:--";
       let m = Math.floor(sec / 60);
       let s = Math.round(sec % 60);
+      if (s === 60) { m += 1; s = 0; }
       return `${m}:${s < 10 ? '0' : ''}${s} /km`;
     }
 
@@ -1265,7 +1343,7 @@
       if (!act) return;
 
       let splitAnalysisHtml = "";
-      let strength = `Excelente execução no perfil de '${act.name}'.`;
+      let strength = `Execução registada no perfil de '${escapeHTML(act.name)}'.`;
       let weakness = "Constância preservada no bloco principal.";
       let errorPlace = "Nenhum erro de pacing relevante detetado.";
       let improvement = "Mantenha a estratégia para os próximos ciclos.";
@@ -1283,7 +1361,7 @@
           splitAnalysisHtml = `
             <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1">
               <span class="text-cyan-400 font-bold block"><i class="fa-solid fa-stopwatch mr-1"></i> Leituras de Splits por KM:</span>
-              <p class="font-mono text-gray-200 text-xs">${rawSplits.join(' ➔ ')}</p>
+              <p class="font-mono text-gray-200 text-xs">${rawSplits.map(escapeHTML).join(' ➔ ')}</p>
               <div class="text-[11px] text-gray-400 mt-1 flex justify-between">
                 <span>Mais rápido: <strong class="text-emerald-400">KM ${fastestKm} (${formatSecondsToPace(fastest)})</strong></span>
                 <span>Mais lento: <strong class="text-rose-400">KM ${slowestKm} (${formatSecondsToPace(slowest)})</strong></span>
@@ -1295,14 +1373,14 @@
         splitAnalysisHtml = `<p class="text-xs text-gray-400 italic">Nenhum split por km registado nesta atividade.</p>`;
       }
 
-      document.getElementById('modalCategoryBadge').textContent = `Autópsia Científica (${act.name})`;
+      document.getElementById('modalCategoryBadge').textContent = `Autópsia Científica (${escapeHTML(act.name)})`;
       document.getElementById('modalTitle').textContent = act.name;
       document.getElementById('modalBody').innerHTML = `
         <div class="space-y-3 text-xs">
           <div class="grid grid-cols-3 gap-2 bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
-            <div><span class="text-[9px] text-gray-400 uppercase font-bold">Distância</span><div class="text-sm font-black text-orange-400">${act.distance.toFixed(1)} km</div></div>
-            <div><span class="text-[9px] text-gray-400 uppercase font-bold">Duração</span><div class="text-sm font-black text-white">${act.time}</div></div>
-            <div><span class="text-[9px] text-gray-400 uppercase font-bold">Pace Médio</span><div class="text-sm font-black text-emerald-400">${act.pace}</div></div>
+            <div><span class="text-[9px] text-gray-400 uppercase font-bold">Distância</span><div class="text-sm font-black text-orange-400">${Number(act.distance).toFixed(1)} km</div></div>
+            <div><span class="text-[9px] text-gray-400 uppercase font-bold">Duração</span><div class="text-sm font-black text-white">${escapeHTML(act.time)}</div></div>
+            <div><span class="text-[9px] text-gray-400 uppercase font-bold">Pace Médio</span><div class="text-sm font-black text-emerald-400">${escapeHTML(act.pace)}</div></div>
           </div>
           ${splitAnalysisHtml}
           <div class="space-y-2 pt-1">
@@ -1332,18 +1410,13 @@
 
       let filteredActivities = manualActivities.filter(act => {
         if (period === 'all') return true;
-        if (!act.start_date) return true;
-        const d = new Date(act.start_date);
+        const d = getActivityDate(act);
+        if (!d) return false;
         const month = d.getMonth();
         const year = d.getFullYear();
         if (period === 'current_month') return month === currentMonth && year === currentYear;
-        if (period === 'december_2026') return month === 11 && year === 2026;
-        if (period === 'january_2027') return month === 0 && year === 2027;
-        if (period === 'february_2027') return month === 1 && year === 2027;
-        if (period === 'march_2027') return month === 2 && year === 2027;
-        if (period === 'october') return month === currentMonth - 1 && year === currentYear;
-        if (period === 'september') return month === currentMonth - 2 && year === currentYear;
-        if (period === 'august') return month === currentMonth - 3 && year === currentYear;
+        const match = String(period).match(/^(\d{4})-(\d{2})$/);
+        if (match) return year === Number(match[1]) && month === Number(match[2]) - 1;
         return true;
       });
 
@@ -1352,11 +1425,13 @@
       let totalWeekKm = 0;
       let totalPeriodKm = filteredActivities.reduce((acc, curr) => acc + (curr.distance || 0), 0);
 
+      // Semana corrente: segunda-feira 00:00 até agora; exclui datas futuras e semanas anteriores.
+      const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const weekday = (weekStart.getDay() + 6) % 7;
+      weekStart.setDate(weekStart.getDate() - weekday);
       manualActivities.forEach(act => {
-        if (act.start_date) {
-          const d = new Date(act.start_date);
-          if ((now - d) <= (7 * 86400000)) totalWeekKm += (act.distance || 0);
-        }
+        const d = getActivityDate(act);
+        if (d && d >= weekStart && d <= now && Number.isFinite(Number(act.distance))) totalWeekKm += Number(act.distance);
       });
 
       document.getElementById('statWeekKm').textContent = `${totalWeekKm.toFixed(1)} km`;
@@ -1368,50 +1443,52 @@
       updatePerformancePredictions();
     }
 
-    function updatePerformancePredictions() {
-      let bestPaceSec = 300;
-      if (manualActivities.length > 0) {
-        let validPaces = manualActivities.map(a => parsePaceToSeconds(a.pace)).filter(p => p > 150 && p < 600);
-        if (validPaces.length > 0) bestPaceSec = Math.min(...validPaces);
-      }
+    function getPredictionReference() {
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - 90);
+      const candidates = manualActivities.map(a => {
+        const distance = Number(a.distance);
+        const duration = parseDurationToSeconds(a.time) || (parsePaceToSeconds(a.pace) * distance);
+        const date = getActivityDate(a);
+        return { distance, duration, date };
+      }).filter(a => Number.isFinite(a.distance) && a.distance >= 3 && a.distance <= 15 && a.duration > 0 && a.date && a.date <= new Date() && a.date >= cutoff);
+      if (!candidates.length) return null;
+      // Melhor equivalente estimado para 5 km entre esforços recentes de 3–15 km.
+      return candidates.map(a => ({ ...a, equivalent5k: a.duration * Math.pow(5 / a.distance, 1.06) }))
+        .sort((a, b) => a.equivalent5k - b.equivalent5k)[0];
+    }
 
+    function updatePerformancePredictions() {
+      const reference = getPredictionReference();
+      const distances = [5, 10, 21.097, 42.195];
+      const ids = [['pred5kTime','pred5kPace'],['pred10kTime','pred10kPace'],['pred21kTime','pred21kPace'],['pred42kTime','pred42kPace']];
       const formatTime = (sec) => {
+        if (!Number.isFinite(sec) || sec <= 0) return '--:--';
         let h = Math.floor(sec / 3600);
         let m = Math.floor((sec % 3600) / 60);
         let s = Math.round(sec % 60);
-        if (h > 0) return `${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
-        return `${m}:${s < 10 ? '0' : ''}${s}`;
+        if (s === 60) { s = 0; m += 1; }
+        if (m === 60) { m = 0; h += 1; }
+        return h > 0 ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `${m}:${String(s).padStart(2,'0')}`;
       };
-
-      const formatPace = (sec, dist) => {
-        let p = sec / dist;
-        let m = Math.floor(p / 60);
-        let s = Math.round(p % 60);
-        return `${m}:${s < 10 ? '0' : ''}${s} /km`;
-      };
-
-      let t5 = calcTimeSec(5);
-      let t10 = calcTimeSec(10);
-      let t21 = calcTimeSec(21.097);
-      let t42 = calcTimeSec(42.195);
-
-      document.getElementById('pred5kTime').textContent = formatTime(t5);
-      document.getElementById('pred5kPace').textContent = formatPace(t5, 5);
-      document.getElementById('pred10kTime').textContent = formatTime(t10);
-      document.getElementById('pred10kPace').textContent = formatPace(t10, 10);
-      document.getElementById('pred21kTime').textContent = formatTime(t21);
-      document.getElementById('pred21kPace').textContent = formatPace(t21, 21.097);
-      document.getElementById('pred42kTime').textContent = formatTime(t42);
-      document.getElementById('pred42kPace').textContent = formatPace(t42, 42.195);
+      distances.forEach((distance, index) => {
+        const timeEl = document.getElementById(ids[index][0]);
+        const paceEl = document.getElementById(ids[index][1]);
+        if (!reference || distance > reference.distance * 2) {
+          timeEl.textContent = '--:--';
+          paceEl.textContent = reference ? 'base insuficiente' : 'registre uma prova de 3–15 km';
+          return;
+        }
+        const seconds = reference.duration * Math.pow(distance / reference.distance, 1.06);
+        timeEl.textContent = formatTime(seconds);
+        paceEl.textContent = formatSecondsToPace(seconds / distance);
+      });
     }
 
     function calcTimeSec(distKm) {
-      let bestPaceSec = 300;
-      if (manualActivities.length > 0) {
-        let validPaces = manualActivities.map(a => parsePaceToSeconds(a.pace)).filter(p => p > 150 && p < 600);
-        if (validPaces.length > 0) bestPaceSec = Math.min(...validPaces);
-      }
-      return (bestPaceSec * distKm) * Math.pow(distKm / 5, 0.07);
+      const reference = getPredictionReference();
+      if (!reference || !Number.isFinite(distKm) || distKm > reference.distance * 2) return 0;
+      return reference.duration * Math.pow(distKm / reference.distance, 1.06);
     }
 
     function renderSmartComparativeFeedback(filteredActs, period) {
@@ -1423,20 +1500,24 @@
       }
 
       let totalKm = filteredActs.reduce((acc, curr) => acc + (curr.distance || 0), 0);
-      let validPaces = filteredActs.map(a => parsePaceToSeconds(a.pace)).filter(p => p > 0);
-      let avgPaceSec = validPaces.length > 0 ? (validPaces.reduce((a,b)=>a+b,0) / validPaces.length) : 0;
+      const paceSamples = filteredActs.map(a => ({ pace: parsePaceToSeconds(a.pace), distance: Number(a.distance) }))
+        .filter(x => x.pace > 0 && Number.isFinite(x.distance) && x.distance > 0);
+      const totalPaceDistance = paceSamples.reduce((sum, x) => sum + x.distance, 0);
+      const avgPaceSec = totalPaceDistance > 0
+        ? paceSamples.reduce((sum, x) => sum + x.pace * x.distance, 0) / totalPaceDistance
+        : 0;
       let formattedAvgPace = formatSecondsToPace(avgPaceSec);
 
       let typesCount = {};
       filteredActs.forEach(a => {
-        let t = a.name || 'Outro';
+        let t = escapeHTML(a.name || 'Outro');
         typesCount[t] = (typesCount[t] || 0) + 1;
       });
 
       let typeSummaryText = Object.entries(typesCount).map(([k, v]) => `• ${k}: ${v} sessão(ões)`).join('<br>');
 
       container.innerHTML = `
-        <p class="text-gray-300">Neste período selecionado, registou <strong>${filteredActs.length} sessões</strong> totalizando <strong>${totalKm.toFixed(1)} km</strong> para o perfil <strong>${currentProfile.toUpperCase()}</strong> com ritmo médio de <strong>${formattedAvgPace}</strong>.</p>
+        <p class="text-gray-300">Neste período selecionado, registou <strong>${filteredActs.length} sessões</strong> totalizando <strong>${totalKm.toFixed(1)} km</strong> para o perfil <strong>${escapeHTML(currentProfile.toUpperCase())}</strong> com ritmo médio de <strong>${formattedAvgPace}</strong>.</p>
         <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-1.5 mt-2">
           <strong class="text-cyan-400 block flex items-center gap-1.5">
             <i class="fa-solid fa-chart-pie"></i> Distribuição por Tipo de Treino Realizado:
@@ -1452,14 +1533,14 @@
       let daysKm = [0, 0, 0, 0, 0, 0, 0];
       const now = new Date();
 
+      const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const weekday = (weekStart.getDay() + 6) % 7;
+      weekStart.setDate(weekStart.getDate() - weekday);
       manualActivities.forEach(act => {
-        if (act.start_date) {
-          const d = new Date(act.start_date);
-          if ((now - d) <= (7 * 86400000)) {
-            let dayIdx = d.getDay() - 1; 
-            if (dayIdx < 0) dayIdx = 6;
-            daysKm[dayIdx] += (act.distance || 0);
-          }
+        const d = getActivityDate(act);
+        if (d && d >= weekStart && d <= now) {
+          const dayIdx = (d.getDay() + 6) % 7;
+          daysKm[dayIdx] += Number(act.distance) || 0;
         }
       });
 
@@ -1488,9 +1569,9 @@
       container.innerHTML = listToRender.map(act => `
         <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs flex justify-between items-center">
           <div>
-            <strong class="text-white"><i class="fa-solid fa-person-running text-orange-400 mr-1"></i> ${act.name}</strong>
-            <div class="text-[10px] text-gray-400">${act.start_date || 'Data N/A'} • ${act.time} • Pace: ${act.pace}</div>
-            ${act.splits ? '<div class="text-[10px] text-cyan-400 mt-0.5">Splits: ' + act.splits + '</div>' : ''}
+            <strong class="text-white"><i class="fa-solid fa-person-running text-orange-400 mr-1"></i> ${escapeHTML(act.name)}</strong>
+            <div class="text-[10px] text-gray-400">${escapeHTML(act.start_date || 'Data N/A')} • ${escapeHTML(act.time)} • Pace: ${escapeHTML(act.pace)}</div>
+            ${act.splits ? '<div class="text-[10px] text-cyan-400 mt-0.5">Splits: ' + escapeHTML(act.splits) + '</div>' : ''}
           </div>
           <div class="flex items-center gap-2">
             <span class="text-orange-400 font-bold">${act.distance.toFixed(1)} km</span>
