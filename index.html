@@ -1755,33 +1755,34 @@ const supabaseClient = window.supabase.createClient(
       res.classList.remove('hidden');
     }
   </script>
-  <!-- STAMINALAB 360 - AUTENTICAÇÃO -->
-  <div id="stamina-auth" style="max-width:420px;margin:40px auto;padding:24px;background:#111827;color:white;opacity:1;border-radius:16px;font-family:Arial,sans-serif;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;width:90%;box-sizing:border-box;">
+  <!-- STAMINALAB 360 - AUTENTICAÇÃO: tela isolada, fundo opaco -->
+  <div id="stamina-auth" style="position:fixed;inset:0;width:100%;height:100%;min-height:100vh;z-index:999999;background:#0a0d14;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;overflow:auto;font-family:Arial,sans-serif;color:white;">
+    <div style="width:100%;max-width:420px;margin:auto;padding:24px;background:#111827;color:white;border:1px solid #263244;border-radius:16px;box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,.45);">
+      <h2 style="text-align:center;margin:0 0 8px;">StaminaLab 360°</h2>
+      <p style="text-align:center;margin:0 0 16px;">Sua jornada começa aqui!</p>
 
-  <h2 style="text-align:center;">StaminaLab 360°</h2>
-  <p style="text-align:center;">Sua jornada começa aqui!</p>
+      <input id="stamina-nome" type="text" placeholder="Seu nome completo"
+        style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;border-radius:8px;border:1px solid #444;background-color:#263244;color:#ffffff;font-size:16px;">
 
-  <input id="stamina-nome" type="text" placeholder="Seu nome completo"
-    style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;border-radius:8px;border:1px solid #444;background-color:#263244;color:#ffffff;font-size:16px;">
+      <input id="stamina-email" type="email" placeholder="Seu e-mail"
+        style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;border-radius:8px;border:1px solid #444;background-color:#263244;color:#ffffff;font-size:16px;">
 
-  <input id="stamina-email" type="email" placeholder="Seu e-mail"
-    style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;border-radius:8px;border:1px solid #444;background-color:#263244;color:#ffffff;font-size:16px;">
+      <input id="stamina-senha" type="password" placeholder="Crie uma senha (mínimo 6 caracteres)"
+        style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;border-radius:8px;border:1px solid #444;background-color:#263244;color:#ffffff;font-size:16px;">
 
-  <input id="stamina-senha" type="password" placeholder="Crie uma senha (mínimo 6 caracteres)"color:#ffffff;background:#263244;
-    style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;border-radius:8px;border:1px solid #444;background-color:#263244;color:#ffffff;font-size:16px;">
+      <button onclick="staminaCadastrar()"
+        style="width:100%;padding:14px;margin-top:10px;background:#22c55e;color:#052e16;border:0;border-radius:8px;font-weight:bold;cursor:pointer;">
+        Criar minha conta
+      </button>
 
-  <button onclick="staminaCadastrar()"
-    style="width:100%;padding:14px;margin-top:10px;background:#22c55e;color:#052e16;border:0;border-radius:8px;font-weight:bold;cursor:pointer;">
-    Criar minha conta
-  </button>
+      <button onclick="staminaEntrar()"
+        style="width:100%;padding:14px;margin-top:10px;background:#2563eb;color:white;border:0;border-radius:8px;font-weight:bold;cursor:pointer;">
+        Já tenho conta — Entrar
+      </button>
 
-  <button onclick="staminaEntrar()"
-    style="width:100%;padding:14px;margin-top:10px;background:#2563eb;color:white;border:0;border-radius:8px;font-weight:bold;cursor:pointer;">
-    Já tenho conta — Entrar
-  </button>
-
-  <p id="stamina-mensagem" style="text-align:center;margin-top:16px;"></p>
-</div>
+      <p id="stamina-mensagem" style="text-align:center;margin-top:16px;"></p>
+    </div>
+  </div>
 <!-- PAINEL DO ATLETA -->
 <div id="stamina-area-atleta" style="display:none;position:relative;inset:0;z-index:999998;background:#0b1220;color:#fff;overflow:auto;padding:24px;font-family:Arial,sans-serif;">
 
