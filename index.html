@@ -1782,7 +1782,23 @@ const supabaseClient = window.supabase.createClient(
 
   <p id="stamina-mensagem" style="text-align:center;margin-top:16px;"></p>
 </div>
+<!-- PAINEL DO ATLETA -->
+<div id="stamina-area-atleta" style="display:none;position:fixed;inset:0;z-index:999998;background:#0b1220;color:#fff;overflow:auto;padding:24px;font-family:Arial,sans-serif;">
 
+  <div style="max-width:900px;margin:0 auto;">
+
+    <h1>StaminaLab 360°</h1>
+
+    <p id="stamina-boas-vindas">Bem-vindo ao seu espaço de atleta!</p>
+
+    <h2>Meu painel de treinamento</h2>
+
+    <p>Aqui ficará sua jornada esportiva, seus treinos e sua evolução.</p>
+
+    <button onclick="staminaSair()">Sair da conta</button>
+
+  </div>
+</div>
 <script>
 async function staminaCadastrar() {
   const nome = document.getElementById("stamina-nome").value.trim();
