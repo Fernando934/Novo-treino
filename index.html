@@ -215,4 +215,80 @@ $("coachOutput").innerHTML=msgs.map(m=>`<div class="activity"><div><strong>${esc
 function switchTab(name){document.querySelectorAll("main>section").forEach(s=>s.classList.toggle("hidden",s.id!==`tab-${name}`));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));if(name==="add"&&!$("editId").value)$("date").value=todayISO();if(name==="dashboard")renderChart();window.scrollTo({top:0,behavior:"smooth"})}
 document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
 function resetForm(){ $("activityForm").reset();$("editId").value="";$("formTitle").textContent="Registrar atividade";$("date").value=todayISO()}
-$("activityForm").addEventListener("submit
+$("activityForm").addEventListener("submit",e=>{e.preventDefault();let distance=Number($("distance").value.replace(",",".")),duration=parseDuration($("duration").value),hr=$("hr").value?Number($("hr").value):null,elev=$("elevation").value?Number($("elevation").value):null;
+if(!Number.isFinite(distance)||distance<=0||distance>1000){alert("Informe uma distância válida maior que zero.");return}
+if(duration===null||duration<=0){alert("Informe o tempo como MM:SS ou HH:MM:SS. Segundos e minutos devem estar entre 00 e 59.");return}
+if(hr!==null&&(!Number.isFinite(hr)||hr<30||hr>250)){alert("Confira a frequência cardíaca (30–250 bpm).");return}
+let id=$("editId").value||crypto.randomUUID(),old=data.activities.find(x=>x.id===id);
+let obj={id,date:$("date").value,type:$("type").value,distance,duration,hr,elevation:elev,notes:$("notes").value.trim(),created:old?.created||Date.now()};
+if(!obj.date){alert("Informe a data.");return}
+if(old)data.activities=data.activities.map(x=>x.id===id?obj:x);else data.activities.push(obj);
+save();resetForm();switchTab("activities");});
+$("cancelEdit").addEventListener("click",resetForm);
+document.addEventListener("click",e=>{let ed=e.target.closest("[data-edit]");if(ed){let a=data.activities.find(x=>x.id===ed.dataset.edit);if(!a)return;$("editId").value=a.id;$("date").value=a.date;$("type").value=a.type;$("distance").value=a.distance;$("duration").value=durationText(a.duration);$("hr").value=a.hr||"";$("elevation").value=a.elevation||"";$("notes").value=a.notes||"";$("formTitle").textContent="Editar atividade";switchTab("add")}
+let del=e.target.closest("[data-delete]");if(del){let a=data.activities.find(x=>x.id===del.dataset.delete);if(a&&confirm(`Excluir o treino de ${dateObj(a.date).toLocaleDateString("pt-BR")} (${a.distance} km)?`)){data.activities=data.activities.filter(x=>x.id!==a.id);save()}}});
+$("profileForm").addEventListener("submit",e=>{e.preventDefault();data.athlete=$("athlete").value.trim();data.goal=Number($("goal").value);if(!Number.isFinite(data.goal)||data.goal<=0){alert("Informe uma meta válida.");return}save();setAthleteIdentity(currentUser);alert("Perfil salvo!")});
+function exportData(){let blob=new Blob([JSON.stringify({app:"StaminaLab360",version:1,exportedAt:new Date().toISOString(),data},null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`staminalab-backup-${todayISO()}.json`;a.click();URL.revokeObjectURL(url)}
+$("exportBtn").addEventListener("click",exportData);$("exportBtn2").addEventListener("click",exportData);
+$("importBtn").addEventListener("click",()=>$("importFile").click());
+$("importFile").addEventListener("change",async e=>{let f=e.target.files[0];if(!f)return;try{let obj=JSON.parse(await f.text()),x=obj.data||obj;if(!Array.isArray(x.activities))throw Error("O arquivo não contém uma lista de atividades.");if(!confirm(`Importar ${x.activities.length} treino(s)? Isso substituirá os dados atuais deste aplicativo.`))return;data={athlete:String(x.athlete||""),goal:Number(x.goal)||20,activities:x.activities};save();alert("Backup importado com sucesso.")}catch(err){alert("Não foi possível importar: "+err.message)}e.target.value=""});
+$("clearData").addEventListener("click",()=>{if(confirm("Tem certeza que deseja apagar TODOS os treinos salvos neste navegador? Exporte um backup antes. Esta ação não pode ser desfeita.")){if(confirm("Confirmação final: apagar seu histórico de treinos?")){data.activities=[];save();alert("Histórico apagado.")}}});
+function weekMondayISO(date=new Date()){
+ const d=new Date(date);d.setHours(0,0,0,0);const day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);
+ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function weekRangeLabel(startISO){const d=dateObj(startISO),end=new Date(d);end.setDate(end.getDate()+6);return `${d.toLocaleDateString("pt-BR")} a ${end.toLocaleDateString("pt-BR")}`}
+function setAthleteIdentity(user=currentUser){
+ const metadata=user?.user_metadata||{};
+ const name=(data.athlete||metadata.full_name||metadata.name||user?.email?.split("@")[0]||"Atleta").trim();
+ $("athleteIdentity").textContent=`Atleta: ${name}`;
+ if($("athlete")&&!$("athlete").value)$("athlete").value=data.athlete||metadata.full_name||metadata.name||user?.email?.split("@")[0]||"";
+}
+function getPlanPrefs(){return data.plannerPrefs||{goal:Number(data.goal)||20,level:"beginner",days:4,focus:"consistency"}}
+function initializeAutomaticPlan(force=false){
+ const prefs=getPlanPrefs();
+ $("plannerGoal").value=prefs.goal||data.goal||20;
+ $("plannerLevel").value=prefs.level||"beginner";
+ $("plannerDays").value=String(prefs.days||4);
+ $("plannerFocus").value=prefs.focus||"consistency";
+ const thisWeek=weekMondayISO();
+ if(force||!data.weeklyPlan||data.weeklyPlan.weekStart!==thisWeek){
+  data.plannerPrefs={goal:Number($("plannerGoal").value)||Number(data.goal)||20,level:$("plannerLevel").value||"beginner",days:Number($("plannerDays").value)||4,focus:$("plannerFocus").value||"consistency"};
+  data.weeklyPlan=buildWeeklyPlan(data.plannerPrefs,thisWeek);
+  save();
+ }
+ renderWeeklyPlan();
+}
+function buildWeeklyPlan(prefs,weekStart){
+ const goal=Math.max(1,Number(prefs.goal)||data.goal||20),days=Number(prefs.days)||4,level=prefs.level||"beginner",focus=prefs.focus||"consistency";
+ const recentKm=sumDistance(rangeActivities(28))/4;
+ const safeTarget=recentKm>0?Math.min(goal,recentKm*(recentKm<10?1.08:1.10)):Math.min(goal,level==="beginner"?8:12);
+ const target=Math.max(recentKm>0?Math.min(recentKm,2):4,Math.round(safeTarget*10)/10);
+ const longKm=Math.max(2,Math.round(target*(level==="beginner"?.30:.32)*10)/10);
+ let sessions=[];
+ if(days===3)sessions=[["Terça","Corrida leve",Math.max(2,Math.round(target*.25*10)/10),"Ritmo confortável, conversa possível."],["Quinta","Leve + técnica",Math.max(2,Math.round(target*.30*10)/10),"Se estiver bem, 4 acelerações curtas e relaxadas."],["Domingo","Rodagem longa leve",longKm,"Sem forçar; caminhe se necessário."]];
+ if(days===4)sessions=[["Segunda","Descanso",0,"Recuperação e sono."],["Terça","Corrida leve",Math.max(2,Math.round(target*.25*10)/10),"Ritmo confortável, conversa possível."],["Quinta","Treino moderado controlado",Math.max(2,Math.round(target*.25*10)/10),focus==="consistency"?"Rodagem leve e constante.":"Aquecimento + 3 blocos moderados de 3 min, sem sprint."],["Domingo","Rodagem longa leve",longKm,"Confortável; reduza se houver cansaço."]];
+ if(days===5)sessions=[["Segunda","Descanso",0,"Recuperação."],["Terça","Corrida leve",Math.max(2,Math.round(target*.20*10)/10),"Ritmo de conversa."],["Quarta","Regenerativo",Math.max(1,Math.round(target*.12*10)/10),"Muito leve ou corrida/caminhada."],["Sexta","Estímulo controlado",Math.max(2,Math.round(target*.22*10)/10),"Aquecimento + trechos moderados; nada máximo."],["Domingo","Rodagem longa leve",longKm,"Confortável, reduza se houver fadiga."]];
+ const notices=[];
+ if(recentKm===0)notices.push("Ainda não há treinos recentes suficientes. Plano inicial conservador; comece leve.");
+ if(goal>Math.max(recentKm,1)*1.25)notices.push(`Meta ${fmt(goal,1)} km acima do volume recente estimado (${fmt(recentKm,1)} km/semana). O plano começa mais baixo e aumenta gradualmente.`);
+ if(focus==="5k")notices.push("Foco 5 km: priorize consistência e conforto; não precisa fazer teste máximo toda semana.");
+ if(focus==="10k")notices.push("Foco 10 km: construa volume confortável e aumente a rodagem longa gradualmente.");
+ if(focus==="half")notices.push("Base para 21 km: esta semana não é uma planilha completa de preparação para prova.");
+ return {weekStart,createdAt:new Date().toISOString(),sessions,notices,targetKm:target,prefs};
+}
+function renderWeeklyPlan(){
+ const plan=data.weeklyPlan;if(!plan){$("weeklyPlan").innerHTML='<div class="empty">Não foi possível montar o plano.</div>';return}
+ $("planWeekTag").textContent=`Semana: ${weekRangeLabel(plan.weekStart)}`;
+ const cards=plan.sessions.map(s=>`<div class="activity"><div><strong>${esc(s[0])} · ${esc(s[1])}${s[2]?` — ${fmt(s[2],1)} km`:""}</strong><div class="meta">${esc(s[3])}</div></div></div>`).join("");
+ const notices=(plan.notices||[]).map(n=>`<div class="notice">${esc(n)}</div>`).join("");
+ $("weeklyPlan").innerHTML=`${notices}${cards}<p class="sub">Volume sugerido: ${fmt(plan.targetKm,1)} km. O plano é reavaliado automaticamente na próxima segunda-feira com base no histórico atualizado. Respeite descanso e sintomas; não é prescrição médica.</p>`;
+}
+$("savePlanPrefs").addEventListener("click",()=>{
+ data.plannerPrefs={goal:Number($("plannerGoal").value)||Number(data.goal)||20,level:$("plannerLevel").value,days:Number($("plannerDays").value)||4,focus:$("plannerFocus").value};
+ data.goal=data.plannerPrefs.goal;data.weeklyPlan=buildWeeklyPlan(data.plannerPrefs,weekMondayISO());save();renderWeeklyPlan();alert("Preferências salvas. Plano atualizado automaticamente.");
+});
+window.addEventListener("resize",()=>renderChart());
+load();$("date").value=todayISO();render();
+</script>
+</body></html>
