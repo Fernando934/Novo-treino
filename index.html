@@ -1698,15 +1698,23 @@ const supabaseClient = window.supabase.createClient(
     function closeModal() { document.getElementById('detailModal').classList.add('hidden'); }
 
     function calculatePace() {
-      const dist = parseFloat(document.getElementById('calcDist').value);
+      const dist = Number(document.getElementById('calcDist').value);
       const timeStr = document.getElementById('calcTime').value.trim();
-      if (!dist || !timeStr || !timeStr.includes(':')) { alert("Insira distância e tempo."); return; }
+      if (!Number.isFinite(dist) || dist <= 0 || !/^\d{1,3}:\d{2}$/.test(timeStr)) {
+        alert("Informe uma distância positiva em metros e o tempo no formato MM:SS (ou H:MM:SS, se aplicável).");
+        return;
+      }
       const [min, sec] = timeStr.split(':').map(Number);
-      const totalSeconds = (min * 60) + (sec || 0);
+      if (!Number.isFinite(min) || !Number.isFinite(sec) || sec > 59 || min < 0 || (min === 0 && sec === 0)) {
+        alert("Tempo inválido. Os segundos devem ficar entre 00 e 59.");
+        return;
+      }
+      const totalSeconds = (min * 60) + sec;
       const distKm = dist / 1000;
       const paceSecPerKm = totalSeconds / distKm;
-      const paceMin = Math.floor(paceSecPerKm / 60);
-      const paceSec = Math.round(paceSecPerKm % 60);
+      const roundedPace = Math.round(paceSecPerKm);
+      const paceMin = Math.floor(roundedPace / 60);
+      const paceSec = roundedPace % 60;
       document.getElementById('resPace').textContent = `${paceMin}:${paceSec < 10 ? '0' : ''}${paceSec} /km`;
       document.getElementById('resSpeed').textContent = `${(distKm / (totalSeconds / 3600)).toFixed(2)} km/h`;
       document.getElementById('resVo2').textContent = dist >= 1000 ? `${((dist - 504.9) / 44.73).toFixed(1)} ml/kg` : "--";
@@ -1730,27 +1738,47 @@ const supabaseClient = window.supabase.createClient(
     }
 
     function calculateCalories() {
-      const weight = parseFloat(document.getElementById('calWeight').value) || 75;
-      const dist = parseFloat(document.getElementById('calDist').value) || 5;
+      const weight = Number(document.getElementById('calWeight').value);
+      const dist = Number(document.getElementById('calDist').value);
+      if (!Number.isFinite(weight) || weight <= 0 || weight > 350 ||
+          !Number.isFinite(dist) || dist <= 0 || dist > 500) {
+        alert("Informe peso e distância válidos. Não usaremos valores padrão para evitar estimativas incorretas.");
+        return;
+      }
+      // Estimativa simplificada (≈ 1,03 kcal por kg por km); não é medição individual.
       const cal = Math.round(weight * dist * 1.03);
       const res = document.getElementById('calResult');
-      res.textContent = `Gasto Calórico Estimado: ~${cal} kcal`;
+      res.textContent = `Gasto Calórico Estimado: ~${cal} kcal (estimativa aproximada)`;
       res.classList.remove('hidden');
     }
 
     function generatePaceSplits() {
-      const dist = parseFloat(document.getElementById('splitDist').value);
+      const dist = Number(document.getElementById('splitDist').value);
       const targetTimeStr = document.getElementById('splitTargetTime').value.trim();
+      if (!Number.isFinite(dist) || dist <= 0 || dist > 300 ||
+          !/^\d{1,2}:\d{2}(?::\d{2})?$/.test(targetTimeStr)) {
+        alert("Informe uma distância válida (km) e o tempo no formato MM:SS ou H:MM:SS.");
+        return;
+      }
       const parts = targetTimeStr.split(':').map(Number);
-      let totalSec = parts.length === 3 ? (parts[0] * 3600) + (parts[1] * 60) + parts[2] : (parts[0] * 60) + parts[1];
-      let baseSecPerKm = totalSec / dist;
+      let totalSec = parts.length === 3
+        ? (parts[0] * 3600) + (parts[1] * 60) + parts[2]
+        : (parts[0] * 60) + parts[1];
+      if (!parts.every(Number.isFinite) || parts[parts.length - 1] > 59 ||
+          (parts.length === 3 && parts[1] > 59) || totalSec <= 0) {
+        alert("Tempo inválido. Minutos e segundos devem ficar entre 00 e 59.");
+        return;
+      }
+      const baseSecPerKm = totalSec / dist;
       let html = '';
       for (let i = 1; i <= Math.ceil(dist); i++) {
-        let pMin = Math.floor(baseSecPerKm / 60);
-        let pSec = Math.round(baseSecPerKm % 60);
-        html += `<div class="p-2 bg-slate-950 rounded-xl text-xs font-mono flex justify-between"><span class="text-gray-400">KM ${i}</span><span class="text-cyan-400">Pace: ${pMin}:${pSec < 10 ? '0' : ''}${pSec}/km</span></div>`;
+        const segmentKm = Math.min(1, dist - (i - 1));
+        const segmentSec = Math.round(baseSecPerKm * segmentKm);
+        const pMin = Math.floor(segmentSec / 60);
+        const pSec = segmentSec % 60;
+        html += `<div class="p-2 bg-slate-950 rounded-xl text-xs font-mono flex justify-between"><span class="text-gray-400">KM ${i}${segmentKm < 1 ? ` (${segmentKm.toFixed(2)} km)` : ''}</span><span class="text-cyan-400">Passagem: ${pMin}:${pSec < 10 ? '0' : ''}${pSec}</span></div>`;
       }
-      let res = document.getElementById('splitsResult');
+      const res = document.getElementById('splitsResult');
       res.innerHTML = html;
       res.classList.remove('hidden');
     }
