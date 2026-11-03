@@ -1755,5 +1755,79 @@ const supabaseClient = window.supabase.createClient(
       res.classList.remove('hidden');
     }
   </script>
+  <!-- STAMINALAB 360 - AUTENTICAÇÃO -->
+<div id="stamina-auth" style="max-width:420px;margin:40px auto;padding:24px;background:#111827;color:white;border-radius:16px;font-family:Arial,sans-serif;">
+
+  <h2 style="text-align:center;">StaminaLab 360°</h2>
+  <p style="text-align:center;">Sua jornada começa aqui!</p>
+
+  <input id="stamina-nome" type="text" placeholder="Seu nome completo"
+    style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;border-radius:8px;border:1px solid #444;">
+
+  <input id="stamina-email" type="email" placeholder="Seu e-mail"
+    style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;border-radius:8px;border:1px solid #444;">
+
+  <input id="stamina-senha" type="password" placeholder="Crie uma senha (mínimo 6 caracteres)"
+    style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;border-radius:8px;border:1px solid #444;">
+
+  <button onclick="staminaCadastrar()"
+    style="width:100%;padding:14px;margin-top:10px;background:#22c55e;color:#052e16;border:0;border-radius:8px;font-weight:bold;cursor:pointer;">
+    Criar minha conta
+  </button>
+
+  <button onclick="staminaEntrar()"
+    style="width:100%;padding:14px;margin-top:10px;background:#2563eb;color:white;border:0;border-radius:8px;font-weight:bold;cursor:pointer;">
+    Já tenho conta — Entrar
+  </button>
+
+  <p id="stamina-mensagem" style="text-align:center;margin-top:16px;"></p>
+</div>
+
+<script>
+async function staminaCadastrar() {
+  const nome = document.getElementById("stamina-nome").value.trim();
+  const email = document.getElementById("stamina-email").value.trim();
+  const senha = document.getElementById("stamina-senha").value;
+  const mensagem = document.getElementById("stamina-mensagem");
+
+  if (!nome || !email || senha.length < 6) {
+    mensagem.textContent = "Preencha seu nome, e-mail e uma senha com pelo menos 6 caracteres.";
+    return;
+  }
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email: email,
+    password: senha,
+    options: {
+      data: { full_name: nome }
+    }
+  });
+
+  if (error) {
+    mensagem.textContent = "Erro no cadastro: " + error.message;
+    return;
+  }
+
+  mensagem.textContent = "Cadastro realizado! Verifique seu e-mail para confirmar a conta.";
+}
+
+async function staminaEntrar() {
+  const email = document.getElementById("stamina-email").value.trim();
+  const senha = document.getElementById("stamina-senha").value;
+  const mensagem = document.getElementById("stamina-mensagem");
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email: email,
+    password: senha
+  });
+
+  if (error) {
+    mensagem.textContent = "Erro no login: " + error.message;
+    return;
+  }
+
+  mensagem.textContent = "Login realizado com sucesso! Bem-vindo ao StaminaLab 360°.";
+}
+</script>
 </body>
 </html>
