@@ -618,8 +618,10 @@ const supabaseClient = window.supabase.createClient(
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-    let currentProfile = urlParams.get('perfil') || localStorage.getItem('stamina_active_profile') || 'fernando';
-    if (typeof currentProfile !== 'string' || !/^[a-z0-9_-]{1,32}$/i.test(currentProfile)) currentProfile = 'fernando';
+    // Antes do login, usar um perfil temporário. Após autenticar, o ID UUID do Supabase
+    // passa a ser a chave de isolamento dos dados locais deste atleta.
+    let currentProfile = 'visitante';
+    const isValidAthleteId = value => typeof value === 'string' && /^[a-z0-9_-]{1,64}$/i.test(value);
 
     let profilesList = readStoredJSON('stamina_profiles_list', ['fernando', 'raiza']);
     if (!Array.isArray(profilesList)) profilesList = ['fernando', 'raiza'];
@@ -1899,7 +1901,26 @@ async function staminaEntrar() {
     return;
   }
 
- mensagem.textContent = "Login realizado com sucesso! Bem-vindo ao StaminaLab 360°.";
+  const athleteId = data.user.id;
+  const athleteName = data.user.user_metadata?.full_name || email;
+
+  // Mantém o nome no registro de perfil do Supabase (o perfil é criado pelo trigger do cadastro).
+  const { error: profileError } = await supabaseClient
+    .from('profiles')
+    .update({ full_name: athleteName, updated_at: new Date().toISOString() })
+    .eq('id', athleteId);
+  if (profileError) {
+    console.warn('Não foi possível atualizar o nome no perfil remoto:', profileError.message);
+  }
+
+  // Isola todas as chaves existentes de treino pelo UUID da conta autenticada.
+  currentProfile = athleteId;
+  localStorage.setItem('stamina_active_profile', currentProfile);
+  loadProfileData();
+  renderPlan();
+  if (typeof updateDashboardData === 'function') updateDashboardData();
+
+  mensagem.textContent = "Login realizado com sucesso! Bem-vindo ao StaminaLab 360°.";
 
 document.getElementById("stamina-auth").style.display = "none";
   document.getElementById("stamina-auth").style.visibility = "hidden";
@@ -1907,9 +1928,9 @@ document.getElementById("stamina-auth").style.pointerEvents = "none";
 
 document.getElementById("stamina-area-atleta").style.display = "block";
   const profileBadge = document.querySelector("#profileControls span");
-  if (profileBadge) profileBadge.textContent = data.user.user_metadata.full_name || email;
+  if (profileBadge) profileBadge.textContent = athleteName;
   document.getElementById("stamina-boas-vindas").textContent =
-  "Olá, " + (data.user.user_metadata.full_name || email) + "!";
+  "Olá, " + athleteName + "!";
 
 }
   async function staminaSair() {
@@ -1921,6 +1942,7 @@ document.getElementById("stamina-area-atleta").style.display = "block";
   }
 
   document.getElementById("stamina-area-atleta").style.display = "none";
+  currentProfile = 'visitante';
 
   document.getElementById("stamina-auth").style.display = "block";
     document.getElementById("stamina-auth").style.position = "fixed";
