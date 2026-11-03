@@ -31,7 +31,7 @@ label{display:block;color:var(--muted);font-size:12px;margin:0 0 6px}input,selec
 \n<div class="wrap">
 <header class="top">
  <div class="brand"><div class="logo">S</div><div><h1>StaminaLab <span class="accent">360°</span></h1><p>Seu treinamento, com inteligência</p></div></div>
- <div class="topright"><span class="pill" id="athleteIdentity">Atleta: —</span><span class="pill" id="todayPill"></span><button class="secondary" id="exportBtn">Exportar backup</button><button class="secondary" id="importBtn">Importar</button><button class="secondary" id="stravaConnectBtn">Conectar Strava</button><button class="danger" id="logoutBtn">Sair da conta</button><input type="file" id="importFile" accept=".json,application/json" class="hidden"></div>
+ <div class="topright"><span class="pill" id="athleteIdentity">Atleta: —</span><span class="pill" id="todayPill"></span><button class="secondary" id="exportBtn">Exportar backup</button><button class="secondary" id="importBtn">Importar backup JSON</button><button class="secondary" id="stravaConnectBtn">Conectar Strava</button><button class="danger" id="logoutBtn">Sair da conta</button><input type="file" id="importFile" accept=".json,application/json" class="hidden"></div>
 </header>
 <nav class="nav" aria-label="Navegação">
 <button class="active" data-tab="dashboard">Visão geral</button><button data-tab="activities">Treinos</button><button data-tab="add">Registrar treino</button><button data-tab="coach">Assessoria</button><button data-tab="planner">Plano semanal</button><button data-tab="connections">Conexões</button><button data-tab="settings">Perfil e dados</button>
@@ -89,7 +89,7 @@ label{display:block;color:var(--muted);font-size:12px;margin:0 0 6px}input,selec
 <section id="tab-connections" class="hidden"><div class="grid">
 <div class="card span12"><div class="cardhead"><h2>Conexões externas</h2><span class="tag">Após login Supabase</span></div>
 <p>Você já está autenticado no StaminaLab. A conexão com o Strava deve ser autorizada aqui dentro, depois do login, e não na tela de entrada.</p>
-<div class="actions"><button id="stravaConnectMain">Conectar / autorizar Strava</button><button class="secondary" id="stravaStatusRefresh">Verificar conexão</button></div>
+<div class="actions"><button id="stravaConnectMain">Conectar / autorizar Strava</button><button class="secondary" id="stravaStatusRefresh">Verificar conexão</button><button id="stravaImportBtn">Importar atividades do Strava</button></div>
 <div id="stravaStatus" class="notice">Strava ainda não conectado.</div>
 <p class="sub">Para concluir a integração real, o projeto precisa ter o OAuth do Strava configurado no backend da Vercel (Client ID e Client Secret como variáveis de ambiente). Não é seguro colocar o Client Secret no HTML.</p>
 </div></div></section>
@@ -180,6 +180,40 @@ $("stravaStatusRefresh").addEventListener("click",async()=>{
  const status=$("stravaStatus");status.textContent="Verificando conexão e buscando atividades…";
  try{const {data:{session}}=await sb.auth.getSession();const r=await fetch("/api/strava-activities",{headers:{Authorization:`Bearer ${session.access_token}`}});const j=await r.json();if(!r.ok)throw new Error(j.error||"Strava não conectado.");status.textContent=`Strava conectado. ${j.activities?.length||0} atividades encontradas para importar. A importação para o histórico ainda deve ser confirmada no app.`;
  }catch(e){status.textContent=e.message||String(e)}
+});
+$("stravaImportBtn").addEventListener("click",async()=>{
+ if(!currentUser){alert("Faça login no StaminaLab primeiro.");return}
+ const btn=$("stravaImportBtn");
+ btn.disabled=true;btn.textContent="Importando atividades…";
+ try{
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session?.access_token)throw new Error("Sessão Supabase ausente. Entre novamente.");
+  const r=await fetch("/api/strava-activities",{headers:{Authorization:`Bearer ${session.access_token}`}});
+  const j=await r.json();
+  if(!r.ok)throw new Error(j.error||"Falha ao consultar atividades Strava.");
+  const activities=j.activities||[];
+  if(!activities.length){alert("Nenhuma atividade encontrada no Strava.");return}
+  const existing=new Set(data.activities.map(a=>String(a.strava_id||"")).filter(Boolean));
+  const fresh=activities.filter(a=>!existing.has(String(a.strava_id))).map(a=>({
+   id:"strava_"+String(a.strava_id),
+   strava_id:String(a.strava_id),
+   date:String(a.date||"").slice(0,10),
+   type:"Corrida",
+   distance:Number(a.distance_km)||0,
+   duration:Number(a.moving_time)||0,
+   hr:Number(a.average_heartrate)||0,
+   elevation:Number(a.total_elevation_gain)||0,
+   notes:`Importado do Strava: ${a.name||"Atividade"}`,
+   created:Date.now(),
+   source:"strava"
+  }));
+  if(!fresh.length){alert("As atividades encontradas já estão no histórico. Nenhuma duplicata foi importada.");return}
+  if(!confirm(`Encontradas ${activities.length} atividades.\n\n${fresh.length} novas serão adicionadas ao seu histórico. Confirmar importação?`))return;
+  data.activities=[...data.activities,...fresh];
+  save();
+  alert(`${fresh.length} atividades do Strava importadas com sucesso!`);
+ }catch(e){alert("Falha na importação: "+(e.message||e))}
+ finally{btn.disabled=false;btn.textContent="Importar atividades do Strava"}
 });
 (function handleStravaReturn(){const p=new URLSearchParams(location.search);if(p.get("strava_connected")==="1"){$("stravaStatus").textContent="Strava autorizado e conectado à sua conta! Clique em Verificar conexão para consultar atividades.";history.replaceState({},"",location.pathname+location.hash)}else if(p.get("strava_error")){$("stravaStatus").textContent="Erro Strava: "+p.get("strava_error");history.replaceState({},"",location.pathname+location.hash)}})();
 
