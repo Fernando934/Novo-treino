@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StaminaLab 360° — Treinamento</title>
+<style>
+:root{--bg:#0b1018;--panel:#121b27;--panel2:#182333;--line:#273649;--text:#eef4fb;--muted:#9aadc2;--lime:#b9f45b;--cyan:#65d9e8;--red:#ff727c;--yellow:#ffc969;--radius:18px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172637 0,#0b1018 52%);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:11px 15px;font-weight:700;background:var(--lime);color:#17200b}button.secondary{background:#263548;color:var(--text);border:1px solid #34475d}button.danger{background:#3a2028;color:#ffb5bc;border:1px solid #63343e}button:disabled{opacity:.5;cursor:not-allowed}
+.wrap{max-width:1180px;margin:auto;padding:22px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:24px}.brand{display:flex;gap:12px;align-items:center}.logo{width:46px;height:46px;border-radius:14px;background:var(--lime);color:#18220a;display:grid;place-items:center;font-size:24px;font-weight:900}.brand h1{margin:0;font-size:22px;letter-spacing:-.5px}.brand p{margin:0;color:var(--muted);font-size:12px;letter-spacing:1.7px;text-transform:uppercase}.topright{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.pill{border:1px solid var(--line);border-radius:99px;padding:7px 12px;color:var(--muted);font-size:12px}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.nav button{background:transparent;border:1px solid var(--line);color:var(--muted)}.nav button.active{background:var(--lime);color:#17200b;border-color:var(--lime)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:15px}.card{background:linear-gradient(160deg,#14202d,#101823);border:1px solid var(--line);border-radius:var(--radius);padding:19px;min-width:0}.span12{grid-column:span 12}.span8{grid-column:span 8}.span7{grid-column:span 7}.span6{grid-column:span 6}.span5{grid-column:span 5}.span4{grid-column:span 4}.cardhead{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px}.card h2{font-size:15px;margin:0;font-weight:750}.sub{color:var(--muted);font-size:12px}.metric{font-size:clamp(25px,3vw,36px);font-weight:850;letter-spacing:-1px;margin:7px 0}.metric small{font-size:14px;color:var(--muted);font-weight:600;letter-spacing:0}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{background:#0e1721;border:1px solid #223143;border-radius:14px;padding:14px}.stat .label{color:var(--muted);font-size:12px}.stat .value{font-size:25px;font-weight:800;margin-top:4px}.accent{color:var(--lime)}.cyan{color:var(--cyan)}.chart{width:100%;height:230px;display:block}.empty{padding:25px;text-align:center;color:var(--muted);border:1px dashed #33465b;border-radius:14px}
+label{display:block;color:var(--muted);font-size:12px;margin:0 0 6px}input,select,textarea{width:100%;background:#0c141e;color:var(--text);border:1px solid #2c3c50;border-radius:10px;padding:11px;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--cyan)}.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field.full{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.list{display:flex;flex-direction:column;gap:9px}.activity{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px;border-radius:12px;background:#0e1721;border:1px solid #223143}.activity strong{display:block}.activity .meta{font-size:12px;color:var(--muted)}.activity .right{text-align:right}.activity .right b{display:block}.tag{font-size:11px;border-radius:6px;padding:3px 7px;background:#20313b;color:var(--cyan);display:inline-block;margin-top:4px}
+.zone{height:9px;background:#253446;border-radius:99px;overflow:hidden;margin:10px 0}.zone span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--lime));border-radius:99px}
+.hidden{display:none!important}.notice{font-size:12px;color:var(--muted);margin-top:10px}.footer{color:#61758a;text-align:center;padding:25px;font-size:11px}
+@media(max-width:800px){.span8,.span7,.span6,.span5,.span4{grid-column:span 12}.stats{grid-template-columns:repeat(2,1fr)}.wrap{padding:14px}.card{padding:15px}.metric{font-size:29px}}
+@media(max-width:420px){.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.activity{grid-template-columns:1fr}.activity .right{text-align:left;display:flex;gap:12px;align-items:center}.stats{gap:8px}.stat{padding:10px}.stat .value{font-size:21px}}
+</style>
+</head>
+<body>
+<div id="authGate" style="position:fixed;inset:0;z-index:1000;background:#08101af5;display:flex;align-items:center;justify-content:center;padding:18px">
+<div class="card" style="width:min(440px,100%);box-shadow:0 20px 80px #0008">
+<div class="brand" style="margin-bottom:18px"><div class="logo">S</div><div><h1>StaminaLab <span class="accent">360°</span></h1><p>Conta do atleta · sincronização</p></div></div>
+<p class="sub">Entre ou crie sua conta para salvar seus treinos na nuvem.</p>
+<div class="field"><label for="authEmail">E-mail</label><input id="authEmail" type="email" autocomplete="email" placeholder="voce@email.com"></div>
+<div class="field" style="margin-top:10px"><label for="authPassword">Senha</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres"></div>
+<div class="actions"><button id="loginBtn">Entrar</button><button class="secondary" id="signupBtn">Criar conta</button></div>
+<p id="authMessage" class="notice"></p>
+<p class="notice">A autenticação é feita pelo Supabase. A chave inserida no app é uma chave pública (publishable), não uma chave secreta de administrador.</p>
+</div></div>
+\n<div class="wrap">
+<header class="top">
+ <div class="brand"><div class="logo">S</div><div><h1>StaminaLab <span class="accent">360°</span></h1><p>Seu treinamento, com inteligência</p></div></div>
+ <div class="topright"><span class="pill" id="athleteIdentity">Atleta: —</span><span class="pill" id="todayPill"></span><button class="secondary" id="exportBtn">Exportar backup</button><button class="secondary" id="importBtn">Importar backup JSON</button><button class="secondary" id="stravaConnectBtn">Conectar Strava</button><button class="danger" id="logoutBtn">Sair da conta</button><input type="file" id="importFile" accept=".json,application/json" class="hidden"></div>
+</header>
+<nav class="nav" aria-label="Navegação">
+<button class="active" data-tab="dashboard">Visão geral</button><button data-tab="activities">Treinos</button><button data-tab="add">Registrar treino</button><button data-tab="coach">Assessoria</button><button data-tab="planner">Plano semanal</button><button data-tab="connections">Conexões</button><button data-tab="settings">Perfil e dados</button>
+</nav>
+<main>
+<section id="tab-dashboard">
+<div class="grid">
+<div class="card span12">
+<div class="cardhead"><h2>Resumo do seu treinamento</h2><span class="sub" id="rangeLabel">Últimos 28 dias</span></div>
+<div class="stats">
+<div class="stat"><div class="label">Distância · 7 dias</div><div class="value accent" id="km7">0,0 <small>km</small></div></div>
+<div class="stat"><div class="label">Distância · 28 dias</div><div class="value" id="km28">0,0 <small>km</small></div></div>
+<div class="stat"><div class="label">Treinos · 28 dias</div><div class="value cyan" id="count28">0</div></div>
+<div class="stat"><div class="label">Ritmo médio · 28 dias</div><div class="value" id="pace28">—</div></div>
+</div>
+</div>
+<div class="card span8"><div class="cardhead"><h2>Volume semanal</h2><span class="sub">Km por semana · 8 semanas</span></div><canvas id="volumeChart" class="chart" aria-label="Gráfico de distância semanal"></canvas></div>
+<div class="card span4"><div class="cardhead"><h2>Meta semanal</h2><span class="sub" id="goalText">Defina uma meta</span></div><div class="metric"><span id="goalProgress">0</span><small> / <span id="goalKm">20</span> km</small></div><div class="zone"><span id="goalBar"></span></div><div class="sub" id="goalRemaining">Registre treinos para acompanhar.</div><button class="secondary" style="margin-top:12px" data-tab="settings">Editar meta</button></div>
+<div class="card span12"><div class="cardhead"><h2>Treinos recentes</h2><button class="secondary" data-tab="activities">Ver todos →</button></div><div id="recentList" class="list"></div></div>
+</div>
+</section>
+
+<section id="tab-activities" class="hidden"><div class="card"><div class="cardhead"><h2>Histórico de treinos</h2><span class="sub" id="activityCount"></span></div><div id="activityList" class="list"></div></div></section>
+
+<section id="tab-add" class="hidden"><div class="card" style="max-width:760px;margin:auto"><div class="cardhead"><h2 id="formTitle">Registrar atividade</h2><span class="sub">Os campos com * são obrigatórios</span></div>
+<form id="activityForm"><input type="hidden" id="editId">
+<div class="formgrid">
+<div class="field"><label for="date">Data *</label><input id="date" type="date" required></div>
+<div class="field"><label for="type">Tipo de treino</label><select id="type"><option>Corrida</option><option>Caminhada</option><option>Trail run</option><option>Esteira</option><option>Ciclismo</option><option>Outro</option></select></div>
+<div class="field"><label for="distance">Distância (km) *</label><input id="distance" type="number" min=".01" max="1000" step=".01" placeholder="Ex.: 5,25" required></div>
+<div class="field"><label for="duration">Tempo total (hh:mm:ss ou mm:ss) *</label><input id="duration" placeholder="Ex.: 00:32:15" required></div>
+<div class="field"><label for="hr">FC média (bpm, opcional)</label><input id="hr" type="number" min="30" max="250" placeholder="Ex.: 145"></div>
+<div class="field"><label for="elevation">Elevação (m, opcional)</label><input id="elevation" type="number" min="0" max="10000" placeholder="Ex.: 80"></div>
+<div class="field full"><label for="notes">Observações</label><textarea id="notes" rows="3" placeholder="Como se sentiu? Clima, percurso, esforço..."></textarea></div>
+</div><div class="actions"><button type="submit">Salvar treino</button><button type="button" class="secondary" id="cancelEdit">Limpar formulário</button></div><p class="notice">Seus registros ficam salvos neste navegador. Use “Exportar backup” para guardar uma cópia.</p></form></div></section>
+
+<section id="tab-coach" class="hidden"><div class="grid">
+<div class="card span12"><div class="cardhead"><h2>Assessoria de treinamento</h2><span class="tag">Análise baseada nos seus registros</span></div><p class="sub">Este painel oferece observações gerais a partir do histórico inserido. Não substitui avaliação de profissional de saúde ou treinador, e não diagnostica lesões, doenças ou overtraining.</p><div id="coachOutput" class="list"></div></div>
+<div class="card span6"><h2>Comparativo de volume</h2><div class="metric" id="comparison">—</div><p class="sub" id="comparisonText">Compare os últimos 14 dias com os 14 anteriores.</p></div>
+<div class="card span6"><h2>Ritmo de referência</h2><div class="metric" id="referencePace">—</div><p class="sub">Média simples dos ritmos registrados. Percursos, clima e esforço variam; não use como prescrição rígida.</p></div>
+</div></section>
+
+<section id="tab-planner" class="hidden"><div class="grid">
+<div class="card span12"><div class="cardhead"><h2>Seu plano semanal automático</h2><span class="tag" id="planWeekTag">Atualizado automaticamente</span></div>
+<p class="sub">O plano é montado automaticamente com base no seu perfil e nos treinos recentes. Ele é renovado ao começar uma nova semana (segunda-feira). Você pode ajustar as preferências abaixo; não precisa apertar “gerar”. Esta é uma lógica automática do aplicativo, não uma IA generativa.</p>
+<div class="formgrid">
+<div class="field"><label for="plannerGoal">Meta semanal (km)</label><input id="plannerGoal" type="number" min="1" max="250" step="1" value="20"></div>
+<div class="field"><label for="plannerLevel">Experiência</label><select id="plannerLevel"><option value="beginner">Iniciante / retorno</option><option value="intermediate">Intermediário</option><option value="advanced">Avançado</option></select></div>
+<div class="field"><label for="plannerDays">Dias disponíveis por semana</label><select id="plannerDays"><option value="3">3 dias</option><option value="4" selected>4 dias</option><option value="5">5 dias</option></select></div>
+<div class="field"><label for="plannerFocus">Objetivo principal</label><select id="plannerFocus"><option value="consistency">Criar consistência</option><option value="5k">Completar / melhorar 5 km</option><option value="10k">Completar / melhorar 10 km</option><option value="half">Preparar 21 km (base)</option></select></div>
+</div><div class="actions"><button class="secondary" id="savePlanPrefs">Salvar preferências e atualizar plano</button></div>
+<div id="weeklyPlan" class="list" style="margin-top:16px"><div class="empty">Entrando na conta para montar seu plano…</div></div>
+</div></div></section>
+
+<section id="tab-connections" class="hidden"><div class="grid">
+<div class="card span12"><div class="cardhead"><h2>Conexões externas</h2><span class="tag">Após login Supabase</span></div>
+<p>Você já está autenticado no StaminaLab. A conexão com o Strava deve ser autorizada aqui dentro, depois do login, e não na tela de entrada.</p>
+<div class="actions"><button id="stravaConnectMain">Conectar / autorizar Strava</button><button class="secondary" id="stravaStatusRefresh">Verificar conexão</button><button id="stravaImportBtn">Importar atividades do Strava</button></div>
+<div id="stravaStatus" class="notice">Strava ainda não conectado.</div>
+<p class="sub">Para concluir a integração real, o projeto precisa ter o OAuth do Strava configurado no backend da Vercel (Client ID e Client Secret como variáveis de ambiente). Não é seguro colocar o Client Secret no HTML.</p>
+</div></div></section>
+<section id="tab-settings" class="hidden"><div class="grid">
+<div class="card span6"><h2>Perfil do atleta</h2><form id="profileForm"><div class="field" style="margin-top:12px"><label for="athlete">Nome</label><input id="athlete" maxlength="70" placeholder="Seu nome"></div><div class="field" style="margin-top:12px"><label for="goal">Meta de distância semanal (km)</label><input id="goal" type="number" min="1" max="500" step=".5" value="20"></div><div class="actions"><button>Salvar perfil</button></div></form></div>
+<div class="card span6"><h2>Dados e privacidade</h2><p class="sub">Os treinos ficam no navegador e, após login, são sincronizados com sua conta Supabase. Use backup para manter uma cópia independente.</p><div class="actions"><button class="secondary" id="exportBtn2">Exportar backup JSON</button><button class="danger" id="clearData">Apagar todos os treinos</button></div><p class="notice">Antes de apagar, exporte seu backup. A ação de apagar exige confirmação.</p></div>
+</div></section>
+</main><div class="footer">STAMINALAB 360° · Treine com consistência, respeite sua recuperação.</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+"use strict";
+const STORE="staminalab360_rebuild_v1";
+const $=id=>document.getElementById(id);
+let data={athlete:"",goal:20,activities:[]};
+const todayISO=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
+const SUPABASE_URL="https://lbokpoabfbjajwamesxp.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_1bZpA0V94opayOptpPjJgw_dI2OJnBE";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+let currentUser=null,cloudReady=false;
+async function cloudLoad(user){
+  const response=await sb.from("stamina_data").select("payload").eq("user_id",user.id).maybeSingle();
+  if(response.error){console.warn(response.error);$("authMessage").textContent="Login feito, mas crie a tabela stamina_data usando o SQL incluído no pacote.";return}
+  if(response.data?.payload && Array.isArray(response.data.payload.activities)){data={...data,...response.data.payload};localStorage.setItem(STORE,JSON.stringify(data));render()}
+  cloudReady=true;
+  if(!response.data){const local=JSON.parse(localStorage.getItem(STORE)||"null");if(local?.activities?.length){data={...data,...local};await cloudSave();}}
+  setAthleteIdentity(user);
+  initializeAutomaticPlan();
+  $("authGate").classList.add("hidden");
+  $("authMessage").textContent="";
+}
+async function cloudSave(){
+ if(!currentUser||!cloudReady)return;
+ const payload={athlete:data.athlete,goal:data.goal,activities:data.activities,plannerPrefs:data.plannerPrefs||{}};
+ const {error}=await sb.from("stamina_data").upsert({user_id:currentUser.id,payload,updated_at:new Date().toISOString()},{onConflict:"user_id"});
+ if(error)console.error("Falha ao sincronizar:",error);
+}
+async function authAction(mode){
+ const email=$("authEmail").value.trim(),password=$("authPassword").value;
+ const msg=$("authMessage");
+ if(!email){msg.textContent="Digite seu e-mail.";$("authEmail").focus();return}
+ if(password.length<6){msg.textContent="A senha precisa ter pelo menos 6 caracteres.";$("authPassword").focus();return}
+ const login=$("loginBtn"),signup=$("signupBtn");login.disabled=signup.disabled=true;
+ msg.textContent=mode==="signup"?"Criando sua conta…":"Entrando…";
+ try{
+  if(!window.supabase){throw new Error("A biblioteca de conexão não carregou. Verifique sua internet e recarregue a página.")}
+  const result=mode==="signup"
+   ? await sb.auth.signUp({email,password,options:{emailRedirectTo:window.location.href.split("#")[0],data:{full_name:email.split("@")[0]}}})
+   : await sb.auth.signInWithPassword({email,password});
+  if(result.error)throw result.error;
+  if(mode==="signup"&&!result.data.session){msg.textContent="Cadastro criado! Confira sua caixa de e-mail (e spam) para confirmar a conta. Depois volte e entre.";return}
+  currentUser=result.data.user;
+  await cloudLoad(currentUser);
+ }catch(err){console.error("Supabase Auth:",err);msg.textContent=err?.message||"Não foi possível conectar. Confira a internet e tente novamente."}
+ finally{login.disabled=signup.disabled=false}
+}
+$("loginBtn").addEventListener("click",()=>authAction("login"));
+$("signupBtn").addEventListener("click",()=>authAction("signup"));
+sb.auth.getSession().then(async({data:sessionData})=>{if(sessionData.session){currentUser=sessionData.session.user;await cloudLoad(currentUser)}});
+async function logoutAccount(){
+ const btn=$("logoutBtn"); if(btn)btn.disabled=true;
+ try{const {error}=await sb.auth.signOut();if(error)throw error;
+ currentUser=null;cloudReady=false;
+ data={athlete:"",goal:20,activities:[],plannerPrefs:{goal:20,level:"beginner",days:4,focus:"consistency"},weeklyPlan:null};
+ localStorage.removeItem(STORE);
+ $("authEmail").value="";$("authPassword").value="";$("authMessage").textContent="Você saiu da sua conta.";
+ $("authGate").classList.remove("hidden");$("authGate").style.display="flex";
+ }catch(e){alert("Não foi possível sair: "+(e.message||e))}finally{if(btn)btn.disabled=false}
+}
+$("logoutBtn").addEventListener("click",logoutAccount);
+async function startStravaOAuth(){
+ if(!currentUser){alert("Entre primeiro na sua conta StaminaLab (Supabase).");return}
+ switchTab("connections");
+ const status=$("stravaStatus");status.textContent="Preparando conexão segura com Strava…";
+ try{
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session?.access_token)throw new Error("Sessão Supabase não encontrada. Entre novamente.");
+  const r=await fetch("/api/strava-auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({access_token:session.access_token})});
+  const j=await r.json();if(!r.ok)throw new Error(j.error||"Falha ao iniciar autorização Strava.");
+  if(!j.authorization_url)throw new Error("O servidor não retornou o endereço de autorização.");
+  window.location.href=j.authorization_url;
+ }catch(e){status.textContent="Não foi possível iniciar Strava: "+(e.message||e)+". Confira as variáveis e os endpoints da Vercel."}
+}
+$("stravaConnectBtn").addEventListener("click",startStravaOAuth);
+$("stravaConnectMain").addEventListener("click",startStravaOAuth);
+$("stravaStatusRefresh").addEventListener("click",async()=>{
+ if(!currentUser){alert("Faça login no StaminaLab primeiro.");return}
+ const status=$("stravaStatus");status.textContent="Verificando conexão e buscando atividades…";
+ try{const {data:{session}}=await sb.auth.getSession();const r=await fetch("/api/strava-activities",{headers:{Authorization:`Bearer ${session.access_token}`}});const j=await r.json();if(!r.ok)throw new Error(j.error||"Strava não conectado.");status.textContent=`Strava conectado. ${j.activities?.length||0} atividades encontradas para importar. A importação para o histórico ainda deve ser confirmada no app.`;
+ }catch(e){status.textContent=e.message||String(e)}
+});
+$("stravaImportBtn").addEventListener("click",async()=>{
+ if(!currentUser){alert("Faça login no StaminaLab primeiro.");return}
+ const btn=$("stravaImportBtn");
+ btn.disabled=true;btn.textContent="Importando atividades…";
+ try{
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session?.access_token)throw new Error("Sessão Supabase ausente. Entre novamente.");
+  const r=await fetch("/api/strava-activities",{headers:{Authorization:`Bearer ${session.access_token}`}});
+  const j=await r.json();
+  if(!r.ok)throw new Error(j.error||"Falha ao consultar atividades Strava.");
+  const activities=j.activities||[];
+  if(!activities.length){alert("Nenhuma atividade encontrada no Strava.");return}
+  const existing=new Set(data.activities.map(a=>String(a.strava_id||"")).filter(Boolean));
+  const fresh=activities.filter(a=>!existing.has(String(a.strava_id))).map(a=>({
+   id:"strava_"+String(a.strava_id),
+   strava_id:String(a.strava_id),
+   date:String(a.date||"").slice(0,10),
+   type:"Corrida",
+   distance:Number(a.distance_km)||0,
+   duration:Number(a.moving_time)||0,
+   hr:Number(a.average_heartrate)||0,
+   elevation:Number(a.total_elevation_gain)||0,
+   notes:`Importado do Strava: ${a.name||"Atividade"}`,
+   created:Date.now(),
+   source:"strava"
+  }));
+  if(!fresh.length){alert("As atividades encontradas já estão no histórico. Nenhuma duplicata foi importada.");return}
+  if(!confirm(`Encontradas ${activities.length} atividades.\n\n${fresh.length} novas serão adicionadas ao seu histórico. Confirmar importação?`))return;
+  data.activities=[...data.activities,...fresh];
+  save();
+  alert(`${fresh.length} atividades do Strava importadas com sucesso!`);
+ }catch(e){alert("Falha na importação: "+(e.message||e))}
+ finally{btn.disabled=false;btn.textContent="Importar atividades do Strava"}
+});
+(function handleStravaReturn(){const p=new URLSearchParams(location.search);if(p.get("strava_connected")==="1"){$("stravaStatus").textContent="Strava autorizado e conectado à sua conta! Clique em Verificar conexão para consultar atividades.";history.replaceState({},"",location.pathname+location.hash)}else if(p.get("strava_error")){$("stravaStatus").textContent="Erro Strava: "+p.get("strava_error");history.replaceState({},"",location.pathname+location.hash)}})();
+
+
+function load(){try{const x=JSON.parse(localStorage.getItem(STORE)||"null");if(x&&Array.isArray(x.activities))data={...data,...x};}catch(e){console.warn("Não foi possível ler dados locais",e)}}
+function save(){localStorage.setItem(STORE,JSON.stringify(data));render();cloudSave()}
+function parseDuration(s){let a=String(s).trim().split(":").map(Number);if(a.some(x=>!Number.isFinite(x)||x<0))return null;if(a.length===2){if(a[1]>=60)return null;return a[0]*60+a[1]}if(a.length===3){if(a[1]>=60||a[2]>=60)return null;return a[0]*3600+a[1]*60+a[2]}return null}
+function durationText(sec){if(!Number.isFinite(sec))return "—";let h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=Math.round(sec%60);return h?`${h}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`:`${m}:${String(s).padStart(2,"0")}`}
+function paceSec(a){return a.duration/a.distance}
+function paceText(sec){if(!Number.isFinite(sec)||sec<=0)return "—";let rounded=Math.round(sec),m=Math.floor(rounded/60),s=rounded%60;return `${m}:${String(s).padStart(2,"0")} /km`}
+function fmt(n,d=1){return Number(n||0).toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d})}
+function dateObj(s){return new Date(`${s}T12:00:00`)}
+function daysAgo(n){let d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-n);return d}
+function inRange(a,start,end){let d=dateObj(a.date);return d>=start&&d<end}
+function sumDistance(list){return list.reduce((s,a)=>s+Number(a.distance||0),0)}
+function rangeActivities(days){let start=daysAgo(days-1),end=new Date();end.setHours(23,59,59,999);return data.activities.filter(a=>inRange(a,start,end))}
+function sorted(){return [...data.activities].sort((a,b)=>b.date.localeCompare(a.date)||b.created-b.created)}
+function avgPace(list){let dist=sumDistance(list);return dist?list.reduce((s,a)=>s+a.duration,0)/dist:null}
+function weekStart(d){let x=new Date(d);x.setHours(0,0,0,0);let dow=(x.getDay()+6)%7;x.setDate(x.getDate()-dow);return x}
+function renderChart(){const c=$("volumeChart"),ctx=c.getContext("2d");const w=c.clientWidth||600,h=230,dpr=window.devicePixelRatio||1;c.width=w*dpr;c.height=h*dpr;ctx.scale(dpr,dpr);ctx.clearRect(0,0,w,h);
+let now=weekStart(new Date()),weeks=[];for(let i=7;i>=0;i--){let s=new Date(now);s.setDate(s.getDate()-i*7);let e=new Date(s);e.setDate(e.getDate()+7);weeks.push({s,e,label:`${s.getDate()}/${s.getMonth()+1}`,v:sumDistance(data.activities.filter(a=>dateObj(a.date)>=s&&dateObj(a.date)<e))})}
+let max=Math.max(5,...weeks.map(x=>x.v))*1.15,pad={l:35,r:8,t:12,b:25},cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+ctx.strokeStyle="#26384b";ctx.fillStyle="#8fa5ba";ctx.font="11px system-ui";ctx.textAlign="right";
+for(let i=0;i<=4;i++){let y=pad.t+ch*i/4,val=max*(1-i/4);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillText(val.toFixed(0),pad.l-7,y+4)}
+let bw=cw/8*.52;weeks.forEach((x,i)=>{let bh=x.v/max*ch,xx=pad.l+i*cw/8+(cw/8-bw)/2,yy=pad.t+ch-bh;ctx.fillStyle=i===7?"#b9f45b":"#3c596b";roundRect(ctx,xx,yy,bw,bh,5);ctx.fill();ctx.textAlign="center";ctx.fillStyle="#9aadc2";ctx.fillText(x.label,xx+bw/2,h-7)})}
+function roundRect(ctx,x,y,w,h,r){if(h<1)return;ctx.beginPath();ctx.roundRect(x,y,w,h,Math.min(r,w/2,h/2))}
+function activityHTML(a){return `<div class="activity"><div><strong>${esc(a.type)} · ${fmt(a.distance,2)} km</strong><div class="meta">${dateObj(a.date).toLocaleDateString("pt-BR")} · ${durationText(a.duration)} · ritmo ${paceText(paceSec(a))}${a.hr?` · FC ${a.hr} bpm`:""}${a.elevation?` · +${a.elevation} m`:""}</div>${a.notes?`<div class="meta">${esc(a.notes)}</div>`:""}</div><div class="right"><b>${paceText(paceSec(a))}</b><div class="actions" style="margin:5px 0 0;justify-content:flex-end"><button class="secondary" data-edit="${a.id}" style="padding:6px 9px;font-size:12px">Editar</button><button class="danger" data-delete="${a.id}" style="padding:6px 9px;font-size:12px">Excluir</button></div></div>`}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function render(){const a7=rangeActivities(7),a28=rangeActivities(28),dist7=sumDistance(a7),dist28=sumDistance(a28);
+$("km7").innerHTML=`${fmt(dist7)} <small>km</small>`;$("km28").innerHTML=`${fmt(dist28)} <small>km</small>`;$("count28").textContent=a28.length;$("pace28").textContent=avgPace(a28)?paceText(avgPace(a28)):"—";
+$("goalKm").textContent=fmt(data.goal,1);$("goalText").textContent=`Meta de ${fmt(data.goal,1)} km por semana`;$("goalProgress").textContent=fmt(dist7);let pct=Math.min(100,dist7/Math.max(1,data.goal)*100);$("goalBar").style.width=pct+"%";$("goalRemaining").textContent=dist7>=data.goal?`Meta alcançada! (${fmt(dist7-data.goal)} km acima)`:`Faltam ${fmt(data.goal-dist7)} km para a meta`;
+$("athlete").value=data.athlete||"";$("goal").value=data.goal;
+let list=sorted();$("recentList").innerHTML=list.length?list.slice(0,5).map(activityHTML).join(""):`<div class="empty">Ainda não há treinos registrados.<br>Use “Registrar treino” para começar.</div>`;
+$("activityList").innerHTML=list.length?list.map(activityHTML).join(""):`<div class="empty">Seu histórico está vazio.</div>`;$("activityCount").textContent=`${list.length} registro(s)`;
+renderCoach();renderChart();$("todayPill").textContent=new Date().toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"short"}).replace(".","");
+}
+function renderCoach(){let now=new Date(),d14=daysAgo(13),d28=daysAgo(27),prevStart=daysAgo(27),prevEnd=daysAgo(13);let recent=data.activities.filter(a=>dateObj(a.date)>=d14),previous=data.activities.filter(a=>dateObj(a.date)>=prevStart&&dateObj(a.date)<prevEnd);let kmR=sumDistance(recent),kmP=sumDistance(previous),pace=avgPace(rangeActivities(28));let change=kmP?((kmR-kmP)/kmP*100):null;
+$("comparison").textContent=change===null?"Sem base":`${change>=0?"+":""}${fmt(change,0)}%`;$("comparisonText").textContent=`${fmt(kmR)} km nos últimos 14 dias · ${fmt(kmP)} km nos 14 dias anteriores`;$("referencePace").textContent=pace?paceText(pace):"Ainda sem dados";
+let msgs=[];if(data.activities.length<3)msgs.push(["Comece pelo registro","Adicione alguns treinos para que o resumo identifique tendências."]);
+else {if(kmR===0)msgs.push(["Sem atividade recente","Não há registros nos últimos 14 dias. Se houve pausa, retome de forma gradual e confortável."]);else msgs.push(["Consistência","Você registrou "+recent.length+" atividade(s) e "+fmt(kmR)+" km nos últimos 14 dias. Priorize regularidade e recuperação."]);
+if(change!==null&&change>25)msgs.push(["Volume em alta","Seu volume recente está mais de 25% acima do período anterior. Isso não determina risco por si só; considere aumentar com prudência e observar como se sente."]);
+if(change!==null&&change< -25)msgs.push(["Volume reduzido","O volume recente caiu em relação ao período anterior. Pode ser intencional (descanso) ou contexto de rotina; evite compensar tudo de uma vez."]);
+let hrs=recent.filter(a=>a.hr).map(a=>a.hr);if(hrs.length>=2)msgs.push(["Frequência cardíaca registrada",`FC média dos registros com dado disponível: ${Math.round(hrs.reduce((s,x)=>s+x,0)/hrs.length)} bpm. Compare apenas treinos de condições semelhantes; isso não é avaliação médica.`]);
+}
+msgs.push(["Próxima semana","Distribua sessões com dias leves ou descanso. Aumente distância ou intensidade gradualmente, não ambas de uma vez. Dor persistente, tontura, falta de ar incomum ou mal-estar são sinais para interromper e procurar orientação profissional."]);
+$("coachOutput").innerHTML=msgs.map(m=>`<div class="activity"><div><strong>${esc(m[0])}</strong><div class="meta">${esc(m[1])}</div></div></div>`).join("")}
+function switchTab(name){document.querySelectorAll("main>section").forEach(s=>s.classList.toggle("hidden",s.id!==`tab-${name}`));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));if(name==="add"&&!$("editId").value)$("date").value=todayISO();if(name==="dashboard")renderChart();window.scrollTo({top:0,behavior:"smooth"})}
+document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
+function resetForm(){ $("activityForm").reset();$("editId").value="";$("formTitle").textContent="Registrar atividade";$("date").value=todayISO()}
+$("activityForm").addEventListener("submit",e=>{e.preventDefault();let distance=Number($("distance").value.replace(",",".")),duration=parseDuration($("duration").value),hr=$("hr").value?Number($("hr").value):null,elev=$("elevation").value?Number($("elevation").value):null;
+if(!Number.isFinite(distance)||distance<=0||distance>1000){alert("Informe uma distância válida maior que zero.");return}
+if(duration===null||duration<=0){alert("Informe o tempo como MM:SS ou HH:MM:SS. Segundos e minutos devem estar entre 00 e 59.");return}
+if(hr!==null&&(!Number.isFinite(hr)||hr<30||hr>250)){alert("Confira a frequência cardíaca (30–250 bpm).");return}
+let id=$("editId").value||crypto.randomUUID(),old=data.activities.find(x=>x.id===id);
+let obj={id,date:$("date").value,type:$("type").value,distance,duration,hr,elevation:elev,notes:$("notes").value.trim(),created:old?.created||Date.now()};
+if(!obj.date){alert("Informe a data.");return}
+if(old)data.activities=data.activities.map(x=>x.id===id?obj:x);else data.activities.push(obj);
+save();resetForm();switchTab("activities");});
+$("cancelEdit").addEventListener("click",resetForm);
+document.addEventListener("click",e=>{let ed=e.target.closest("[data-edit]");if(ed){let a=data.activities.find(x=>x.id===ed.dataset.edit);if(!a)return;$("editId").value=a.id;$("date").value=a.date;$("type").value=a.type;$("distance").value=a.distance;$("duration").value=durationText(a.duration);$("hr").value=a.hr||"";$("elevation").value=a.elevation||"";$("notes").value=a.notes||"";$("formTitle").textContent="Editar atividade";switchTab("add")}
+let del=e.target.closest("[data-delete]");if(del){let a=data.activities.find(x=>x.id===del.dataset.delete);if(a&&confirm(`Excluir o treino de ${dateObj(a.date).toLocaleDateString("pt-BR")} (${a.distance} km)?`)){data.activities=data.activities.filter(x=>x.id!==a.id);save()}}});
+$("profileForm").addEventListener("submit",e=>{e.preventDefault();data.athlete=$("athlete").value.trim();data.goal=Number($("goal").value);if(!Number.isFinite(data.goal)||data.goal<=0){alert("Informe uma meta válida.");return}save();setAthleteIdentity(currentUser);alert("Perfil salvo!")});
+function exportData(){let blob=new Blob([JSON.stringify({app:"StaminaLab360",version:1,exportedAt:new Date().toISOString(),data},null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`staminalab-backup-${todayISO()}.json`;a.click();URL.revokeObjectURL(url)}
+$("exportBtn").addEventListener("click",exportData);$("exportBtn2").addEventListener("click",exportData);
+$("importBtn").addEventListener("click",()=>$("importFile").click());
+$("importFile").addEventListener("change",async e=>{let f=e.target.files[0];if(!f)return;try{let obj=JSON.parse(await f.text()),x=obj.data||obj;if(!Array.isArray(x.activities))throw Error("O arquivo não contém uma lista de atividades.");if(!confirm(`Importar ${x.activities.length} treino(s)? Isso substituirá os dados atuais deste aplicativo.`))return;data={athlete:String(x.athlete||""),goal:Number(x.goal)||20,activities:x.activities};save();alert("Backup importado com sucesso.")}catch(err){alert("Não foi possível importar: "+err.message)}e.target.value=""});
+$("clearData").addEventListener("click",()=>{if(confirm("Tem certeza que deseja apagar TODOS os treinos salvos neste navegador? Exporte um backup antes. Esta ação não pode ser desfeita.")){if(confirm("Confirmação final: apagar seu histórico de treinos?")){data.activities=[];save();alert("Histórico apagado.")}}});
+function weekMondayISO(date=new Date()){
+ const d=new Date(date);d.setHours(0,0,0,0);const day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);
+ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function weekRangeLabel(startISO){const d=dateObj(startISO),end=new Date(d);end.setDate(end.getDate()+6);return `${d.toLocaleDateString("pt-BR")} a ${end.toLocaleDateString("pt-BR")}`}
+function setAthleteIdentity(user=currentUser){
+ const metadata=user?.user_metadata||{};
+ const name=(data.athlete||metadata.full_name||metadata.name||user?.email?.split("@")[0]||"Atleta").trim();
+ $("athleteIdentity").textContent=`Atleta: ${name}`;
+ if($("athlete")&&!$("athlete").value)$("athlete").value=data.athlete||metadata.full_name||metadata.name||user?.email?.split("@")[0]||"";
+}
+function getPlanPrefs(){return data.plannerPrefs||{goal:Number(data.goal)||20,level:"beginner",days:4,focus:"consistency"}}
+function initializeAutomaticPlan(force=false){
+ const prefs=getPlanPrefs();
+ $("plannerGoal").value=prefs.goal||data.goal||20;
+ $("plannerLevel").value=prefs.level||"beginner";
+ $("plannerDays").value=String(prefs.days||4);
+ $("plannerFocus").value=prefs.focus||"consistency";
+ const thisWeek=weekMondayISO();
+ if(force||!data.weeklyPlan||data.weeklyPlan.weekStart!==thisWeek){
+  data.plannerPrefs={goal:Number($("plannerGoal").value)||Number(data.goal)||20,level:$("plannerLevel").value||"beginner",days:Number($("plannerDays").value)||4,focus:$("plannerFocus").value||"consistency"};
+  data.weeklyPlan=buildWeeklyPlan(data.plannerPrefs,thisWeek);
+  save();
+ }
+ renderWeeklyPlan();
+}
+function buildWeeklyPlan(prefs,weekStart){
+ const goal=Math.max(1,Number(prefs.goal)||data.goal||20),days=Number(prefs.days)||4,level=prefs.level||"beginner",focus=prefs.focus||"consistency";
+ const recentKm=sumDistance(rangeActivities(28))/4;
+ const safeTarget=recentKm>0?Math.min(goal,recentKm*(recentKm<10?1.08:1.10)):Math.min(goal,level==="beginner"?8:12);
+ const target=Math.max(recentKm>0?Math.min(recentKm,2):4,Math.round(safeTarget*10)/10);
+ const longKm=Math.max(2,Math.round(target*(level==="beginner"?.30:.32)*10)/10);
+ let sessions=[];
+ if(days===3)sessions=[["Terça","Corrida leve",Math.max(2,Math.round(target*.25*10)/10),"Ritmo confortável, conversa possível."],["Quinta","Leve + técnica",Math.max(2,Math.round(target*.30*10)/10),"Se estiver bem, 4 acelerações curtas e relaxadas."],["Domingo","Rodagem longa leve",longKm,"Sem forçar; caminhe se necessário."]];
+ if(days===4)sessions=[["Segunda","Descanso",0,"Recuperação e sono."],["Terça","Corrida leve",Math.max(2,Math.round(target*.25*10)/10),"Ritmo confortável, conversa possível."],["Quinta","Treino moderado controlado",Math.max(2,Math.round(target*.25*10)/10),focus==="consistency"?"Rodagem leve e constante.":"Aquecimento + 3 blocos moderados de 3 min, sem sprint."],["Domingo","Rodagem longa leve",longKm,"Confortável; reduza se houver cansaço."]];
+ if(days===5)sessions=[["Segunda","Descanso",0,"Recuperação."],["Terça","Corrida leve",Math.max(2,Math.round(target*.20*10)/10),"Ritmo de conversa."],["Quarta","Regenerativo",Math.max(1,Math.round(target*.12*10)/10),"Muito leve ou corrida/caminhada."],["Sexta","Estímulo controlado",Math.max(2,Math.round(target*.22*10)/10),"Aquecimento + trechos moderados; nada máximo."],["Domingo","Rodagem longa leve",longKm,"Confortável, reduza se houver fadiga."]];
+ const notices=[];
+ if(recentKm===0)notices.push("Ainda não há treinos recentes suficientes. Plano inicial conservador; comece leve.");
+ if(goal>Math.max(recentKm,1)*1.25)notices.push(`Meta ${fmt(goal,1)} km acima do volume recente estimado (${fmt(recentKm,1)} km/semana). O plano começa mais baixo e aumenta gradualmente.`);
+ if(focus==="5k")notices.push("Foco 5 km: priorize consistência e conforto; não precisa fazer teste máximo toda semana.");
+ if(focus==="10k")notices.push("Foco 10 km: construa volume confortável e aumente a rodagem longa gradualmente.");
+ if(focus==="half")notices.push("Base para 21 km: esta semana não é uma planilha completa de preparação para prova.");
+ return {weekStart,createdAt:new Date().toISOString(),sessions,notices,targetKm:target,prefs};
+}
+function renderWeeklyPlan(){
+ const plan=data.weeklyPlan;if(!plan){$("weeklyPlan").innerHTML='<div class="empty">Não foi possível montar o plano.</div>';return}
+ $("planWeekTag").textContent=`Semana: ${weekRangeLabel(plan.weekStart)}`;
+ const cards=plan.sessions.map(s=>`<div class="activity"><div><strong>${esc(s[0])} · ${esc(s[1])}${s[2]?` — ${fmt(s[2],1)} km`:""}</strong><div class="meta">${esc(s[3])}</div></div></div>`).join("");
+ const notices=(plan.notices||[]).map(n=>`<div class="notice">${esc(n)}</div>`).join("");
+ $("weeklyPlan").innerHTML=`${notices}${cards}<p class="sub">Volume sugerido: ${fmt(plan.targetKm,1)} km. O plano é reavaliado automaticamente na próxima segunda-feira com base no histórico atualizado. Respeite descanso e sintomas; não é prescrição médica.</p>`;
+}
+$("savePlanPrefs").addEventListener("click",()=>{
+ data.plannerPrefs={goal:Number($("plannerGoal").value)||Number(data.goal)||20,level:$("plannerLevel").value,days:Number($("plannerDays").value)||4,focus:$("plannerFocus").value};
+ data.goal=data.plannerPrefs.goal;data.weeklyPlan=buildWeeklyPlan(data.plannerPrefs,weekMondayISO());save();renderWeeklyPlan();alert("Preferências salvas. Plano atualizado automaticamente.");
+});
+window.addEventListener("resize",()=>renderChart());
+load();$("date").value=todayISO();render();
+</script>
+</body></html>
