@@ -83,18 +83,10 @@ const supabaseClient = window.supabase.createClient(
         </div>
       </div>
 
-      <!-- SELETOR E BOTÕES DE ADICIONAR / EXCLUIR PERFIL -->
-      <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5">
+      <!-- Conta individual: um usuário autenticado corresponde a um único atleta. -->
+      <div id="profileControls" class="flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5">
         <i class="fa-solid fa-user-shield text-orange-400 text-xs"></i>
-        <select id="activeProfileSelect" onchange="handleProfileSelection(this.value)" class="bg-transparent text-xs font-bold text-white outline-none cursor-pointer">
-          <!-- Populado dinamicamente -->
-        </select>
-        <button onclick="createNewProfilePrompt()" class="text-xs text-orange-400 hover:text-orange-300 px-1 py-0.5 border-l border-slate-700 ml-1" title="Adicionar Novo Perfil">
-          <i class="fa-solid fa-plus"></i>
-        </button>
-        <button onclick="deleteCurrentProfilePrompt()" class="text-xs text-rose-400 hover:text-rose-300 px-1 py-0.5 border-l border-slate-700 ml-0.5" title="Excluir Perfil Atual">
-          <i class="fa-solid fa-trash-can"></i>
-        </button>
+        <span class="text-xs font-bold text-gray-300">Perfil individual</span>
       </div>
     </div>
   </header>
@@ -714,6 +706,8 @@ const supabaseClient = window.supabase.createClient(
     }
 
     function createNewProfilePrompt() {
+      alert("Cada conta StaminaLab corresponde a um único atleta. Não é possível adicionar outro perfil.");
+      return;
       let nome = prompt("Digite o nome do novo atleta/perfil:");
       if (!nome) return;
       let key = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/[^a-z0-9_-]/g, '_').slice(0, 32);
@@ -733,6 +727,8 @@ const supabaseClient = window.supabase.createClient(
     }
 
     function deleteCurrentProfilePrompt() {
+      alert("O perfil está vinculado à conta do atleta. Para encerrar o acesso, use Sair da conta.");
+      return;
       if (profilesList.length <= 1) {
         alert("Não é possível excluir o último perfil restante na aplicação.");
         return;
@@ -1910,6 +1906,8 @@ document.getElementById("stamina-auth").style.display = "none";
 document.getElementById("stamina-auth").style.pointerEvents = "none";
 
 document.getElementById("stamina-area-atleta").style.display = "block";
+  const profileBadge = document.querySelector("#profileControls span");
+  if (profileBadge) profileBadge.textContent = data.user.user_metadata.full_name || email;
   document.getElementById("stamina-boas-vindas").textContent =
   "Olá, " + (data.user.user_metadata.full_name || email) + "!";
 
