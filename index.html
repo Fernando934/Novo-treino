@@ -160,14 +160,28 @@ async function logoutAccount(){
  }catch(e){alert("Não foi possível sair: "+(e.message||e))}finally{if(btn)btn.disabled=false}
 }
 $("logoutBtn").addEventListener("click",logoutAccount);
-function showStravaConnectInfo(){
- if(!currentUser){alert("Entre primeiro na sua conta StaminaLab (Supabase). Depois conecte o Strava na área Conexões.");return}
+async function startStravaOAuth(){
+ if(!currentUser){alert("Entre primeiro na sua conta StaminaLab (Supabase).");return}
  switchTab("connections");
- $("stravaStatus").textContent="Sua conta StaminaLab está autenticada. Para iniciar o OAuth do Strava, falta publicar o endpoint seguro /api/strava-auth e configurar STRAVA_CLIENT_ID e STRAVA_CLIENT_SECRET na Vercel. O segredo não deve ficar neste HTML.";
+ const status=$("stravaStatus");status.textContent="Preparando conexão segura com Strava…";
+ try{
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session?.access_token)throw new Error("Sessão Supabase não encontrada. Entre novamente.");
+  const r=await fetch("/api/strava-auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({access_token:session.access_token})});
+  const j=await r.json();if(!r.ok)throw new Error(j.error||"Falha ao iniciar autorização Strava.");
+  if(!j.authorization_url)throw new Error("O servidor não retornou o endereço de autorização.");
+  window.location.href=j.authorization_url;
+ }catch(e){status.textContent="Não foi possível iniciar Strava: "+(e.message||e)+". Confira as variáveis e os endpoints da Vercel."}
 }
-$("stravaConnectBtn").addEventListener("click",showStravaConnectInfo);
-$("stravaConnectMain").addEventListener("click",showStravaConnectInfo);
-$("stravaStatusRefresh").addEventListener("click",()=>{if(!currentUser)alert("Faça login no Supabase primeiro.");else $("stravaStatus").textContent="Supabase conectado; OAuth Strava ainda depende da configuração segura do backend Vercel."});
+$("stravaConnectBtn").addEventListener("click",startStravaOAuth);
+$("stravaConnectMain").addEventListener("click",startStravaOAuth);
+$("stravaStatusRefresh").addEventListener("click",async()=>{
+ if(!currentUser){alert("Faça login no StaminaLab primeiro.");return}
+ const status=$("stravaStatus");status.textContent="Verificando conexão e buscando atividades…";
+ try{const {data:{session}}=await sb.auth.getSession();const r=await fetch("/api/strava-activities",{headers:{Authorization:`Bearer ${session.access_token}`}});const j=await r.json();if(!r.ok)throw new Error(j.error||"Strava não conectado.");status.textContent=`Strava conectado. ${j.activities?.length||0} atividades encontradas para importar. A importação para o histórico ainda deve ser confirmada no app.`;
+ }catch(e){status.textContent=e.message||String(e)}
+});
+(function handleStravaReturn(){const p=new URLSearchParams(location.search);if(p.get("strava_connected")==="1"){$("stravaStatus").textContent="Strava autorizado e conectado à sua conta! Clique em Verificar conexão para consultar atividades.";history.replaceState({},"",location.pathname+location.hash)}else if(p.get("strava_error")){$("stravaStatus").textContent="Erro Strava: "+p.get("strava_error");history.replaceState({},"",location.pathname+location.hash)}})();
 
 
 function load(){try{const x=JSON.parse(localStorage.getItem(STORE)||"null");if(x&&Array.isArray(x.activities))data={...data,...x};}catch(e){console.warn("Não foi possível ler dados locais",e)}}
@@ -292,4 +306,3 @@ window.addEventListener("resize",()=>renderChart());
 load();$("date").value=todayISO();render();
 </script>
 </body></html>
-
