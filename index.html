@@ -129,6 +129,10 @@ const supabaseClient = window.supabase.createClient(
           <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-2 group-hover:bg-indigo-500/20"><i class="fa-solid fa-person-running text-lg"></i></div>
           <span class="text-[11px] font-semibold text-gray-200">Treinamento</span>
         </button>
+        <button onclick="switchTab('coach')" class="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-slate-900/80 border border-cyan-500/30 hover:border-cyan-400/60 transition-all active:scale-95 group">
+          <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-300 flex items-center justify-center mb-2 group-hover:bg-cyan-500/20"><i class="fa-solid fa-brain text-lg"></i></div>
+          <span class="text-[11px] font-semibold text-gray-200">Assessoria IA</span>
+        </button>
       </div>
     </section>
 
@@ -403,6 +407,50 @@ const supabaseClient = window.supabase.createClient(
     </div>
 
     <!-- TAB 5: PROTOCOLS -->
+    <!-- ASSESSORIA INTELIGENTE: análises determinísticas com base nos registros disponíveis -->
+    <div id="tab-coach" class="tab-content hidden space-y-4">
+      <section class="p-4 rounded-3xl bg-slate-900 border border-cyan-500/30 space-y-3">
+        <div class="flex items-center gap-2 text-cyan-300">
+          <i class="fa-solid fa-brain text-lg"></i>
+          <h2 class="font-extrabold text-sm">Assessoria Inteligente</h2>
+        </div>
+        <p class="text-xs text-gray-400 leading-relaxed">Análise baseada nos registros de corrida informados neste aplicativo. Não substitui avaliação de treinador ou profissional de saúde.</p>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+            <div class="text-[10px] uppercase text-gray-500 font-bold">Volume últimos 7 dias</div>
+            <div id="coachWeekKm" class="text-lg font-black text-cyan-300">— km</div>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+            <div class="text-[10px] uppercase text-gray-500 font-bold">Volume 28 dias</div>
+            <div id="coachMonthKm" class="text-lg font-black text-cyan-300">— km</div>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+            <div class="text-[10px] uppercase text-gray-500 font-bold">Corridas em 28 dias</div>
+            <div id="coachCount" class="text-lg font-black text-white">—</div>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+            <div class="text-[10px] uppercase text-gray-500 font-bold">Ritmo médio registrado</div>
+            <div id="coachPace" class="text-lg font-black text-white">—</div>
+          </div>
+        </div>
+      </section>
+      <section class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-orange-300"><i class="fa-solid fa-chart-line mr-2"></i>Leitura da evolução</h3>
+        <div id="coachTrend" class="text-xs text-gray-300 leading-relaxed">Registre atividades para começar a análise.</div>
+      </section>
+      <section class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-emerald-300"><i class="fa-solid fa-shield-heart mr-2"></i>Carga e recuperação</h3>
+        <div id="coachLoad" class="text-xs text-gray-300 leading-relaxed">Ainda não há dados suficientes para avaliar a carga.</div>
+      </section>
+      <section class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-indigo-300"><i class="fa-solid fa-calendar-week mr-2"></i>Sugestão para a semana</h3>
+        <div id="coachPlan" class="text-xs text-gray-300 leading-relaxed">O planejamento aparecerá conforme o histórico for preenchido.</div>
+      </section>
+      <div class="p-3 rounded-xl border border-amber-500/20 bg-amber-950/10 text-[10px] text-amber-200 leading-relaxed">
+        <strong>Limites:</strong> sem FC, percepção de esforço, sono e sintomas registrados, o sistema não consegue calcular carga fisiológica nem detectar overtraining. As recomendações abaixo são conservadoras e baseadas apenas no volume de corrida.
+      </div>
+    </div>
+
     <div id="tab-protocols" class="tab-content hidden space-y-3">
       <div class="px-1 mb-2 flex justify-between items-center">
         <div>
@@ -1712,10 +1760,79 @@ const supabaseClient = window.supabase.createClient(
       updateDashboardData();
     });
 
+    function renderIntelligentCoach() {
+      const activities = (Array.isArray(manualActivities) ? manualActivities : [])
+        .map(a => {
+          const date = /^\\d{4}-\\d{2}-\\d{2}$/.test(String(a.start_date || ''))
+            ? new Date(`${a.start_date}T12:00:00`) : new Date(a.start_date);
+          const distance = Number(a.distance);
+          const seconds = parseDurationToSeconds(String(a.time || ''));
+          return { ...a, date, distance, seconds, paceSec: distance > 0 && seconds > 0 ? seconds / distance : null };
+        })
+        .filter(a => Number.isFinite(a.date.getTime()) && Number.isFinite(a.distance) && a.distance > 0);
+      const now = new Date();
+      const daysAgo = n => new Date(now.getFullYear(), now.getMonth(), now.getDate() - n, 12);
+      const last7 = activities.filter(a => a.date >= daysAgo(6) && a.date <= now);
+      const last28 = activities.filter(a => a.date >= daysAgo(27) && a.date <= now);
+      const sumKm = arr => arr.reduce((sum, a) => sum + a.distance, 0);
+      const km7 = sumKm(last7), km28 = sumKm(last28);
+      const paceEntries = last28.filter(a => a.paceSec && a.seconds > 0);
+      const meanPace = paceEntries.length ? paceEntries.reduce((s,a)=>s+a.paceSec,0)/paceEntries.length : null;
+      const fmtPace = sec => {
+        if (!Number.isFinite(sec) || sec <= 0) return '—';
+        const rounded=Math.round(sec), m=Math.floor(rounded/60), s=rounded%60;
+        return `${m}:${String(s).padStart(2,'0')} min/km`;
+      };
+      const put=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value;};
+      put('coachWeekKm',`${km7.toFixed(1)} km`);
+      put('coachMonthKm',`${km28.toFixed(1)} km`);
+      put('coachCount',String(last28.length));
+      put('coachPace',fmtPace(meanPace));
+
+      const recent14=activities.filter(a=>a.date>=daysAgo(13)&&a.date<=now);
+      const prev14=activities.filter(a=>a.date>=daysAgo(27)&&a.date<daysAgo(13));
+      const recentKm=sumKm(recent14), prevKm=sumKm(prev14);
+      let trend='Ainda há poucos registros para comparar períodos.';
+      if(recent14.length>=2 && prev14.length>=1) {
+        const delta=prevKm>0 ? ((recentKm-prevKm)/prevKm)*100 : null;
+        trend=delta===null
+          ? `Você registrou ${recent14.length} corrida(s) nos últimos 14 dias (${recentKm.toFixed(1)} km). Ainda não há volume no período anterior para comparação.`
+          : `Nos últimos 14 dias: ${recentKm.toFixed(1)} km. Nos 14 dias anteriores: ${prevKm.toFixed(1)} km. Variação do volume: ${delta>=0?'+':''}${delta.toFixed(0)}%.`;
+        if(delta!==null && delta>25) trend+=' O aumento é expressivo; considere manter ou reduzir o volume e observe como se sente, em vez de aumentar novamente.';
+        else if(delta!==null && delta< -20) trend+=' O volume diminuiu. Se foi intencional ou por recuperação, mantenha a retomada gradual.';
+        else if(delta!==null) trend+=' O volume está relativamente estável entre os períodos.';
+      } else if(last28.length) {
+        trend=`Há ${last28.length} corrida(s) registrada(s) nos últimos 28 dias, totalizando ${km28.toFixed(1)} km. Registre mais sessões para comparações confiáveis.`;
+      }
+      put('coachTrend',trend);
+
+      let loadText='Não há atividades recentes suficientes para estimar volume.';
+      if(last7.length) {
+        loadText=`Você acumulou ${km7.toFixed(1)} km em ${last7.length} corrida(s) nos últimos 7 dias. `;
+        const weeklyAvg=km28/4;
+        if(km28>=10 && km7>weeklyAvg*1.3) loadText+='O volume desta semana está acima da média aproximada das últimas 4 semanas. Evite acrescentar intensidade e priorize recuperação.';
+        else loadText+='Distribua as sessões com descanso entre treinos exigentes e monitore fadiga, dor e sono.';
+        loadText+=' A carga aqui é apenas volume (km), não carga fisiológica.';
+      } else {
+        loadText='Nenhuma corrida nos últimos 7 dias foi encontrada. Se houve pausa, retome de forma leve e progressiva; não tente compensar sessões perdidas.';
+      }
+      put('coachLoad',loadText);
+
+      let plan='Sem histórico recente suficiente: priorize regularidade leve, descanso e registre como se sentiu após cada sessão.';
+      if(last28.length>=3) {
+        const easyKm=Math.max(1,Math.round(km7*0.75));
+        plan=`Sugestão conservadora, não prescrição: mantenha o volume semanal próximo do que você já tolerou recentemente (referência: ${km7.toFixed(1)} km nos últimos 7 dias). Faça a maioria das sessões em esforço confortável; no máximo uma sessão de qualidade se estiver descansado e sem dor. Longão não deve ultrapassar o que já realizou com conforto.`;
+      } else if(last28.length) {
+        plan=`Você tem ${last28.length} corrida(s) registrada(s) no mês. Prioridade: construir consistência com corridas confortáveis e pausas. Evite introduzir simultaneamente mais distância e velocidade.`;
+      }
+      put('coachPlan',plan);
+    }
+
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.nav-item').forEach(el => { el.classList.remove('text-orange-400'); el.classList.add('text-gray-400'); });
       document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+      if (tabId === 'coach') renderIntelligentCoach();
       if(document.getElementById(`nav-${tabId}`)) {
         document.getElementById(`nav-${tabId}`).classList.remove('text-gray-400');
         document.getElementById(`nav-${tabId}`).classList.add('text-orange-400');
