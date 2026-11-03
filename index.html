@@ -78,10 +78,10 @@ label{display:block;color:var(--muted);font-size:12px;margin:0 0 6px}input,selec
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL='https://lbokpoabfbjajwamesxp.supabase.co/';
-const SUPABASE_ANON_KEY='sb_publishable_1bZpA0V94opayOptpPjJgw_dI2OJnBE';
+const SUPABASE_URL="https://lbokpoabfbjajwamesxp.supabase.co";
+const SUPABASE_ANON_KEY='"sb_publishable_1bZpA0V94opayOptpPjJgw_dI2OJnBE";
 let cloudClient=null,cloudSession=null;
-const cloudReady=()=>SUPABASE_URL.startsWith('https://')&&!SUPABASE_ANON_KEY.includes('_AQUI');
+const cloudReady=()=>SUPABASE_URL.startsWith("https://lbokpoabfbjajwamesxp.supabase.co")&&!SUPABASE_ANON_KEY.includes("sb_publishable_1bZpA0V94opayOptpPjJgw_dI2OJnBE");
 function cloudMessage(t){document.getElementById('cloudStatus').textContent=t}
 async function cloudInit(){if(!cloudReady()){cloudMessage('Configure Supabase no HTML');return}cloudClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);const {data}=await cloudClient.auth.getSession();cloudSession=data.session;cloudMessage(cloudSession?`Conectado: ${cloudSession.user.email}`:'Sem sessão');cloudClient.auth.onAuthStateChange((_event,session)=>{cloudSession=session;cloudMessage(session?`Conectado: ${session.user.email}`:'Sem sessão')});}
 async function cloudCall(path,method='POST',body=null){if(!cloudSession)throw Error('Entre na sua conta Supabase primeiro.');const r=await fetch(path,{method,headers:{Authorization:`Bearer ${cloudSession.access_token}`,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});let j={};try{j=await r.json()}catch{}if(!r.ok)throw Error(j.error||'Erro na integração');return j}
