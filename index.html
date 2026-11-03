@@ -1826,7 +1826,11 @@ async function staminaEntrar() {
     return;
   }
 
-  mensagem.textContent = "Login realizado com sucesso! Bem-vindo ao StaminaLab 360°.";
+ mensagem.textContent = "Login realizado com sucesso! Bem-vindo ao StaminaLab 360°.";
+
+document.getElementById("stamina-auth").style.display = "none";
+
+document.getElementById("stamina-area-atleta").style.display = "block";
 }
 </script>
 </body>
