@@ -1851,6 +1851,23 @@ document.getElementById("stamina-auth").style.pointerEvents = "none";
 document.getElementById("stamina-area-atleta").style.display = "block";
   document.getElementById("stamina-boas-vindas").textContent =
   "Olá, " + (data.user.user_metadata.full_name || email) + "!";
+
+}
+  async function staminaSair() {
+  const { error } = await supabaseClient.auth.signOut();
+
+  if (error) {
+    alert("Erro ao sair: " + error.message);
+    return;
+  }
+
+  document.getElementById("stamina-area-atleta").style.display = "none";
+
+  document.getElementById("stamina-auth").style.display = "block";
+  document.getElementById("stamina-auth").style.visibility = "visible";
+  document.getElementById("stamina-auth").style.pointerEvents = "auto";
+
+  document.getElementById("stamina-mensagem").textContent = "Você saiu da sua conta.";
 }
 </script>
 </body>
