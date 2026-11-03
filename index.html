@@ -1829,6 +1829,8 @@ async function staminaEntrar() {
  mensagem.textContent = "Login realizado com sucesso! Bem-vindo ao StaminaLab 360°.";
 
 document.getElementById("stamina-auth").style.display = "none";
+  document.getElementById("stamina-auth").style.visibility = "hidden";
+document.getElementById("stamina-auth").style.pointerEvents = "none";
 
 document.getElementById("stamina-area-atleta").style.display = "block";
 }
