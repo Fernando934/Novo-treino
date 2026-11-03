@@ -1849,6 +1849,8 @@ document.getElementById("stamina-auth").style.display = "none";
 document.getElementById("stamina-auth").style.pointerEvents = "none";
 
 document.getElementById("stamina-area-atleta").style.display = "block";
+  document.getElementById("stamina-boas-vindas").textContent =
+  "Olá, " + (data.user.user_metadata.full_name || email) + "!";
 }
 </script>
 </body>
