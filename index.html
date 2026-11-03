@@ -1822,10 +1822,10 @@ const supabaseClient = window.supabase.createClient(
       <input id="stamina-nome" type="text" placeholder="Seu nome completo"
         style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;border-radius:8px;border:1px solid #444;background-color:#263244;color:#ffffff;font-size:16px;">
 
-      <input id="stamina-email" type="email" placeholder="Seu e-mail"
+      <input id="stamina-email" type="email" autocomplete="username" placeholder="Seu e-mail"
         style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;border-radius:8px;border:1px solid #444;background-color:#263244;color:#ffffff;font-size:16px;">
 
-      <input id="stamina-senha" type="password" placeholder="Crie uma senha (mínimo 6 caracteres)"
+      <input id="stamina-senha" type="password" autocomplete="current-password" placeholder="Senha"
         style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;border-radius:8px;border:1px solid #444;background-color:#263244;color:#ffffff;font-size:16px;">
 
       <button onclick="staminaCadastrar()"
@@ -1920,6 +1920,8 @@ async function staminaEntrar() {
   renderPlan();
   if (typeof updateDashboardData === 'function') updateDashboardData();
 
+  // Limpa a senha do campo assim que a autenticação termina.
+  document.getElementById("stamina-senha").value = "";
   mensagem.textContent = "Login realizado com sucesso! Bem-vindo ao StaminaLab 360°.";
 
 document.getElementById("stamina-auth").style.display = "none";
@@ -1949,6 +1951,10 @@ document.getElementById("stamina-area-atleta").style.display = "block";
   document.getElementById("stamina-auth").style.visibility = "visible";
   document.getElementById("stamina-auth").style.pointerEvents = "auto";
 
+  // Limpa credenciais da interface ao sair, para não deixar a senha visível/preenchida.
+  document.getElementById("stamina-senha").value = "";
+  document.getElementById("stamina-email").value = "";
+  document.getElementById("stamina-nome").value = "";
   document.getElementById("stamina-mensagem").textContent = "Você saiu da sua conta.";
 }
 </script>
