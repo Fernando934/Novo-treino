@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StaminaLab 360° — Treinamento</title>
+<style>
+:root{--bg:#0b1018;--panel:#121b27;--panel2:#182333;--line:#273649;--text:#eef4fb;--muted:#9aadc2;--lime:#b9f45b;--cyan:#65d9e8;--red:#ff727c;--yellow:#ffc969;--radius:18px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172637 0,#0b1018 52%);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:11px 15px;font-weight:700;background:var(--lime);color:#17200b}button.secondary{background:#263548;color:var(--text);border:1px solid #34475d}button.danger{background:#3a2028;color:#ffb5bc;border:1px solid #63343e}button:disabled{opacity:.5;cursor:not-allowed}
+.wrap{max-width:1180px;margin:auto;padding:22px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:24px}.brand{display:flex;gap:12px;align-items:center}.logo{width:46px;height:46px;border-radius:14px;background:var(--lime);color:#18220a;display:grid;place-items:center;font-size:24px;font-weight:900}.brand h1{margin:0;font-size:22px;letter-spacing:-.5px}.brand p{margin:0;color:var(--muted);font-size:12px;letter-spacing:1.7px;text-transform:uppercase}.topright{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.pill{border:1px solid var(--line);border-radius:99px;padding:7px 12px;color:var(--muted);font-size:12px}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.nav button{background:transparent;border:1px solid var(--line);color:var(--muted)}.nav button.active{background:var(--lime);color:#17200b;border-color:var(--lime)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:15px}.card{background:linear-gradient(160deg,#14202d,#101823);border:1px solid var(--line);border-radius:var(--radius);padding:19px;min-width:0}.span12{grid-column:span 12}.span8{grid-column:span 8}.span7{grid-column:span 7}.span6{grid-column:span 6}.span5{grid-column:span 5}.span4{grid-column:span 4}.cardhead{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px}.card h2{font-size:15px;margin:0;font-weight:750}.sub{color:var(--muted);font-size:12px}.metric{font-size:clamp(25px,3vw,36px);font-weight:850;letter-spacing:-1px;margin:7px 0}.metric small{font-size:14px;color:var(--muted);font-weight:600;letter-spacing:0}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{background:#0e1721;border:1px solid #223143;border-radius:14px;padding:14px}.stat .label{color:var(--muted);font-size:12px}.stat .value{font-size:25px;font-weight:800;margin-top:4px}.accent{color:var(--lime)}.cyan{color:var(--cyan)}.chart{width:100%;height:230px;display:block}.empty{padding:25px;text-align:center;color:var(--muted);border:1px dashed #33465b;border-radius:14px}
+label{display:block;color:var(--muted);font-size:12px;margin:0 0 6px}input,select,textarea{width:100%;background:#0c141e;color:var(--text);border:1px solid #2c3c50;border-radius:10px;padding:11px;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--cyan)}.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field.full{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.list{display:flex;flex-direction:column;gap:9px}.activity{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px;border-radius:12px;background:#0e1721;border:1px solid #223143}.activity strong{display:block}.activity .meta{font-size:12px;color:var(--muted)}.activity .right{text-align:right}.activity .right b{display:block}.tag{font-size:11px;border-radius:6px;padding:3px 7px;background:#20313b;color:var(--cyan);display:inline-block;margin-top:4px}
+.zone{height:9px;background:#253446;border-radius:99px;overflow:hidden;margin:10px 0}.zone span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--lime));border-radius:99px}
+.hidden{display:none!important}.notice{font-size:12px;color:var(--muted);margin-top:10px}.footer{color:#61758a;text-align:center;padding:25px;font-size:11px}
+/* Dashboard lateral StaminaLab */
+body{background:#080b10;background-image:none}.wrap{max-width:none;margin-left:235px;padding:24px 28px 48px}.top{border-bottom:1px solid #222a35;padding-bottom:16px}
+.nav{position:fixed;z-index:20;left:0;top:0;bottom:0;width:215px;margin:0;padding:20px 12px;background:#0c1017;border-right:1px solid #222a35;display:flex;flex-direction:column;flex-wrap:nowrap;gap:6px;overflow:auto}
+.nav:before{content:"STAMINALAB 360°";font-weight:900;font-size:16px;color:#f6f7fa;padding:12px 10px 24px}
+.nav button{width:100%;text-align:left;border:1px solid transparent;background:transparent;color:#9ca8b8;border-radius:10px;padding:12px;font-size:13px}.nav button.active{background:#1b2635;border-color:#2a3b50;color:#fff;box-shadow:inset 3px 0 #a9e84e}
+.card{background:#111720;border-color:#252d39;border-radius:16px;box-shadow:0 8px 24px #0002}.stat{background:#0c1118;border-color:#232c37}.activity{background:#0c1118;border-color:#242e3b;border-radius:13px;padding:15px}.tag{background:#1d2b25;color:#b9ed67}
+.week-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 18px}.week-kpi{padding:13px;border-radius:12px;background:#0b1119;border:1px solid #242d39}.week-kpi small{display:block;color:#8492a5;font-size:10px;text-transform:uppercase;letter-spacing:1px}.week-kpi strong{display:block;font-size:21px;margin-top:3px}
+.coach-insight{background:linear-gradient(135deg,#172431,#111720);border:1px solid #2b3a49;padding:17px;border-radius:13px}.coach-insight p{margin:7px 0 0;color:#b5c1d0;font-size:13px}
+.exercise-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.exercise-card{background:#0c1118;border:1px solid #27313d;border-radius:14px;padding:14px;display:flex;gap:12px;align-items:flex-start}.exercise-visual{width:90px;min-width:90px;height:110px;border-radius:10px;background:#f2f4f7;display:grid;place-items:center}.exercise-card h3{margin:0 0 5px;font-size:14px}.exercise-card p{margin:4px 0;color:#9ba9ba;font-size:12px}
+@media(max-width:900px){.wrap{margin-left:0;padding:14px}.nav{position:sticky;top:0;bottom:auto;width:100%;height:auto;flex-direction:row;overflow-x:auto;padding:8px;margin-bottom:12px;border-right:0;border-bottom:1px solid #252d39}.nav:before{display:none}.nav button{white-space:nowrap;width:auto;padding:9px 12px}.week-summary{grid-template-columns:repeat(2,1fr)}.exercise-grid{grid-template-columns:1fr}}
+
+@media(max-width:800px){.span8,.span7,.span6,.span5,.span4{grid-column:span 12}.stats{grid-template-columns:repeat(2,1fr)}.wrap{padding:14px}.card{padding:15px}.metric{font-size:29px}}
+@media(max-width:420px){.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.activity{grid-template-columns:1fr}.activity .right{text-align:left;display:flex;gap:12px;align-items:center}.stats{gap:8px}.stat{padding:10px}.stat .value{font-size:21px}}
+
+/* STAMINALAB PREMIUM PERFORMANCE UI */
+:root{--lime:#c5f65a;--magenta:#df3d86;--violet:#8b6cf6;--cyan:#63d7e5;--bg:#090c12;--panel:#131923;--line:#293342}
+body{background:#090c12;color:#f4f6fa}
+.wrap{padding:28px 32px 54px}
+.top{align-items:flex-end;margin-bottom:28px}
+.brand h1{font-size:25px;letter-spacing:-1px}
+.brand p{letter-spacing:2px}
+.card{background:linear-gradient(145deg,#171e2a 0%,#111720 70%);border:1px solid #293342;border-radius:20px;box-shadow:0 14px 40px rgba(0,0,0,.18);padding:22px}
+.cardhead{margin-bottom:20px}
+.card h2{font-size:16px;letter-spacing:-.2px}
+.stats{gap:14px}
+.stat{background:linear-gradient(145deg,#202838,#151b25);border:1px solid #2a3546;border-radius:15px;padding:16px}
+.stat .label{text-transform:uppercase;letter-spacing:.7px;font-size:10px}
+.stat .value{font-size:28px;letter-spacing:-1px}
+.chart{height:260px}
+.week-summary{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0 26px}
+.week-kpi{background:linear-gradient(145deg,#202838,#151b25);border:1px solid #2c3748;border-radius:15px;padding:17px 18px;position:relative;overflow:hidden}
+.week-kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--lime)}
+.week-kpi small{font-size:10px;letter-spacing:1.1px;color:#94a1b4}
+.week-kpi strong{font-size:25px;letter-spacing:-.8px;color:#f6f8fb}
+.week-kpi strong em{font-size:12px;font-style:normal;color:#8f9bae;font-weight:600}
+.week-calendar-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:28px 0 14px}
+.week-calendar-heading h3{font-size:21px;letter-spacing:-.7px;margin:3px 0 0}
+.eyebrow{font-size:10px;font-weight:800;letter-spacing:1.8px;color:var(--lime)}
+.calendar-caption{font-size:10px;letter-spacing:1px;color:#758297}
+.plan-timeline{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.plan-day{display:grid;grid-template-columns:66px minmax(0,1fr) 4px;gap:14px;align-items:stretch;min-height:145px;background:linear-gradient(140deg,#1a2230,#121821);border:1px solid #2a3545;border-radius:17px;padding:16px;position:relative;overflow:hidden;transition:transform .18s,border-color .18s,background .18s}
+.plan-day:hover{transform:translateY(-2px);border-color:#46566b}
+.plan-day.is-today{border-color:#c5f65a;box-shadow:0 0 0 1px #c5f65a22,0 12px 35px #0003;background:linear-gradient(140deg,#252e35,#141b23)}
+.plan-date{display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid #2c3746;padding-right:12px}
+.plan-date .weekday{font-size:10px;font-weight:800;letter-spacing:1.4px;color:#8492a7}
+.plan-date strong{font-size:31px;line-height:1.1;letter-spacing:-1.5px;color:#f6f8fb;margin:4px 0}
+.plan-date small{font-size:10px;color:#77859a;text-transform:uppercase}
+.plan-content{min-width:0}
+.plan-topline{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px}
+.plan-kind{font-size:9px;font-weight:800;letter-spacing:1.2px;color:#9ba8ba}
+.day-status{font-size:9px;font-weight:900;letter-spacing:.8px;padding:4px 7px;border-radius:5px}
+.day-status.today{background:var(--lime);color:#141a10}
+.day-status.done-window{background:#25313c;color:#8fa0b4}
+.plan-day h3{font-size:15px;line-height:1.25;letter-spacing:-.3px;margin:0 0 7px;color:#f5f7fa}
+.plan-day p{font-size:12px;line-height:1.55;color:#a8b4c4;margin:0}
+.plan-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.plan-meta span{font-size:10px;color:#d3dbe6;background:#222c3a;border:1px solid #2b3848;border-radius:7px;padding:5px 8px}
+.plan-accent{width:4px;border-radius:99px;background:#8a9bb1}
+.plan-day.easy .plan-accent{background:var(--cyan)}
+.plan-day.quality .plan-accent{background:var(--magenta)}
+.plan-day.long .plan-accent{background:var(--violet)}
+.plan-day.strength .plan-accent{background:var(--lime)}
+.plan-day.rest .plan-accent{background:#566276}
+.plan-day.is-today .plan-accent{background:var(--lime);box-shadow:0 0 12px #c5f65a44}
+.plan-footnote{font-size:11px;color:#718096;line-height:1.6;border-top:1px solid #242d39;padding-top:16px;margin-top:20px}
+.coach-insight{position:relative;background:linear-gradient(145deg,#202838,#151b25);border:1px solid #2b3748;border-radius:16px;padding:20px 20px 20px 24px;overflow:hidden}
+.coach-insight:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--magenta),var(--violet))}
+.coach-insight strong{font-size:14px;letter-spacing:-.2px;color:#f4f6fa}
+.coach-insight p{font-size:13px;line-height:1.7;color:#b7c2d0}
+.tag{border-radius:7px;padding:5px 9px}
+button{transition:transform .15s,filter .15s}button:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.nav button{letter-spacing:.1px}
+@media(max-width:1100px){.plan-timeline{grid-template-columns:1fr}.wrap{padding:20px}}
+@media(max-width:700px){.wrap{padding:12px}.card{padding:16px}.week-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.plan-day{grid-template-columns:54px minmax(0,1fr) 3px;gap:10px;padding:12px;min-height:130px}.plan-date strong{font-size:26px}.plan-day h3{font-size:14px}.plan-meta span{font-size:9px}.week-calendar-heading h3{font-size:18px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+</style>
+</head>
+<body>
+<div id="authGate" style="position:fixed;inset:0;z-index:1000;background:#08101af5;display:flex;align-items:center;justify-content:center;padding:18px">
+<div class="card" style="width:min(440px,100%);box-shadow:0 20px 80px #0008">
+<div class="brand" style="margin-bottom:18px"><div class="logo">S</div><div><h1>StaminaLab <span class="accent">360°</span></h1><p>Conta do atleta · sincronização</p></div></div>
+<p class="sub">Entre ou crie sua conta para salvar seus treinos na nuvem.</p>
+<div class="field"><label for="authEmail">E-mail</label><input id="authEmail" type="email" autocomplete="email" placeholder="voce@email.com"></div>
+<div class="field" style="margin-top:10px"><label for="authPassword">Senha</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres"></div>
+<div class="actions"><button id="loginBtn">Entrar</button><button class="secondary" id="signupBtn">Criar conta</button></div>
+<p id="authMessage" class="notice"></p>
+<p class="notice">A autenticação é feita pelo Supabase. A chave inserida no app é uma chave pública (publishable), não uma chave secreta de administrador.</p>
+</div></div>
+\n<div class="wrap">
+<header class="top">
+ <div class="brand"><div class="logo">S</div><div><h1>StaminaLab <span class="accent">360°</span></h1><p>Seu treinamento, com inteligência</p></div></div>
+ <div class="topright"><span class="pill" id="athleteIdentity">Atleta: —</span><span class="pill" id="todayPill"></span><button class="secondary" id="exportBtn">Exportar backup</button><button class="secondary" id="importBtn">Importar backup JSON</button><button class="secondary" id="stravaConnectBtn">Conectar Strava</button><button class="danger" id="logoutBtn">Sair da conta</button><input type="file" id="importFile" accept=".json,application/json" class="hidden"></div>
+</header>
+<nav class="nav" aria-label="Navegação">
+<button class="active" data-tab="dashboard">Visão geral</button><button data-tab="activities">Treinos</button><button data-tab="add">Registrar treino</button><button data-tab="coach">Assessoria</button><button data-tab="planner">Plano semanal</button><button data-tab="library">Biblioteca</button><button data-tab="tests">Protocolos</button><button data-tab="prediction">Previsões</button><button data-tab="connections">Conexões</button><button data-tab="settings">Perfil e dados</button>
+</nav>
+<main>
+<section id="tab-dashboard">
+<div class="grid">
+<div class="card span12">
+<div class="cardhead"><h2>Resumo do seu treinamento</h2><span class="sub" id="rangeLabel">Últimos 28 dias</span></div>
+<div class="stats">
+<div class="stat"><div class="label">Distância · 7 dias</div><div class="value accent" id="km7">0,0 <small>km</small></div></div>
+<div class="stat"><div class="label">Distância · 28 dias</div><div class="value" id="km28">0,0 <small>km</small></div></div>
+<div class="stat"><div class="label">Treinos · 28 dias</div><div class="value cyan" id="count28">0</div></div>
+<div class="stat"><div class="label">Ritmo médio · 28 dias</div><div class="value" id="pace28">—</div></div>
+</div>
+</div>
+<div class="card span8"><div class="cardhead"><h2>Volume semanal</h2><span class="sub">Km por semana · 8 semanas</span></div><canvas id="volumeChart" class="chart" aria-label="Gráfico de distância semanal"></canvas></div>
+<div class="card span4"><div class="cardhead"><h2>Meta semanal</h2><span class="sub" id="goalText">Defina uma meta</span></div><div class="metric"><span id="goalProgress">0</span><small> / <span id="goalKm">20</span> km</small></div><div class="zone"><span id="goalBar"></span></div><div class="sub" id="goalRemaining">Registre treinos para acompanhar.</div><button class="secondary" style="margin-top:12px" data-tab="settings">Editar meta</button></div>
+<div class="card span12"><div class="cardhead"><h2>Treinos recentes</h2><button class="secondary" data-tab="activities">Ver todos →</button></div><div id="recentList" class="list"></div></div>
+</div>
+</section>
+
+<section id="tab-activities" class="hidden"><div class="card"><div class="cardhead"><h2>Histórico de treinos</h2><span class="sub" id="activityCount"></span></div><div id="activityList" class="list"></div></div></section>
+
+<section id="tab-add" class="hidden"><div class="card" style="max-width:760px;margin:auto"><div class="cardhead"><h2 id="formTitle">Registrar atividade</h2><span class="sub">Os campos com * são obrigatórios</span></div>
+<form id="activityForm"><input type="hidden" id="editId">
+<div class="formgrid">
+<div class="field"><label for="date">Data *</label><input id="date" type="date" required></div>
+<div class="field"><label for="type">Tipo de treino</label><select id="type"><option>Corrida</option><option>Caminhada</option><option>Trail run</option><option>Esteira</option><option>Ciclismo</option><option>Outro</option></select></div>
+<div class="field"><label for="distance">Distância (km) *</label><input id="distance" type="number" min=".01" max="1000" step=".01" placeholder="Ex.: 5,25" required></div>
+<div class="field"><label for="duration">Tempo total (hh:mm:ss ou mm:ss) *</label><input id="duration" placeholder="Ex.: 00:32:15" required></div>
+<div class="field"><label for="hr">FC média (bpm, opcional)</label><input id="hr" type="number" min="30" max="250" placeholder="Ex.: 145"></div>
+<div class="field"><label for="elevation">Elevação (m, opcional)</label><input id="elevation" type="number" min="0" max="10000" placeholder="Ex.: 80"></div>
+<div class="field full"><label for="notes">Observações</label><textarea id="notes" rows="3" placeholder="Como se sentiu? Clima, percurso, esforço..."></textarea></div>
+</div><div class="actions"><button type="submit">Salvar treino</button><button type="button" class="secondary" id="cancelEdit">Limpar formulário</button></div><p class="notice">Seus registros ficam salvos neste navegador. Use “Exportar backup” para guardar uma cópia.</p></form></div></section>
+
+<section id="tab-coach" class="hidden"><div class="grid">
+<div class="card span12"><div class="cardhead"><h2>Assessoria de treinamento</h2><span class="tag">Análise baseada nos seus registros</span></div><p class="sub">Este painel oferece observações gerais a partir do histórico inserido. Não substitui avaliação de profissional de saúde ou treinador, e não diagnostica lesões, doenças ou overtraining.</p><div id="coachOutput" class="list"></div></div>
+<div class="card span6"><h2>Comparativo de volume</h2><div class="metric" id="comparison">—</div><p class="sub" id="comparisonText">Compare os últimos 14 dias com os 14 anteriores.</p></div>
+<div class="card span6"><h2>Ritmo de referência</h2><div class="metric" id="referencePace">—</div><p class="sub">Média simples dos ritmos registrados. Percursos, clima e esforço variam; não use como prescrição rígida.</p></div>
+</div></section>
+
+<section id="tab-planner" class="hidden"><div class="grid">
+<div class="card span12"><div class="cardhead"><h2>Seu plano semanal automático</h2><span class="tag" id="planWeekTag">Atualizado automaticamente</span></div>
+<p class="sub">O microciclo é ajustado automaticamente a partir do histórico disponível, consistência e evolução. Sem histórico de corrida, o ponto de partida é iniciante.</p><div id="planSummary" class="week-summary"></div>
+<div id="weeklyPlan" class="list" style="margin-top:16px"><div class="empty">Entrando na conta para montar seu plano…</div></div>
+</div></div></section>
+
+<section id="tab-library" class="hidden"><div class="grid">
+<div class="card span12"><div class="cardhead"><h2>Biblioteca de movimentos e treinos</h2><span class="tag">Consulte antes de executar</span></div><p class="sub">Biblioteca prática de movimentos, músculos, séries e instruções. Corrida e elásticos podem coexistir no plano.</p></div>
+<div class="card span12"><h2>Movimentos ilustrados · elásticos</h2><p class="sub">Referência visual de início e execução. Faça os movimentos sem dor, com tensão controlável.</p><div class="exercise-grid" style="margin-top:14px">
+<div class="exercise-card"><div class="exercise-visual"><svg viewBox="0 0 100 120" role="img" aria-label="Ilustração de terra romeno"><title>Terra romeno</title><path d="M8 104H92" stroke="#cbd5e1" stroke-width="2"/><circle cx="58" cy="19" r="8" fill="#f4c99d" stroke="#526078"/><path d="M53 29L39 57L62 69" fill="none" stroke="#df684f" stroke-width="8" stroke-linecap="round"/><path d="M47 42L28 65L17 75M43 43L64 56" fill="none" stroke="#526078" stroke-width="6" stroke-linecap="round"/><path d="M39 57L30 98M62 69L72 98" fill="none" stroke="#526078" stroke-width="7" stroke-linecap="round"/><path d="M14 77Q40 70 68 77" fill="none" stroke="#a6d34d" stroke-width="4"/></svg></div><div><h3>Agachamento</h3><p>Quadríceps e glúteos · 2–3 × 10–15</p><p>Mini band acima dos joelhos; desça e suba mantendo joelhos alinhados aos pés.</p></div></div>
+<div class="exercise-card"><div class="exercise-visual"><svg viewBox="0 0 100 120"><path d="M10 100H90" stroke="#d5dbe2" stroke-width="2"/><circle cx="48" cy="18" r="9" fill="#f4c99d" stroke="#526078"/><path d="M45 29L45 60" stroke="#ed654c" stroke-width="9" stroke-linecap="round/><path d="M45 40L20 55M45 40L77 55" stroke="#526078" stroke-width="7" stroke-linecap="round/><path d="M18 55H80" stroke="#a6d34d" stroke-width="4/><path d="M45 60L30 96M45 60L60 96" stroke="#526078" stroke-width="7" stroke-linecap="round/></svg></div><div><h3>Remada</h3><p>Costas e bíceps · 2–3 × 10–15</p><p>Puxe cotovelos para trás, aproxime escápulas e retorne controlando.</p></div></div>
+<div class="exercise-card"><div class="exercise-visual"><svg viewBox="0 0 100 120"><path d="M10 100H90" stroke="#d5dbe2" stroke-width="2/><circle cx="50" cy="18" r="9" fill="#f4c99d" stroke="#526078"/><path d="M50 29L50 58" stroke="#ed654c" stroke-width="9" stroke-linecap="round/><path d="M50 39L22 46M50 39L78 46" stroke="#526078" stroke-width="7" stroke-linecap="round/><path d="M20 46H80" stroke="#a6d34d" stroke-width="4/><path d="M50 58L35 96M50 58L65 96" stroke="#526078" stroke-width="7" stroke-linecap="round/></svg></div><div><h3>Supino</h3><p>Peitoral e tríceps · 2–3 × 10–12</p><p>Elástico atrás do tronco; empurre à frente sem travar cotovelos.</p></div></div>
+<div class="exercise-card"><div class="exercise-visual"><svg viewBox="0 0 100 120"><path d="M10 100H90" stroke="#d5dbe2" stroke-width="2/><circle cx="50" cy="20" r="9" fill="#f4c99d" stroke="#526078"/><path d="M45 31L40 56L66 62" stroke="#ed654c" stroke-width="9" stroke-linecap="round/><path d="M40 47L25 68M66 62L78 74" stroke="#526078" stroke-width="7" stroke-linecap="round/><path d="M25 68L35 96M78 74L67 96" stroke="#526078" stroke-width="7" stroke-linecap="round/></svg></div><div><h3>Terra romeno</h3><p>Posterior e glúteos · 2–3 × 10–12</p><p>Quadril para trás com coluna neutra; suba contraindo glúteos.</p></div></div></div></div><div class="card span6"><h2>Musculação com elásticos</h2><div class="list" style="margin-top:12px">
+<div class="activity"><div><strong>Agachamento com elástico</strong><div class="meta">Pernas e glúteos · 2–3 × 10–15</div><p class="sub">Pise no elástico, segure as pontas nos ombros, afaste os pés na largura do quadril. Desça levando o quadril para trás e suba empurrando o chão. Joelhos acompanham a direção dos pés.</p></div></div>
+<div class="activity"><div><strong>Remada sentada ou em pé</strong><div class="meta">Costas e bíceps · 2–3 × 10–15</div><p class="sub">Prenda o elástico em ponto firme na altura do tronco (ou envolva os pés). Puxe cotovelos para trás, aproxime as escápulas e retorne lentamente sem arredondar as costas.</p></div></div>
+<div class="activity"><div><strong>Supino com elástico</strong><div class="meta">Peitoral, tríceps e ombros · 2–3 × 10–12</div><p class="sub">Passe o elástico atrás das costas, segure as pontas na altura do peito. Empurre à frente sem travar os cotovelos e retorne controlando.</p></div></div>
+<div class="activity"><div><strong>Levantamento terra romeno</strong><div class="meta">Posterior de coxa e glúteos · 2–3 × 10–12</div><p class="sub">Pise no centro do elástico. Joelhos levemente flexionados, leve quadril para trás mantendo coluna neutra; suba contraindo glúteos.</p></div></div>
+<div class="activity"><div><strong>Desenvolvimento de ombros</strong><div class="meta">Ombros e tríceps · 2 × 8–12</div><p class="sub">Pise no elástico, mãos na altura dos ombros. Empurre acima da cabeça em trajetória confortável e desça devagar. Não arqueie a lombar.</p></div></div>
+<div class="activity"><div><strong>Abdução de quadril</strong><div class="meta">Glúteo médio · 2 × 12–20</div><p class="sub">Coloque mini band acima dos joelhos ou tornozelos. Com tronco estável, afaste um joelho/perna sem girar o quadril; retorne lentamente.</p></div></div>
+</div></div>
+<div class="card span6"><h2>Como executar os treinos de corrida</h2><div class="list" style="margin-top:12px">
+<div class="activity"><div><strong>Corrida leve / regenerativa</strong><div class="meta">Esforço 3–4/10 · conversa em frases</div><p class="sub">Comece 5–10 min caminhando/trotando. Mantenha ritmo confortável e finalize desacelerando. Regenerativa deve ser ainda mais fácil.</p></div></div>
+<div class="activity"><div><strong>Intervalado</strong><div class="meta">Ex.: 6 × 2 min moderado-forte / 2 min leve</div><p class="sub">Aqueça 10–15 min. Faça repetições consistentes, sem sprint; recupere trotando ou caminhando. Desaqueça 8–10 min.</p></div></div>
+<div class="activity"><div><strong>Fartlek</strong><div class="meta">Alternância livre de ritmos</div><p class="sub">Após aquecimento, alterne trechos alegres com trechos fáceis (por exemplo, 1 min rápido confortável + 2 min leve). Controle pelo esforço, não pela velocidade.</p></div></div>
+<div class="activity"><div><strong>Tempo run / limiar</strong><div class="meta">Esforço sustentado 6–7/10</div><p class="sub">Aqueça; faça blocos de 8–20 min em esforço firme e controlado, ainda sem sprint; recupere leve entre blocos. Termine com desaquecimento.</p></div></div>
+<div class="activity"><div><strong>Subidas</strong><div class="meta">Força e técnica · repetições curtas</div><p class="sub">Escolha inclinação segura. Suba com postura alta e passadas curtas; desça caminhando para recuperar. Inicie com 4–6 repetições após aquecer.</p></div></div>
+<div class="activity"><div><strong>Longão</strong><div class="meta">Resistência · esforço fácil</div><p class="sub">Ritmo conversável, hidratação conforme duração e clima. Não transforme todo longão em prova. Iniciantes podem alternar corrida e caminhada.</p></div></div>
+</div></div></div></section>
+
+<section id="tab-tests" class="hidden"><div class="grid"><div class="card span12"><h2>Protocolos e testes de corrida</h2><p class="sub">Faça testes descansado, em local seguro e plano. Interrompa diante de dor, tontura, mal-estar ou falta de ar incomum. Testes máximos não são indicados para todos; procure orientação se tiver condição clínica ou estiver começando.</p>
+<form id="testForm"><div class="formgrid"><div class="field"><label for="testDate">Data</label><input type="date" id="testDate" required></div><div class="field"><label for="testType">Protocolo</label><select id="testType"><option value="1k">1 km (tempo)</option><option value="6min">6 minutos (distância)</option><option value="cooper">Cooper — 12 minutos (distância)</option><option value="3k">3 km (tempo)</option><option value="5k">5 km (tempo)</option></select></div><div class="field"><label for="testResult">Resultado (MM:SS para tempo; km para distância)</label><input id="testResult" placeholder="Ex.: 25:30 ou 2,40" required></div></div><div class="actions"><button type="submit">Salvar resultado</button></div></form><div id="testHistory" class="list" style="margin-top:14px"></div></div>
+<div class="card span12"><h2>Orientações rápidas</h2><div class="activity"><div><strong>Teste de 6 minutos</strong><div class="meta">Corra distância sustentável e registre metros ou km; não é obrigatório sprintar.</div></div></div><div class="activity"><div><strong>Cooper (12 min)</strong><div class="meta">Registre a distância total. Use condições semelhantes ao repetir.</div></div></div><div class="activity"><div><strong>Teste de 3 km / 5 km</strong><div class="meta">Aquecimento completo e esforço forte controlado; use apenas quando já tiver base.</div></div></div></div></div></section>
+
+<section id="tab-prediction" class="hidden"><div class="grid"><div class="card span12"><h2>Previsão de desempenho</h2><p class="sub">Estimativas matemáticas (modelo de Riegel) baseadas em uma corrida recente. Não são garantia; maratona exige volume, longões, experiência e preparação específica. Use previsões longas com cautela.</p><div id="predictionOutput" class="stats"></div><p id="predictionNote" class="notice"></p></div></div></section>
+
+<section id="tab-connections" class="hidden"><div class="grid">
+<div class="card span12"><div class="cardhead"><h2>Conexões externas</h2><span class="tag">Após login Supabase</span></div>
+<p>Você já está autenticado no StaminaLab. A conexão com o Strava deve ser autorizada aqui dentro, depois do login, e não na tela de entrada.</p>
+<div class="actions"><button id="stravaConnectMain">Conectar / autorizar Strava</button><button class="secondary" id="stravaStatusRefresh">Verificar conexão</button><button id="stravaImportBtn">Importar atividades do Strava</button></div>
+<div id="stravaStatus" class="notice">Strava ainda não conectado.</div>
+<p class="sub">Para concluir a integração real, o projeto precisa ter o OAuth do Strava configurado no backend da Vercel (Client ID e Client Secret como variáveis de ambiente). Não é seguro colocar o Client Secret no HTML.</p>
+</div></div></section>
+<section id="tab-settings" class="hidden"><div class="grid">
+<div class="card span6"><h2>Perfil do atleta</h2><form id="profileForm"><div class="field" style="margin-top:12px"><label for="athlete">Nome</label><input id="athlete" maxlength="70" placeholder="Seu nome"></div><div class="field" style="margin-top:12px"><label for="goal">Meta de distância semanal (km)</label><input id="goal" type="number" min="1" max="500" step=".5" value="20"></div><div class="actions"><button>Salvar perfil</button></div></form></div>
+<div class="card span6"><h2>Dados e privacidade</h2><p class="sub">Os treinos ficam no navegador e, após login, são sincronizados com sua conta Supabase. Use backup para manter uma cópia independente.</p><div class="actions"><button class="secondary" id="exportBtn2">Exportar backup JSON</button><button class="danger" id="clearData">Apagar todos os treinos</button></div><p class="notice">Antes de apagar, exporte seu backup. A ação de apagar exige confirmação.</p></div>
+</div></section>
+</main><div class="footer">STAMINALAB 360° · Treine com consistência, respeite sua recuperação.</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+"use strict";
+const STORE="staminalab360_rebuild_v1";
+const $=id=>document.getElementById(id);
+let data={athlete:"",goal:20,activities:[]};
+const todayISO=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
+const SUPABASE_URL="https://lbokpoabfbjajwamesxp.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_1bZpA0V94opayOptpPjJgw_dI2OJnBE";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+let currentUser=null,cloudReady=false;
+async function cloudLoad(user){
+  const response=await sb.from("stamina_data").select("payload").eq("user_id",user.id).maybeSingle();
+  if(response.error){console.warn(response.error);$("authMessage").textContent="Login feito, mas crie a tabela stamina_data usando o SQL incluído no pacote.";return}
+  if(response.data?.payload && Array.isArray(response.data.payload.activities)){data={...data,...response.data.payload};localStorage.setItem(STORE,JSON.stringify(data));render()}
+  cloudReady=true;
+  if(!response.data){const local=JSON.parse(localStorage.getItem(STORE)||"null");if(local?.activities?.length){data={...data,...local};await cloudSave();}}
+  setAthleteIdentity(user);
+  initializeAutomaticPlan();
+  $("authGate").classList.add("hidden");
+  $("authMessage").textContent="";
+}
+async function cloudSave(){
+ if(!currentUser||!cloudReady)return;
+ const payload={athlete:data.athlete,goal:data.goal,activities:data.activities,plannerPrefs:data.plannerPrefs||{}};
+ const {error}=await sb.from("stamina_data").upsert({user_id:currentUser.id,payload,updated_at:new Date().toISOString()},{onConflict:"user_id"});
+ if(error)console.error("Falha ao sincronizar:",error);
+}
+async function authAction(mode){
+ const email=$("authEmail").value.trim(),password=$("authPassword").value;
+ const msg=$("authMessage");
+ if(!email){msg.textContent="Digite seu e-mail.";$("authEmail").focus();return}
+ if(password.length<6){msg.textContent="A senha precisa ter pelo menos 6 caracteres.";$("authPassword").focus();return}
+ const login=$("loginBtn"),signup=$("signupBtn");login.disabled=signup.disabled=true;
+ msg.textContent=mode==="signup"?"Criando sua conta…":"Entrando…";
+ try{
+  if(!window.supabase){throw new Error("A biblioteca de conexão não carregou. Verifique sua internet e recarregue a página.")}
+  const result=mode==="signup"
+   ? await sb.auth.signUp({email,password,options:{emailRedirectTo:window.location.href.split("#")[0],data:{full_name:email.split("@")[0]}}})
+   : await sb.auth.signInWithPassword({email,password});
+  if(result.error)throw result.error;
+  if(mode==="signup"&&!result.data.session){msg.textContent="Cadastro criado! Confira sua caixa de e-mail (e spam) para confirmar a conta. Depois volte e entre.";return}
+  currentUser=result.data.user;
+  await cloudLoad(currentUser);
+ }catch(err){console.error("Supabase Auth:",err);msg.textContent=err?.message||"Não foi possível conectar. Confira a internet e tente novamente."}
+ finally{login.disabled=signup.disabled=false}
+}
+$("loginBtn").addEventListener("click",()=>authAction("login"));
+$("signupBtn").addEventListener("click",()=>authAction("signup"));
+sb.auth.getSession().then(async({data:sessionData})=>{if(sessionData.session){currentUser=sessionData.session.user;await cloudLoad(currentUser)}});
+async function logoutAccount(){
+ const btn=$("logoutBtn"); if(btn)btn.disabled=true;
+ try{const {error}=await sb.auth.signOut();if(error)throw error;
+ currentUser=null;cloudReady=false;
+ data={athlete:"",goal:20,activities:[],tests:[],plannerPrefs:{goal:20,level:"beginner",days:4,focus:"consistency"},weeklyPlan:null};
+ localStorage.removeItem(STORE);
+ $("authEmail").value="";$("authPassword").value="";$("authMessage").textContent="Você saiu da sua conta.";
+ $("authGate").classList.remove("hidden");$("authGate").style.display="flex";
+ }catch(e){alert("Não foi possível sair: "+(e.message||e))}finally{if(btn)btn.disabled=false}
+}
+$("logoutBtn").addEventListener("click",logoutAccount);
+async function startStravaOAuth(){
+ if(!currentUser){alert("Entre primeiro na sua conta StaminaLab (Supabase).");return}
+ switchTab("connections");
+ const status=$("stravaStatus");status.textContent="Preparando conexão segura com Strava…";
+ try{
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session?.access_token)throw new Error("Sessão Supabase não encontrada. Entre novamente.");
+  const r=await fetch("/api/strava-auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({access_token:session.access_token})});
+  const j=await r.json();if(!r.ok)throw new Error(j.error||"Falha ao iniciar autorização Strava.");
+  if(!j.authorization_url)throw new Error("O servidor não retornou o endereço de autorização.");
+  window.location.href=j.authorization_url;
+ }catch(e){status.textContent="Não foi possível iniciar Strava: "+(e.message||e)+". Confira as variáveis e os endpoints da Vercel."}
+}
+$("stravaConnectBtn").addEventListener("click",startStravaOAuth);
+$("stravaConnectMain").addEventListener("click",startStravaOAuth);
+$("stravaStatusRefresh").addEventListener("click",async()=>{
+ if(!currentUser){alert("Faça login no StaminaLab primeiro.");return}
+ const status=$("stravaStatus");status.textContent="Verificando conexão e buscando atividades…";
+ try{const {data:{session}}=await sb.auth.getSession();const r=await fetch("/api/strava-activities",{headers:{Authorization:`Bearer ${session.access_token}`}});const j=await r.json();if(!r.ok)throw new Error(j.error||"Strava não conectado.");status.textContent=`Strava conectado. ${j.activities?.length||0} atividades encontradas. Use “Importar atividades do Strava” para adicioná-las ao histórico.`;
+ }catch(e){status.textContent=e.message||String(e)}
+});
+$("stravaImportBtn").addEventListener("click",async()=>{
+ if(!currentUser){alert("Faça login no StaminaLab primeiro.");return}
+ const btn=$("stravaImportBtn");
+ btn.disabled=true;btn.textContent="Importando atividades…";
+ try{
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session?.access_token)throw new Error("Sessão Supabase ausente. Entre novamente.");
+  const r=await fetch("/api/strava-activities",{headers:{Authorization:`Bearer ${session.access_token}`}});
+  const j=await r.json();
+  if(!r.ok)throw new Error(j.error||"Falha ao consultar atividades Strava.");
+  const activities=j.activities||[];
+  if(!activities.length){alert("Nenhuma atividade encontrada no Strava.");return}
+  const existing=new Set(data.activities.map(a=>String(a.strava_id||"")).filter(Boolean));
+  const fresh=activities.filter(a=>!existing.has(String(a.strava_id))).map(a=>({
+   id:"strava_"+String(a.strava_id),
+   strava_id:String(a.strava_id),
+   date:String(a.date||"").slice(0,10),
+   type:(()=>{const t=String(a.sport_type||a.type||"").toLowerCase();if(/run|corrida|trail/.test(t))return "Corrida";if(/walk|hike|caminhada/.test(t))return "Caminhada";if(/ride|cycling|bike|ciclismo/.test(t))return "Ciclismo";if(/virtualrun|treadmill|esteira/.test(t))return "Esteira";return a.sport_type||a.type||"Outro"})(),
+   distance:Number(a.distance_km)||0,
+   duration:Number(a.moving_time)||0,
+   hr:Number(a.average_heartrate)||0,
+   elevation:Number(a.total_elevation_gain)||0,
+   notes:`Importado do Strava: ${a.name||"Atividade"}`,
+   created:Date.now(),
+   source:"strava"
+  }));
+  if(!fresh.length){alert("As atividades encontradas já estão no histórico. Nenhuma duplicata foi importada.");return}
+  if(!confirm(`Encontradas ${activities.length} atividades.\n\n${fresh.length} novas serão adicionadas ao seu histórico. Confirmar importação?`))return;
+  data.activities=[...data.activities,...fresh];
+  save();
+  alert(`${fresh.length} atividades do Strava importadas com sucesso!`);
+ }catch(e){alert("Falha na importação: "+(e.message||e))}
+ finally{btn.disabled=false;btn.textContent="Importar atividades do Strava"}
+});
+(function handleStravaReturn(){const p=new URLSearchParams(location.search);if(p.get("strava_connected")==="1"){$("stravaStatus").textContent="Strava autorizado e conectado à sua conta! Clique em Verificar conexão para consultar atividades.";history.replaceState({},"",location.pathname+location.hash)}else if(p.get("strava_error")){$("stravaStatus").textContent="Erro Strava: "+p.get("strava_error");history.replaceState({},"",location.pathname+location.hash)}})();
+
+
+function load(){try{const x=JSON.parse(localStorage.getItem(STORE)||"null");if(x&&Array.isArray(x.activities))data={...data,...x};}catch(e){console.warn("Não foi possível ler dados locais",e)}}
+function save(){if(data.weeklyPlan){const pref=data.plannerPrefs||{goal:Number(data.goal)||20,level:"beginner",days:3,focus:"endurance",strength:1};data.weeklyPlan=buildWeeklyPlan(pref,weekMondayISO())}localStorage.setItem(STORE,JSON.stringify(data));render();if(data.weeklyPlan)renderWeeklyPlan();cloudSave()}
+function parseDuration(s){let a=String(s).trim().split(":").map(Number);if(a.some(x=>!Number.isFinite(x)||x<0))return null;if(a.length===2){if(a[1]>=60)return null;return a[0]*60+a[1]}if(a.length===3){if(a[1]>=60||a[2]>=60)return null;return a[0]*3600+a[1]*60+a[2]}return null}
+function durationText(sec){if(!Number.isFinite(sec))return "—";let h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=Math.round(sec%60);return h?`${h}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`:`${m}:${String(s).padStart(2,"0")}`}
+function paceSec(a){return a.duration/a.distance}
+function paceText(sec){if(!Number.isFinite(sec)||sec<=0)return "—";let rounded=Math.round(sec),m=Math.floor(rounded/60),s=rounded%60;return `${m}:${String(s).padStart(2,"0")} /km`}
+function fmt(n,d=1){return Number(n||0).toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d})}
+function dateObj(s){return new Date(`${s}T12:00:00`)}
+function daysAgo(n){let d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-n);return d}
+function inRange(a,start,end){let d=dateObj(a.date);return d>=start&&d<end}
+function sumDistance(list){return list.reduce((s,a)=>s+Number(a.distance||0),0)}
+function rangeActivities(days){let start=daysAgo(days-1),end=new Date();end.setHours(23,59,59,999);return data.activities.filter(a=>inRange(a,start,end))}
+function sorted(){return [...data.activities].sort((a,b)=>b.date.localeCompare(a.date)||b.created-b.created)}
+function avgPace(list){let dist=sumDistance(list);return dist?list.reduce((s,a)=>s+a.duration,0)/dist:null}
+function weekStart(d){let x=new Date(d);x.setHours(0,0,0,0);let dow=(x.getDay()+6)%7;x.setDate(x.getDate()-dow);return x}
+function renderChart(){const c=$("volumeChart"),ctx=c.getContext("2d");const w=c.clientWidth||600,h=230,dpr=window.devicePixelRatio||1;c.width=w*dpr;c.height=h*dpr;ctx.scale(dpr,dpr);ctx.clearRect(0,0,w,h);
+let now=weekStart(new Date()),weeks=[];for(let i=7;i>=0;i--){let s=new Date(now);s.setDate(s.getDate()-i*7);let e=new Date(s);e.setDate(e.getDate()+7);weeks.push({s,e,label:`${s.getDate()}/${s.getMonth()+1}`,v:sumDistance(data.activities.filter(a=>dateObj(a.date)>=s&&dateObj(a.date)<e))})}
+let max=Math.max(5,...weeks.map(x=>x.v))*1.15,pad={l:35,r:8,t:12,b:25},cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+ctx.strokeStyle="#26384b";ctx.fillStyle="#8fa5ba";ctx.font="11px system-ui";ctx.textAlign="right";
+for(let i=0;i<=4;i++){let y=pad.t+ch*i/4,val=max*(1-i/4);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillText(val.toFixed(0),pad.l-7,y+4)}
+let bw=cw/8*.52;weeks.forEach((x,i)=>{let bh=x.v/max*ch,xx=pad.l+i*cw/8+(cw/8-bw)/2,yy=pad.t+ch-bh;ctx.fillStyle=i===7?"#b9f45b":"#3c596b";roundRect(ctx,xx,yy,bw,bh,5);ctx.fill();ctx.textAlign="center";ctx.fillStyle="#9aadc2";ctx.fillText(x.label,xx+bw/2,h-7)})}
+function roundRect(ctx,x,y,w,h,r){if(h<1)return;ctx.beginPath();ctx.roundRect(x,y,w,h,Math.min(r,w/2,h/2))}
+function activityHTML(a){return `<div class="activity"><div><strong>${esc(a.type)} · ${fmt(a.distance,2)} km</strong><div class="meta">${dateObj(a.date).toLocaleDateString("pt-BR")} · ${durationText(a.duration)} · ritmo ${paceText(paceSec(a))}${a.hr?` · FC ${a.hr} bpm`:""}${a.elevation?` · +${a.elevation} m`:""}</div>${a.notes?`<div class="meta">${esc(a.notes)}</div>`:""}</div><div class="right"><b>${paceText(paceSec(a))}</b><div class="actions" style="margin:5px 0 0;justify-content:flex-end"><button class="secondary" data-edit="${a.id}" style="padding:6px 9px;font-size:12px">Editar</button><button class="danger" data-delete="${a.id}" style="padding:6px 9px;font-size:12px">Excluir</button></div></div>`}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function render(){const a7=rangeActivities(7),a28=rangeActivities(28),dist7=sumDistance(a7),dist28=sumDistance(a28);
+$("km7").innerHTML=`${fmt(dist7)} <small>km</small>`;$("km28").innerHTML=`${fmt(dist28)} <small>km</small>`;$("count28").textContent=a28.length;$("pace28").textContent=avgPace(a28)?paceText(avgPace(a28)):"—";
+$("goalKm").textContent=fmt(data.goal,1);$("goalText").textContent=`Meta de ${fmt(data.goal,1)} km por semana`;$("goalProgress").textContent=fmt(dist7);let pct=Math.min(100,dist7/Math.max(1,data.goal)*100);$("goalBar").style.width=pct+"%";$("goalRemaining").textContent=dist7>=data.goal?`Meta alcançada! (${fmt(dist7-data.goal)} km acima)`:`Faltam ${fmt(data.goal-dist7)} km para a meta`;
+$("athlete").value=data.athlete||"";$("goal").value=data.goal;
+let list=sorted();$("recentList").innerHTML=list.length?list.slice(0,5).map(activityHTML).join(""):`<div class="empty">Ainda não há treinos registrados.<br>Use “Registrar treino” para começar.</div>`;
+$("activityList").innerHTML=list.length?list.map(activityHTML).join(""):`<div class="empty">Seu histórico está vazio.</div>`;$("activityCount").textContent=`${list.length} registro(s)`;
+renderCoach();renderChart();$("todayPill").textContent=new Date().toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"short"}).replace(".","");
+}
+function renderCoach(){
+ const runs=(data.activities||[]).filter(a=>/corrida|run|trail|esteira/i.test(a.type||"")&&a.distance>0&&a.duration>0);
+ const recent=runs.filter(a=>dateObj(a.date)>=daysAgo(27)),prior=runs.filter(a=>dateObj(a.date)>=daysAgo(55)&&dateObj(a.date)<daysAgo(27));
+ const km=sumDistance(recent),oldKm=sumDistance(prior),runDays=new Set(recent.map(a=>a.date)).size;
+ const longRun=recent.slice().sort((a,b)=>b.distance-a.distance)[0],pNow=avgPace(recent),pOld=avgPace(prior);let cards=[];
+ if(!runs.length){cards=[['Seu ponto de partida','Sem histórico: perfil iniciante. Comece com 3 sessões não consecutivas de 20–30 min, alternando 1–2 min de trote e caminhada. Esforço 3–4/10; sem teste máximo.'],['Força complementar','1–2 sessões com elásticos: agachamento, remada, supino, ponte de glúteo e core. Faça 2 séries confortáveis e deixe 2–3 repetições na reserva.'],['Primeiro objetivo','Complete 3 semanas consistentes sem terminar exausto. Depois aumente gradualmente o tempo correndo e considere um teste submáximo.']]}
+ else {
+ cards.push(['Consistência — interpretação',runDays<5?`Você correu em ${runDays} dias no último mês. Priorize 2–3 sessões fáceis e espaçadas; não compense treinos perdidos acumulando volume.`:runDays<10?`Você correu em ${runDays} dias no último mês. Há uma rotina emergente: mantenha a maioria fácil e apenas um estímulo exigente se estiver recuperado.`:`Você correu em ${runDays} dias no último mês. A frequência é uma base; varie estímulos e preserve dias leves.`]);
+ if(oldKm>0){let change=(km-oldKm)/oldKm*100;cards.push(['Carga — decisão',change>20?`Volume subiu ${fmt(change,0)}% sobre os 28 dias anteriores. Nesta semana, consolide: não aumente distância e intensidade ao mesmo tempo.`:change< -20?`Volume caiu ${fmt(Math.abs(change),0)}%. Retome abaixo do pico e distribua sessões menores; não tente compensar quilômetros perdidos.`:`Volume relativamente estável (${fmt(km,1)} km vs. ${fmt(oldKm,1)} km). Progrida em passos modestos se recuperação e esforço estiverem bons.`]);}
+ if(longRun){let ratio=longRun.distance/Math.max(km,.01);cards.push(['Resistência e longão',ratio>.4?`Seu maior treino (${fmt(longRun.distance,1)} km) representa ${fmt(ratio*100,0)}% do volume recente. Distribua mais volume em rodagens curtas antes de alongar o longão.`:`Maior corrida recente: ${fmt(longRun.distance,1)} km. Mantenha conversável e aumente em passos modestos, com semanas de consolidação.`]);}
+ if(pNow&&pOld){let d=(pNow-pOld)/pOld*100;cards.push(['Ritmo e desempenho',d< -2?'O ritmo médio parece mais rápido, mas percurso e esforço influenciam. Mantenha leves realmente leves e use ritmo em blocos controlados.':d>3?'O ritmo médio ficou mais lento; calor, terreno e fadiga podem explicar. Priorize recuperação e esforço conversável antes de intensificar.':'Ritmo médio semelhante. Para melhorar tempos, acrescente no máximo um estímulo controlado semanal, sem acelerar todas as rodagens.']);}
+ cards.push(['Plano de ação',runDays<3?'Nesta semana: 2 corridas/caminhadas leves + 1 sessão opcional curta; força com elásticos 1–2 vezes, sem dor muscular forte.':'Nesta semana: 1 longão fácil, 1 estímulo moderado se recuperado e o restante leve; elásticos 1–2 vezes, evitando pernas nas 24–48 h antes do longão.']);}
+ $("coachOutput").innerHTML=cards.map(c=>`<div class="coach-insight"><strong>${esc(c[0])}</strong><p>${esc(c[1])}</p></div>`).join("");
+}
+function switchTab(name){document.querySelectorAll("main>section").forEach(s=>s.classList.toggle("hidden",s.id!==`tab-${name}`));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));if(name==="add"&&!$("editId").value)$("date").value=todayISO();if(name==="dashboard")renderChart();window.scrollTo({top:0,behavior:"smooth"})}
+document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
+function resetForm(){ $("activityForm").reset();$("editId").value="";$("formTitle").textContent="Registrar atividade";$("date").value=todayISO()}
+$("activityForm").addEventListener("submit",e=>{e.preventDefault();let distance=Number($("distance").value.replace(",",".")),duration=parseDuration($("duration").value),hr=$("hr").value?Number($("hr").value):null,elev=$("elevation").value?Number($("elevation").value):null;
+if(!Number.isFinite(distance)||distance<=0||distance>1000){alert("Informe uma distância válida maior que zero.");return}
+if(duration===null||duration<=0){alert("Informe o tempo como MM:SS ou HH:MM:SS. Segundos e minutos devem estar entre 00 e 59.");return}
+if(hr!==null&&(!Number.isFinite(hr)||hr<30||hr>250)){alert("Confira a frequência cardíaca (30–250 bpm).");return}
+let id=$("editId").value||crypto.randomUUID(),old=data.activities.find(x=>x.id===id);
+let obj={id,date:$("date").value,type:$("type").value,distance,duration,hr,elevation:elev,notes:$("notes").value.trim(),created:old?.created||Date.now()};
+if(!obj.date){alert("Informe a data.");return}
+if(old)data.activities=data.activities.map(x=>x.id===id?obj:x);else data.activities.push(obj);
+save();resetForm();switchTab("activities");});
+$("cancelEdit").addEventListener("click",resetForm);
+document.addEventListener("click",e=>{let ed=e.target.closest("[data-edit]");if(ed){let a=data.activities.find(x=>x.id===ed.dataset.edit);if(!a)return;$("editId").value=a.id;$("date").value=a.date;$("type").value=a.type;$("distance").value=a.distance;$("duration").value=durationText(a.duration);$("hr").value=a.hr||"";$("elevation").value=a.elevation||"";$("notes").value=a.notes||"";$("formTitle").textContent="Editar atividade";switchTab("add")}
+let del=e.target.closest("[data-delete]");if(del){let a=data.activities.find(x=>x.id===del.dataset.delete);if(a&&confirm(`Excluir o treino de ${dateObj(a.date).toLocaleDateString("pt-BR")} (${a.distance} km)?`)){data.activities=data.activities.filter(x=>x.id!==a.id);save()}}});
+$("profileForm").addEventListener("submit",e=>{e.preventDefault();data.athlete=$("athlete").value.trim();data.goal=Number($("goal").value);if(!Number.isFinite(data.goal)||data.goal<=0){alert("Informe uma meta válida.");return}save();setAthleteIdentity(currentUser);alert("Perfil salvo!")});
+function exportData(){let blob=new Blob([JSON.stringify({app:"StaminaLab360",version:1,exportedAt:new Date().toISOString(),data},null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`staminalab-backup-${todayISO()}.json`;a.click();URL.revokeObjectURL(url)}
+$("exportBtn").addEventListener("click",exportData);$("exportBtn2").addEventListener("click",exportData);
+$("importBtn").addEventListener("click",()=>$("importFile").click());
+$("importFile").addEventListener("change",async e=>{let f=e.target.files[0];if(!f)return;try{let obj=JSON.parse(await f.text()),x=obj.data||obj;if(!Array.isArray(x.activities))throw Error("O arquivo não contém uma lista de atividades.");if(!confirm(`Importar ${x.activities.length} treino(s)? Isso substituirá os dados atuais deste aplicativo.`))return;data={athlete:String(x.athlete||""),goal:Number(x.goal)||20,activities:x.activities};save();alert("Backup importado com sucesso.")}catch(err){alert("Não foi possível importar: "+err.message)}e.target.value=""});
+$("clearData").addEventListener("click",()=>{if(confirm("Tem certeza que deseja apagar TODOS os treinos salvos neste navegador? Exporte um backup antes. Esta ação não pode ser desfeita.")){if(confirm("Confirmação final: apagar seu histórico de treinos?")){data.activities=[];save();alert("Histórico apagado.")}}});
+function weekMondayISO(date=new Date()){
+ const d=new Date(date);d.setHours(0,0,0,0);const day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);
+ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function weekRangeLabel(startISO){const d=dateObj(startISO),end=new Date(d);end.setDate(end.getDate()+6);return `${d.toLocaleDateString("pt-BR")} a ${end.toLocaleDateString("pt-BR")}`}
+function setAthleteIdentity(user=currentUser){
+ const metadata=user?.user_metadata||{};
+ const name=(data.athlete||metadata.full_name||metadata.name||user?.email?.split("@")[0]||"Atleta").trim();
+ $("athleteIdentity").textContent=`Atleta: ${name}`;
+ if($("athlete")&&!$("athlete").value)$("athlete").value=data.athlete||metadata.full_name||metadata.name||user?.email?.split("@")[0]||"";
+}
+function getPlanPrefs(){return data.plannerPrefs||{goal:Number(data.goal)||20,level:"beginner",days:4,focus:"consistency"}}
+function initializeAutomaticPlan(force=false){
+ const runs=(data.activities||[]).filter(a=>/corrida|run|trail|esteira/i.test(a.type||"")&&a.distance>0);
+ const beginner=!runs.length,prefs={goal:Number(data.goal)||20,level:beginner?"beginner":runs.length<12?"intermediate":"advanced",days:beginner?3:4,focus:"endurance",strength:beginner?1:2};
+ const week=weekMondayISO();if(force||!data.weeklyPlan||data.weeklyPlan.weekStart!==week){data.plannerPrefs=prefs;data.weeklyPlan=buildWeeklyPlan(prefs,week);save()}renderWeeklyPlan();
+}
+function buildWeeklyPlan(prefs,weekStart){
+ const goal=Math.max(1,Number(prefs.goal)||data.goal||20),days=Math.min(5,Math.max(3,Number(prefs.days)||3)),level=prefs.level||"beginner",focus=prefs.focus||"consistency";
+ const recentKm=sumDistance(rangeActivities(28))/4;
+ const safeTarget=recentKm>0?Math.min(goal,recentKm*(recentKm<10?1.08:1.10)):Math.min(goal,level==="beginner"?8:12);
+ const target=Math.max(recentKm>0?Math.min(recentKm,2):4,Math.round(safeTarget*10)/10);
+ const runDays=days===3?["Terça","Quinta","Sexta"]:days===4?["Terça","Quinta","Sexta","Sábado"]:["Segunda","Terça","Quinta","Sexta","Sábado"];
+ const sessions=[
+  ["Segunda","Recuperação / mobilidade",0,"Dia leve para recuperar; caminhada curta e mobilidade são opcionais."],
+  ["Terça","Corrida leve",Math.max(2,Math.round(target*(days===3?.30:.24)*10)/10),"Ritmo confortável, em que consiga conversar. Priorize regularidade."],
+  ["Quarta","Força com elásticos",0,"Circuito 20–30 min: agachamento, remada, supino, terra romeno e core. Faça 2 séries controladas, sem chegar à falha."],
+  ["Quinta","Corrida leve + técnica",Math.max(2,Math.round(target*.24*10)/10),"Corrida confortável. Se estiver bem, inclua 4 acelerações curtas e relaxadas."],
+  ["Sexta","Estímulo controlado",Math.max(2,Math.round(target*.22*10)/10),focus==="consistency"?"Rodagem leve e constante, sem perseguir ritmo.":"Aquecimento + 3 blocos moderados de 3 min, com recuperação leve; sem sprint."],
+  ["Sábado",days>=4?"Corrida fácil":"Força com elásticos",days>=4?Math.max(1.5,Math.round(target*.18*10)/10):0,days>=4?"Rodagem curta e confortável; reduza se houver fadiga.":"Circuito leve 20 min com elásticos: remada, ponte de glúteos, caminhada lateral e core."],
+  ["Domingo","Descanso",0,"Descanso programado. Sem corrida nem treino de força; priorize sono e recuperação."]
+ ];
+ if(days===3) sessions[5]=["Sábado","Recuperação ativa",0,"Caminhada leve ou mobilidade opcional. Sem necessidade de correr."];
+ if(prefs.strength==="no"||prefs.strength===0) sessions[2]=["Quarta","Descanso",0,"Recuperação e mobilidade leve, conforme a necessidade."];
+ if(Number(prefs.strength)>=2) sessions[5]=["Sábado","Força com elásticos",0,"Segundo circuito semanal de força, com carga moderada e técnica controlada."];
+ // Distribui o volume de corrida apenas nos dias definidos e mantém domingo como descanso.
+ const runSessions=sessions.filter(s=>runDays.includes(s[0])&&/corrida|estímulo/i.test(s[1]));
+ const totalWeight=runSessions.reduce((n,s)=>n+(s[0]==="Terça"?.30:s[0]==="Quinta"?.24:s[0]==="Sexta"?.22:.18),0);
+ runSessions.forEach(s=>{const w=s[0]==="Terça"?.30:s[0]==="Quinta"?.24:s[0]==="Sexta"?.22:.18;s[2]=Math.max(1.5,Math.round(target*w/totalWeight*10)/10)});
+ const notices=[];
+ if(recentKm===0)notices.push("Ainda não há treinos registrados. Plano inicial conservador para começar gradualmente.");
+ if(goal>Math.max(recentKm,1)*1.25)notices.push(`Meta de ${fmt(goal,1)} km acima do volume recente estimado (${fmt(recentKm,1)} km/semana). O plano começa abaixo da meta para reduzir risco de sobrecarga.`);
+ if(focus==="5k")notices.push("Foco 5 km: priorize consistência e conforto; não precisa fazer teste máximo toda semana.");
+ if(focus==="10k")notices.push("Foco 10 km: construa volume confortável e aumente a rodagem longa gradualmente.");
+ if(focus==="half")notices.push("Base para 21 km: esta semana não substitui uma preparação específica para prova.");
+ return {weekStart,createdAt:new Date().toISOString(),sessions,notices,targetKm:target,prefs};
+}
+function renderWeeklyPlan(){
+ const plan=data.weeklyPlan;
+ if(!plan){$("weeklyPlan").innerHTML='<div class="empty">Não foi possível montar o plano.</div>';return}
+ const base=dateObj(plan.weekStart)||weekStart(new Date());
+ const today=todayISO();
+ $("planWeekTag").textContent=`${weekRangeLabel(plan.weekStart)} · calendário`;
+ const totalKm=plan.sessions.reduce((n,x)=>n+(Number(x[2])||0),0);
+ const runCount=plan.sessions.filter(x=>/corrida|rodagem|longa|leve|moderado|interval/i.test(x[1])).length;
+ const strengthCount=plan.sessions.filter(x=>/elástico|força/i.test(x[1])).length;
+ const profile=(data.activities||[]).some(a=>/corrida|run|trail|esteira/i.test(a.type||"")&&Number(a.distance)>0)?"Adaptativo":"Iniciante";
+ $("planSummary").innerHTML=
+ `<div class="week-kpi"><small>Volume planejado</small><strong>${fmt(totalKm,1)} <em>km</em></strong></div>
+ <div class="week-kpi"><small>Sessões de corrida</small><strong>${runCount}</strong></div>
+ <div class="week-kpi"><small>Força com elásticos</small><strong>${strengthCount}</strong></div>
+ <div class="week-kpi"><small>Perfil do atleta</small><strong>${profile}</strong></div>`;
+ const order={"Segunda":0,"Terça":1,"Quarta":2,"Quinta":3,"Sexta":4,"Sábado":5,"Domingo":6};
+ const sessions=plan.sessions.map(s=>({s,idx:order[s[0]]??0})).sort((a,b)=>a.idx-b.idx);
+ const cards=sessions.map(({s,idx})=>{
+   const dt=new Date(base);dt.setDate(dt.getDate()+idx);
+   const iso=dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
+   const isToday=iso===today, isRest=/descanso/i.test(s[1]), isStrength=/força|elástico/i.test(s[1]), isLong=/long|rodagem longa/i.test(s[1]), isQuality=/moderado|interval|estímulo|tempo/i.test(s[1]);
+   const cls=isRest?"rest":isStrength?"strength":isLong?"long":isQuality?"quality":"easy";
+   const icon=isRest?"↗":isStrength?"✦":isLong?"◉":isQuality?"ϟ":"⌁";
+   const dateLabel=dt.toLocaleDateString("pt-BR",{day:"2-digit",month:"short"}).replace(".","");
+   const status=isToday?'<span class="day-status today">HOJE</span>':iso<today?'<span class="day-status done-window">SEMANA</span>':'';
+   const meta=s[2]?`${fmt(s[2],1)} km`:(isRest?"Recuperação":isStrength?"20–30 min":"Sessão");
+   return `<article class="plan-day ${cls} ${isToday?"is-today":""}">
+      <div class="plan-date"><span class="weekday">${esc(s[0].slice(0,3).toUpperCase())}</span><strong>${dt.getDate()}</strong><small>${dateLabel}</small></div>
+      <div class="plan-content"><div class="plan-topline">${status}<span class="plan-kind">${isRest?"RECUPERAÇÃO":isStrength?"FORÇA · ELÁSTICOS":isLong?"LONGÃO":isQuality?"QUALIDADE":"CORRIDA"}</span></div>
+      <h3>${esc(s[1])}</h3><p>${esc(s[3]||"Sessão adaptada ao seu histórico e objetivo.")}</p>
+      <div class="plan-meta"><span>${icon} ${meta}</span><span>${isRest?"Restaurar":isStrength?"Força complementar":isLong?"Resistência":"Base aeróbica"}</span></div></div>
+      <div class="plan-accent"></div>
+    </article>`;
+ }).join("");
+ const notices=(plan.notices||[]).map(n=>`<div class="notice">${esc(n)}</div>`).join("");
+ $("weeklyPlan").innerHTML=`<div class="week-calendar-heading"><div><span class="eyebrow">MICROCICLO</span><h3>Semana de treino</h3></div><span class="calendar-caption">SEG — DOM · datas locais</span></div><div class="plan-timeline">${cards}</div>${notices}<p class="plan-footnote">O plano é uma sugestão adaptativa baseada nos registros disponíveis. Ajuste ou interrompa se houver dor, doença ou fadiga incomum.</p>`;
+}
+
+function paceFromDistanceTime(km,seconds){return seconds/km}
+function parseTimeInput(v){const a=v.trim().split(":").map(Number);if(a.some(x=>!Number.isFinite(x)))return null;if(a.length===2&&a[0]>=0&&a[1]>=0&&a[1]<60)return a[0]*60+a[1];if(a.length===3&&a[0]>=0&&a[1]>=0&&a[1]<60&&a[2]>=0&&a[2]<60)return a[0]*3600+a[1]*60+a[2];return null}
+function renderTests(){const arr=data.tests||[];$("testHistory").innerHTML=arr.length?arr.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(t=>`<div class="activity"><div><strong>${esc(t.label)} · ${esc(t.resultText)}</strong><div class="meta">${dateObj(t.date).toLocaleDateString("pt-BR")}</div></div></div>`).join(""):'<div class="empty">Nenhum teste registrado ainda.</div>';}
+$("testDate").value=todayISO();$("testForm").addEventListener("submit",e=>{e.preventDefault();const type=$("testType").value,raw=$("testResult").value.trim().replace(",",".");let result,txt,label;if(["1k","3k","5k"].includes(type)){result=parseTimeInput(raw);txt=raw;label=type==="1k"?"Teste 1 km":type==="3k"?"Teste 3 km":"Teste 5 km";if(!result||result<=0){alert("Informe o tempo no formato MM:SS.");return}}else{result=Number(raw);txt=`${fmt(result,2)} km`;label=type==="6min"?"Teste de 6 minutos":"Cooper (12 min)";if(!Number.isFinite(result)||result<=0){alert("Informe a distância em km.");return}}
+data.tests.push({id:crypto.randomUUID(),date:$("testDate").value,type,label,result,resultText:txt});save();renderTests();renderPredictions();$("testResult").value="";alert("Teste registrado.");});
+function renderPredictions(){const runs=(data.activities||[]).filter(a=>a.distance>=3&&a.duration>0).sort((a,b)=>b.date.localeCompare(a.date));const best=runs[0];const output=$("predictionOutput");if(!best){output.innerHTML='<div class="empty" style="grid-column:1/-1">Registre uma corrida de 3 km ou mais para calcular estimativas. Dados de teste também poderão apoiar avaliações futuras.</div>';$("predictionNote").textContent="As projeções são aproximadas e não substituem um plano de preparação específico.";return}
+const t=best.duration, d=best.distance, distances=[5,10,21.0975,42.195];const names=["5 km","10 km","Meia maratona","Maratona"];
+output.innerHTML=distances.map((km,i)=>{const sec=t*Math.pow(km/d,1.06);const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),ss=Math.round(sec%60);const time=km>=1?`${h?String(h).padStart(2,"0")+":" : ""}${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}`:"—";return `<div class="stat"><div class="label">${names[i]}</div><div class="value">${time}</div></div>`}).join("");
+$("predictionNote").textContent=`Referência: ${fmt(d,2)} km em ${durationText(t)} (${dateObj(best.date).toLocaleDateString("pt-BR")}). Fórmula de Riegel (expoente 1,06); previsões para 21,1 e 42,2 km podem superestimar o resultado sem preparação e volume adequados.`;}
+
+window.addEventListener("resize",()=>renderChart());
+load();if(!Array.isArray(data.tests))data.tests=[];$("date").value=todayISO();render();renderTests();renderPredictions();
+</script>
+</body></html>
+
+
+ 
