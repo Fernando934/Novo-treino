@@ -94,6 +94,37 @@ button{transition:transform .15s,filter .15s}button:hover{filter:brightness(1.08
 .plan-done-btn:hover{border-color:var(--lime);color:var(--lime)}
 .plan-done-btn.completed{background:rgba(185,244,91,.12);border-color:var(--lime);color:var(--lime)}
 .plan-day.is-completed{border-color:rgba(185,244,91,.42)}
+
+/* Biblioteca reorganizada */
+.library-hero .eyebrow{font-size:10px;letter-spacing:2px;color:var(--lime);font-weight:800}
+.library-hero h2{margin:5px 0 8px}
+.library-toolbar{display:grid;grid-template-columns:minmax(220px,1fr);gap:12px;margin:22px 0 12px}
+.library-toolbar input{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px 15px;color:var(--text);font:inherit;outline:none}
+.library-toolbar input:focus{border-color:var(--lime);box-shadow:0 0 0 3px #b9f45b18}
+.library-filters{display:flex;gap:8px;flex-wrap:wrap}
+.lib-filter{border:1px solid var(--line);background:var(--panel2);color:var(--muted);padding:8px 13px;border-radius:999px;cursor:pointer;font:600 12px inherit}
+.lib-filter.active{background:#b9f45b18;color:var(--lime);border-color:#b9f45b70}
+.library-stats{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:11px;margin:14px 0}
+.library-stats b{color:var(--text)}
+.library-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.lib-card{background:linear-gradient(145deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;min-width:0;transition:transform .15s,border-color .15s}
+.lib-card:hover{transform:translateY(-2px);border-color:#b9f45b60}
+.lib-card-top{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:10px}
+.lib-icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:#b9f45b16;color:var(--lime);font-size:18px}
+.lib-category{font-size:9px;letter-spacing:1px;font-weight:800;color:var(--muted)}
+.lib-card h3{font-size:16px;margin:4px 0 7px;color:var(--text)}
+.lib-card .lib-summary{font-size:12px;line-height:1.55;color:var(--muted);margin:0 0 12px}
+.lib-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.lib-pill{font-size:10px;color:var(--muted);background:#ffffff08;border:1px solid var(--line);border-radius:7px;padding:5px 7px}
+.lib-details{border-top:1px solid var(--line);padding-top:11px;margin-top:auto}
+.lib-details summary{cursor:pointer;color:var(--lime);font-weight:700;font-size:11px;list-style:none}
+.lib-details summary:after{content:"＋";float:right}
+.lib-details[open] summary:after{content:"−"}
+.lib-detail-body{padding-top:12px;color:var(--muted);font-size:12px;line-height:1.65}
+.lib-detail-body strong{color:var(--text)}
+.lib-detail-body ul{padding-left:18px;margin:5px 0 12px}
+.lib-empty{padding:28px;text-align:center;color:var(--muted);grid-column:1/-1}
+@media(max-width:680px){.library-card-grid{grid-template-columns:1fr}.library-toolbar{margin-top:16px}.library-stats{flex-wrap:wrap}}
 </style>
 </head>
 <body>
@@ -160,29 +191,10 @@ button{transition:transform .15s,filter .15s}button:hover{filter:brightness(1.08
 </div></div></section>
 
 <section id="tab-library" class="hidden"><div class="grid">
-<div class="card span12"><div class="cardhead"><h2>Biblioteca de movimentos e treinos</h2><span class="tag">Consulte antes de executar</span></div><p class="sub">Biblioteca prática de movimentos, músculos, séries e instruções. Corrida e elásticos podem coexistir no plano.</p></div>
-<div class="card span12"><h2>Movimentos ilustrados · elásticos</h2><p class="sub">Referência visual de início e execução. Faça os movimentos sem dor, com tensão controlável.</p><div class="exercise-grid" style="margin-top:14px">
-<div class="exercise-card"><div class="exercise-visual"><svg viewBox="0 0 100 120" role="img" aria-label="Ilustração de terra romeno"><title>Terra romeno</title><path d="M8 104H92" stroke="#cbd5e1" stroke-width="2"/><circle cx="58" cy="19" r="8" fill="#f4c99d" stroke="#526078"/><path d="M53 29L39 57L62 69" fill="none" stroke="#df684f" stroke-width="8" stroke-linecap="round"/><path d="M47 42L28 65L17 75M43 43L64 56" fill="none" stroke="#526078" stroke-width="6" stroke-linecap="round"/><path d="M39 57L30 98M62 69L72 98" fill="none" stroke="#526078" stroke-width="7" stroke-linecap="round"/><path d="M14 77Q40 70 68 77" fill="none" stroke="#a6d34d" stroke-width="4"/></svg></div><div><h3>Agachamento</h3><p>Quadríceps e glúteos · 2–3 × 10–15</p><p>Mini band acima dos joelhos; desça e suba mantendo joelhos alinhados aos pés.</p></div></div>
-<div class="exercise-card"><div class="exercise-visual"><svg viewBox="0 0 100 120"><path d="M10 100H90" stroke="#d5dbe2" stroke-width="2"/><circle cx="48" cy="18" r="9" fill="#f4c99d" stroke="#526078"/><path d="M45 29L45 60" stroke="#ed654c" stroke-width="9" stroke-linecap="round/><path d="M45 40L20 55M45 40L77 55" stroke="#526078" stroke-width="7" stroke-linecap="round/><path d="M18 55H80" stroke="#a6d34d" stroke-width="4/><path d="M45 60L30 96M45 60L60 96" stroke="#526078" stroke-width="7" stroke-linecap="round/></svg></div><div><h3>Remada</h3><p>Costas e bíceps · 2–3 × 10–15</p><p>Puxe cotovelos para trás, aproxime escápulas e retorne controlando.</p></div></div>
-<div class="exercise-card"><div class="exercise-visual"><svg viewBox="0 0 100 120"><path d="M10 100H90" stroke="#d5dbe2" stroke-width="2/><circle cx="50" cy="18" r="9" fill="#f4c99d" stroke="#526078"/><path d="M50 29L50 58" stroke="#ed654c" stroke-width="9" stroke-linecap="round/><path d="M50 39L22 46M50 39L78 46" stroke="#526078" stroke-width="7" stroke-linecap="round/><path d="M20 46H80" stroke="#a6d34d" stroke-width="4/><path d="M50 58L35 96M50 58L65 96" stroke="#526078" stroke-width="7" stroke-linecap="round/></svg></div><div><h3>Supino</h3><p>Peitoral e tríceps · 2–3 × 10–12</p><p>Elástico atrás do tronco; empurre à frente sem travar cotovelos.</p></div></div>
-<div class="exercise-card"><div class="exercise-visual"><svg viewBox="0 0 100 120"><path d="M10 100H90" stroke="#d5dbe2" stroke-width="2/><circle cx="50" cy="20" r="9" fill="#f4c99d" stroke="#526078"/><path d="M45 31L40 56L66 62" stroke="#ed654c" stroke-width="9" stroke-linecap="round/><path d="M40 47L25 68M66 62L78 74" stroke="#526078" stroke-width="7" stroke-linecap="round/><path d="M25 68L35 96M78 74L67 96" stroke="#526078" stroke-width="7" stroke-linecap="round/></svg></div><div><h3>Terra romeno</h3><p>Posterior e glúteos · 2–3 × 10–12</p><p>Quadril para trás com coluna neutra; suba contraindo glúteos.</p></div></div></div></div><div class="card span12 library-section"><h2>Como executar os exercícios com elásticos</h2><p class="sub">Faça cada movimento com controle. Escolha uma tensão que permita completar as repetições sem perder a técnica.</p><div class="list" style="margin-top:12px">
-<div class="activity"><div><strong>Agachamento com elástico</strong><div class="meta">Pernas e glúteos · 2–3 × 10–15</div><p class="sub">Pise no elástico, segure as pontas nos ombros, afaste os pés na largura do quadril. Desça levando o quadril para trás e suba empurrando o chão. Joelhos acompanham a direção dos pés.</p></div></div>
-<div class="activity"><div><strong>Remada sentada ou em pé</strong><div class="meta">Costas e bíceps · 2–3 × 10–15</div><p class="sub">Prenda o elástico em ponto firme na altura do tronco (ou envolva os pés). Puxe cotovelos para trás, aproxime as escápulas e retorne lentamente sem arredondar as costas.</p></div></div>
-<div class="activity"><div><strong>Supino com elástico</strong><div class="meta">Peitoral, tríceps e ombros · 2–3 × 10–12</div><p class="sub">Passe o elástico atrás das costas, segure as pontas na altura do peito. Empurre à frente sem travar os cotovelos e retorne controlando.</p></div></div>
-<div class="activity"><div><strong>Levantamento terra romeno</strong><div class="meta">Posterior de coxa e glúteos · 2–3 × 10–12</div><p class="sub">Pise no centro do elástico. Joelhos levemente flexionados, leve quadril para trás mantendo coluna neutra; suba contraindo glúteos.</p></div></div>
-<div class="activity"><div><strong>Desenvolvimento de ombros</strong><div class="meta">Ombros e tríceps · 2 × 8–12</div><p class="sub">Pise no elástico, mãos na altura dos ombros. Empurre acima da cabeça em trajetória confortável e desça devagar. Não arqueie a lombar.</p></div></div>
-<div class="activity"><div><strong>Abdução de quadril</strong><div class="meta">Glúteo médio · 2 × 12–20</div><p class="sub">Coloque mini band acima dos joelhos ou tornozelos. Com tronco estável, afaste um joelho/perna sem girar o quadril; retorne lentamente.</p></div></div>
-</div></div>
-<div class="card span12 library-section"><h2>Como executar os treinos de corrida</h2><p class="sub">Os nomes abaixo são os tipos de sessão usados no dia a dia da corrida.</p><div class="list" style="margin-top:12px">
-<div class="activity"><div><strong>Rodagem leve / regenerativo</strong><div class="meta">Esforço 3–4/10 · conversa em frases</div><p class="sub">Comece 5–10 min caminhando/trotando. Mantenha ritmo confortável e finalize desacelerando. Regenerativa deve ser ainda mais fácil.</p></div></div>
-<div class="activity"><div><strong>Tiros (intervalado)</strong><div class="meta">Ex.: 6 × 2 min moderado-forte / 2 min leve</div><p class="sub">Aqueça 10–15 min. Faça repetições consistentes, sem sprint; recupere trotando ou caminhando. Desaqueça 8–10 min.</p></div></div>
-<div class="activity"><div><strong>Fartlek</strong><div class="meta">Alternância livre de ritmos</div><p class="sub">Após aquecimento, alterne trechos alegres com trechos fáceis (por exemplo, 1 min rápido confortável + 2 min leve). Controle pelo esforço, não pela velocidade.</p></div></div>
-<div class="activity"><div><strong>Treino de ritmo (tempo run / limiar)</strong><div class="meta">Esforço sustentado 6–7/10</div><p class="sub">Aqueça; faça blocos de 8–20 min em esforço firme e controlado, ainda sem sprint; recupere leve entre blocos. Termine com desaquecimento.</p></div></div>
-<div class="activity"><div><strong>Tiros em subida</strong><div class="meta">Força e técnica · repetições curtas</div><p class="sub">Escolha inclinação segura. Suba com postura alta e passadas curtas; desça caminhando para recuperar. Inicie com 4–6 repetições após aquecer.</p></div></div>
-<div class="activity"><div><strong>Longão</strong><div class="meta">Resistência · esforço fácil</div><p class="sub">Ritmo conversável, hidratação conforme duração e clima. Não transforme todo longão em prova. Iniciantes podem alternar corrida e caminhada.</p></div></div>
-</div></div></div></section>
-
-<section id="tab-tests" class="hidden"><div class="grid"><div class="card span12"><h2>Protocolos e testes de corrida</h2><p class="sub">Faça testes descansado, em local seguro e plano. Interrompa diante de dor, tontura, mal-estar ou falta de ar incomum. Testes máximos não são indicados para todos; procure orientação se tiver condição clínica ou estiver começando.</p>
+<div class="card span12 library-hero"><div class="cardhead"><div><span class="eyebrow">CENTRAL DE TREINAMENTO</span><h2>Biblioteca StaminaLab</h2></div><span class="tag">GUIA DE EXECUÇÃO</span></div><p class="sub">Escolha uma sessão, entenda o objetivo e execute com técnica. Corrida e força complementar estão organizadas em trilhas diferentes.</p>
+<div class="library-toolbar"><input id="librarySearch" type="search" placeholder="Buscar exercício, músculo ou tipo de treino…"><div class="library-filters" id="libraryFilters"><button class="lib-filter active" data-filter="all">Tudo</button><button class="lib-filter" data-filter="run">Corrida</button><button class="lib-filter" data-filter="band">Elásticos</button><button class="lib-filter" data-filter="mobility">Mobilidade</button></div></div>
+<div class="library-stats"><span><b id="libraryCount">16</b> guias</span><span>•</span><span>Execução passo a passo</span><span>•</span><span>Intensidade adaptável</span></div>
+<div id="libraryCards" class="library-card-grid"></div></div></div></section><section id="tab-tests" class="hidden"><div class="grid"><div class="card span12"><h2>Protocolos e testes de corrida</h2><p class="sub">Faça testes descansado, em local seguro e plano. Interrompa diante de dor, tontura, mal-estar ou falta de ar incomum. Testes máximos não são indicados para todos; procure orientação se tiver condição clínica ou estiver começando.</p>
 <form id="testForm"><div class="formgrid"><div class="field"><label for="testDate">Data</label><input type="date" id="testDate" required></div><div class="field"><label for="testType">Protocolo</label><select id="testType"><option value="1k">1 km (tempo)</option><option value="6min">6 minutos (distância)</option><option value="cooper">Cooper — 12 minutos (distância)</option><option value="3k">3 km (tempo)</option><option value="5k">5 km (tempo)</option></select></div><div class="field"><label for="testResult">Resultado (MM:SS para tempo; km para distância)</label><input id="testResult" placeholder="Ex.: 25:30 ou 2,40" required></div></div><div class="actions"><button type="submit">Salvar resultado</button></div></form><div id="testHistory" class="list" style="margin-top:14px"></div></div>
 <div class="card span12"><h2>Orientações rápidas</h2><div class="activity"><div><strong>Teste de 6 minutos</strong><div class="meta">Corra distância sustentável e registre metros ou km; não é obrigatório sprintar.</div></div></div><div class="activity"><div><strong>Cooper (12 min)</strong><div class="meta">Registre a distância total. Use condições semelhantes ao repetir.</div></div></div><div class="activity"><div><strong>Teste de 3 km / 5 km</strong><div class="meta">Aquecimento completo e esforço forte controlado; use apenas quando já tiver base.</div></div></div></div></div></section>
 
@@ -406,8 +418,14 @@ function initializeAutomaticPlan(force=false){
 }
 function buildWeeklyPlan(prefs,weekStart){
  const goal=Math.max(1,Number(prefs.goal)||data.goal||20),days=Math.min(5,Math.max(3,Number(prefs.days)||3)),level=prefs.level||"beginner",focus=prefs.focus||"consistency";
- const recentKm=sumDistance(rangeActivities(28))/4;
- const safeTarget=recentKm>0?Math.min(goal,recentKm*(recentKm<10?1.08:1.10)):Math.min(goal,level==="beginner"?8:12);
+ const recentRuns=rangeActivities(28).filter(a=>/corrida|run|trail|esteira/i.test(String(a.type||""))&&Number(a.distance)>0);
+ const recentKm=sumDistance(recentRuns)/4;
+ const previous7=rangeActivities(7).filter(a=>/corrida|run|trail|esteira/i.test(String(a.type||""))&&Number(a.distance)>0);
+ const prevWeekKm=sumDistance(previous7);
+ const consistentWeeks=recentRuns.length>=6;
+ // Volumes novos são conservadores: média móvel de 28 dias, com até 5% de progressão
+ // apenas quando existe consistência; iniciante parte de 4–6 km e corrida/caminhada.
+ const safeTarget=recentKm>0?Math.min(goal,recentKm*(consistentWeeks?1.05:1.0)):Math.min(goal,level==="beginner"?6:8);
  const target=Math.max(recentKm>0?Math.min(recentKm,2):4,Math.round(safeTarget*10)/10);
  const runDays=days===3?["Terça","Quinta","Sábado"]:days===4?["Segunda","Quarta","Sexta","Sábado"]:["Segunda","Terça","Quarta","Sexta","Sábado"];
  const sessions=[
@@ -431,10 +449,15 @@ function buildWeeklyPlan(prefs,weekStart){
  });
 
  const totalWeight=runSessions.reduce((n,s)=>n+(weightByDay[s[0]]||.2),0);
- runSessions.forEach(s=>{const w=weightByDay[s[0]]||.2;s[2]=Math.max(1.5,Math.round(target*w/totalWeight*10)/10)});
+ runSessions.forEach(s=>{
+  const w=weightByDay[s[0]]||.2;s[2]=Math.max(1.5,Math.round(target*w/totalWeight*10)/10);
+  if(s[0]!=="Sábado")s[3]+=" Complemento integrado (opcional, se estiver recuperado): elásticos por 10–15 min — agachamento, remada e Pallof press, 2 séries de 10–12 repetições, descanso de 60–75 s. Faça após a corrida, sem chegar à falha.";
+  else s[3]+=" O longão é o foco do dia: não acrescente força de pernas com elásticos.";
+});
  const notices=[];
- if(recentKm===0)notices.push("Ainda não há treinos registrados. Plano inicial conservador para começar gradualmente.");
- if(goal>Math.max(recentKm,1)*1.25)notices.push(`Meta de ${fmt(goal,1)} km acima do volume recente estimado (${fmt(recentKm,1)} km/semana). O plano começa abaixo da meta para reduzir risco de sobrecarga.`);
+ if(recentKm===0)notices.push("Ainda não há corridas registradas nos últimos 28 dias. Plano inicial conservador de 4–6 km; use corrida/caminhada e marque a atividade ao terminar.");
+ else notices.push(`Cálculo atualizado: ${fmt(sumDistance(recentRuns),1)} km em ${recentRuns.length} corrida(s) nos últimos 28 dias ÷ 4 = média de ${fmt(recentKm,1)} km/semana. ${consistentWeeks?"Consistência detectada; progressão limitada a 5%.":"Sem consistência suficiente para aumentar: mantemos a média como referência."}`);
+ if(goal>Math.max(recentKm,1)*1.25)notices.push(`Sua meta de perfil é ${fmt(goal,1)} km/semana, mas o volume planejado agora é ${fmt(target,1)} km. A meta não força o treino: priorizamos a média real recente e a progressão conservadora.`);
  if(focus==="5k")notices.push("Foco 5 km: priorize consistência e conforto; não precisa fazer teste máximo toda semana.");
  if(focus==="10k")notices.push("Foco 10 km: construa volume confortável e aumente a rodagem longa gradualmente.");
  if(focus==="half")notices.push("Base para 21 km: esta semana não substitui uma preparação específica para prova.");
@@ -457,7 +480,10 @@ function renderWeeklyPlan(){
  `<div class="week-kpi"><small>Volume planejado</small><strong>${fmt(totalKm,1)} <em>km</em></strong></div>
  <div class="week-kpi"><small>Sessões de corrida</small><strong>${runCount}</strong></div>
  <div class="week-kpi"><small>Força com elásticos</small><strong>${strengthCount}</strong></div>
- <div class="week-kpi"><small>Perfil do atleta</small><strong>${profile}</strong></div>`;
+ <div class="week-kpi"><small>Perfil do atleta</small><strong>${profile}</strong></div>
+ <div class="week-kpi"><small>Média 28 dias</small><strong>${fmt(sumDistance((data.activities||[]).filter(a=>/corrida|run|trail|esteira/i.test(String(a.type||""))&&Number(a.distance)>0&&a.date>=daysAgo(27).toISOString().slice(0,10))),1)} <em>km/sem</em></strong></div>
+ <div class="week-kpi"><small>Últimos 7 dias</small><strong>${fmt(sumDistance((data.activities||[]).filter(a=>/corrida|run|trail|esteira/i.test(String(a.type||""))&&Number(a.distance)>0&&a.date>=daysAgo(6).toISOString().slice(0,10))),1)} <em>km</em></strong></div>
+ <div class="week-kpi"><small>Planejado / média 28d</small><strong>${fmt(plan.targetKm,1)} / ${fmt(sumDistance((data.activities||[]).filter(a=>/corrida|run|trail|esteira/i.test(String(a.type||""))&&Number(a.distance)>0&&a.date>=daysAgo(27).toISOString().slice(0,10)))/4,1)} <em>km</em></strong></div>`;
  const order={"Segunda":0,"Terça":1,"Quarta":2,"Quinta":3,"Sexta":4,"Sábado":5,"Domingo":6};
  const sessions=plan.sessions.map(s=>({s,idx:order[s[0]]??0})).sort((a,b)=>a.idx-b.idx);
  const cards=sessions.map(({s,idx})=>{
@@ -482,6 +508,36 @@ function renderWeeklyPlan(){
  const notices=(plan.notices||[]).map(n=>`<div class="notice">${esc(n)}</div>`).join("");
  $("weeklyPlan").innerHTML=`<div class="week-calendar-heading"><div><span class="eyebrow">MICROCICLO</span><h3>Semana de treino</h3></div><span class="calendar-caption">SEG — DOM · datas locais</span></div><div class="plan-timeline">${cards}</div>${notices}<p class="plan-footnote">O plano é uma sugestão adaptativa baseada nos registros disponíveis. Ajuste ou interrompa se houver dor, doença ou fadiga incomum.</p>`;
 }
+
+
+const LIBRARY_ITEMS=[
+{cat:"run",icon:"↗",label:"CORRIDA · BASE",title:"Rodagem leve / corrida-caminhada",summary:"Constrói base aeróbica com esforço confortável, sem perseguir pace.",pills:["RPE 3–4/10","20–45 min","Conversa possível"],goal:"Desenvolver resistência e consistência com baixo estresse.",steps:["5–8 min caminhando e trotando muito leve.","Faça blocos confortáveis. Iniciante: 2 min correndo + 1–2 min caminhando, repetindo.","Finalize com 5 min caminhando e respiração desacelerando."],dose:"20–45 min conforme histórico; iniciantes podem começar em 15–20 min.",caution:"Reduza o ritmo se não conseguir falar frases. Dor que altera a passada é sinal para parar."},
+{cat:"run",icon:"ϟ",label:"CORRIDA · INTERVALADO",title:"Intervalos curtos controlados",summary:"Alterna estímulos vivos e recuperação; não são sprints máximos.",pills:["RPE 6–7/10","4–6 repetições","Recuperação leve"],goal:"Melhorar economia e tolerância ao ritmo, após construir base.",steps:["Aqueça 10–15 min leve e faça mobilidade dinâmica.","4–6 × 1 min firme, recuperando 2 min trotando/caminhando.","Desaqueça 8–10 min. Termine com sensação de controle."],dose:"1 sessão semanal no máximo quando já há base; iniciantes substituem por rodagem.",caution:"Não fazer forte se estiver retornando de pausa, doente ou com fadiga incomum."},
+{cat:"run",icon:"≈",label:"CORRIDA · RITMO",title:"Tempo run / ritmo controlado",summary:"Trecho contínuo ou blocos em esforço firme, sustentável.",pills:["RPE 6/10","8–20 min de bloco","Sem sprint"],goal:"Treinar percepção de ritmo e resistência específica.",steps:["Aqueça 12–15 min em ritmo fácil.","Faça 2 × 8 min firme e confortável, com 3 min leve entre blocos.","Desaqueça 10 min e registre como se sentiu."],dose:"Somente após algumas semanas consistentes; pode começar com 8 min.",caution:"Não use pace de prova como obrigação; ajuste pelo terreno e clima."},
+{cat:"run",icon:"⛰",label:"CORRIDA · SUBIDA",title:"Repetições em subida",summary:"Desenvolve força e técnica com esforço curto e controlado.",pills:["RPE 6–7/10","4–6 × 20–30 s","Descida caminhando"],goal:"Melhorar impulsão, postura e força específica.",steps:["Aqueça 12 min e escolha uma subida moderada e segura.","Suba com passos curtos, tronco alto e braços ativos.","Desça caminhando até recuperar; finalize leve por 8 min."],dose:"4–6 repetições curtas; aumente gradualmente.",caution:"Evite descidas rápidas e inclinações escorregadias."},
+{cat:"run",icon:"◉",label:"CORRIDA · LONGÃO",title:"Longão confortável",summary:"Acumula tempo em movimento para resistência; deve ser o treino mais fácil.",pills:["RPE 3–4/10","Conversável","Corrida/caminhada"],goal:"Aumentar gradualmente a capacidade de permanecer em movimento.",steps:["Comece muito fácil; caminhe quando necessário.","Mantenha ritmo em que consiga conversar; hidrate-se conforme duração/clima.","Termine sem sprint e faça caminhada de desaquecimento."],dose:"Comece próximo da duração que já tolera; não aumente simultaneamente ritmo e duração.",caution:"Não compense treinos perdidos. Se houver dor ou exaustão, encurte."},
+{cat:"band",icon:"✦",label:"ELÁSTICOS · PERNAS",title:"Agachamento com banda",summary:"Fortalece quadríceps e glúteos com controle de alinhamento.",pills:["2–3 séries","10–15 repetições","Descanso 60–90 s"],goal:"Força geral de pernas, estabilidade e controle.",steps:["Pise no elástico longo ou posicione mini band acima dos joelhos.","Pés na largura confortável; desça levando quadril para trás e joelhos na direção dos pés.","Suba pressionando o chão. Mantenha tensão sem deixar joelhos colapsarem."],dose:"2 séries no início; tensão que permita técnica limpa.",caution:"Evite banda muito forte ou amplitude dolorosa."},
+{cat:"band",icon:"⇢",label:"ELÁSTICOS · COSTAS",title:"Remada com elástico",summary:"Trabalha dorsais, romboides e bíceps; reforça postura.",pills:["2–3 séries","10–15 repetições","Controle na volta"],goal:"Fortalecer costas e estabilizadores escapulares.",steps:["Prenda o elástico em ancoragem segura à altura do tronco ou envolva os pés sentado.","Puxe cotovelos para trás sem elevar ombros.","Retorne lentamente sem perder postura."],dose:"2–3 × 10–15, pausa de 60 s.",caution:"Confira a ancoragem e inspecione o elástico antes de usar."},
+{cat:"band",icon:"⇠",label:"ELÁSTICOS · PEITO",title:"Supino / press à frente",summary:"Peitoral, tríceps e parte anterior dos ombros.",pills:["2 séries","10–12 repetições","Ritmo controlado"],goal:"Empurrar com estabilidade do tronco.",steps:["Passe a banda atrás das costas ou use ancoragem segura.","Mãos ao lado do peito, punhos neutros.","Empurre à frente e volte lentamente; não trave cotovelos."],dose:"2 × 10–12; esforço moderado.",caution:"Não usar elástico danificado nem ancoragem improvisada insegura."},
+{cat:"band",icon:"⌁",label:"ELÁSTICOS · POSTERIOR",title:"Terra romeno com elástico",summary:"Posterior de coxa e glúteos com movimento de dobradiça do quadril.",pills:["2–3 séries","10–12 repetições","Coluna neutra"],goal:"Fortalecer cadeia posterior e aprender padrão de hinge.",steps:["Pise no centro da banda e segure as pontas.","Flexione levemente joelhos; leve quadril para trás sem arredondar costas.","Suba estendendo quadril e contraindo glúteos."],dose:"2 séries no começo.",caution:"Reduza amplitude se perder coluna neutra ou sentir dor lombar."},
+{cat:"band",icon:"↑",label:"ELÁSTICOS · OMBROS",title:"Desenvolvimento acima da cabeça",summary:"Ombros e tríceps; controle de tronco e costelas.",pills:["2 séries","8–12 repetições","Sem arquear lombar"],goal:"Fortalecer empurrada vertical.",steps:["Pise na banda e leve mãos à altura dos ombros.","Empurre para cima em trajetória confortável.","Desça devagar; mantenha abdômen ativo."],dose:"2 × 8–12, banda leve/moderada.",caution:"Se houver desconforto no ombro, reduza amplitude ou substitua."},
+{cat:"band",icon:"↔",label:"ELÁSTICOS · GLÚTEOS",title:"Abdução de quadril com mini band",summary:"Glúteo médio e estabilidade pélvica.",pills:["2 séries","12–20 repetições","Movimento curto"],goal:"Controle lateral de quadril e alinhamento.",steps:["Coloque mini band acima dos joelhos ou nos tornozelos.","Mantenha pés paralelos e tronco estável.","Afaste joelhos/pernas sem girar o quadril; retorne com controle."],dose:"2 × 12–20 por lado.",caution:"Evite compensar inclinando o tronco."},
+{cat:"mobility",icon:"◎",label:"MOBILIDADE · AQUECIMENTO",title:"Rotina dinâmica pré-corrida",summary:"Prepara articulações e coordenação; não é alongamento estático prolongado.",pills:["5–7 minutos","Sem dor","Movimento fluido"],goal:"Entrar gradualmente na corrida.",steps:["Marcha ativa ou caminhada 1–2 min.","10 balanços de perna à frente/atrás por lado.","8–10 elevações de panturrilha e 8 agachamentos curtos.","Comece a correr bem leve por mais 3 min."],dose:"Antes de rodagem e sessão de qualidade.",caution:"Amplitude confortável; não force articulações."},
+{cat:"mobility",icon:"☾",label:"RECUPERAÇÃO · PÓS-TREINO",title:"Desaceleração e mobilidade leve",summary:"Ajuda a encerrar a sessão e retomar sensação confortável.",pills:["5–8 minutos","Respiração calma","Leve"],goal:"Transição gradual após corrida ou força.",steps:["Caminhe 3–5 min até a respiração baixar.","Movimente tornozelos, quadris e ombros suavemente.","Hidrate-se e observe como se sente nas próximas horas."],dose:"Após sessões conforme necessidade.",caution:"Mobilidade não deve causar dor nem substituir descanso."},
+{cat:"band",icon:"▱",label:"ELÁSTICOS · CORE",title:"Pallof press (anti-rotação)",summary:"Abdômen e estabilidade contra rotação do tronco.",pills:["2 séries","8–12 por lado","Pausa 2 s"],goal:"Estabilidade do tronco útil para corrida e força.",steps:["Prenda banda à altura do peito, ficando de lado para a ancoragem.","Segure junto ao peito e pressione à frente sem girar.","Retorne e repita; troque o lado."],dose:"2 × 8–12 por lado.",caution:"Use ancoragem firme e tensão que não arraste o corpo."}
+];
+function renderLibrary(filter="all",query=""){
+ const host=$("libraryCards");if(!host)return;
+ const q=query.trim().toLocaleLowerCase("pt-BR");
+ const items=LIBRARY_ITEMS.filter(x=>(filter==="all"||x.cat===filter)&&(!q||[x.title,x.label,x.summary,x.goal,x.pills.join(" ")].join(" ").toLocaleLowerCase("pt-BR").includes(q)));
+ $("libraryCount").textContent=items.length;
+ host.innerHTML=items.map((x,i)=>`<article class="lib-card"><div class="lib-card-top"><span class="lib-icon">${x.icon}</span><span class="lib-category">${x.label}</span></div><h3>${x.title}</h3><p class="lib-summary">${x.summary}</p><div class="lib-pills">${x.pills.map(p=>`<span class="lib-pill">${p}</span>`).join("")}</div><details class="lib-details"><summary>Ver guia completo</summary><div class="lib-detail-body"><p><strong>Objetivo:</strong> ${x.goal}</p><p><strong>Como executar</strong></p><ul>${x.steps.map(st=>`<li>${st}</li>`).join("")}</ul><p><strong>Volume sugerido:</strong> ${x.dose}</p><p><strong>Atenção:</strong> ${x.caution}</p></div></details></article>`).join("")||'<div class="lib-empty">Nenhum guia encontrado. Tente outra busca ou categoria.</div>';
+}
+document.addEventListener("DOMContentLoaded",()=>{
+ const search=$("librarySearch");if(search)search.addEventListener("input",()=>renderLibrary(document.querySelector(".lib-filter.active")?.dataset.filter||"all",search.value));
+ document.querySelectorAll(".lib-filter").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".lib-filter").forEach(b=>b.classList.toggle("active",b===btn));renderLibrary(btn.dataset.filter,search?.value||"")}));
+ renderLibrary();
+});
 
 function paceFromDistanceTime(km,seconds){return seconds/km}
 function parseTimeInput(v){const a=v.trim().split(":").map(Number);if(a.some(x=>!Number.isFinite(x)))return null;if(a.length===2&&a[0]>=0&&a[1]>=0&&a[1]<60)return a[0]*60+a[1];if(a.length===3&&a[0]>=0&&a[1]>=0&&a[1]<60&&a[2]>=0&&a[2]<60)return a[0]*3600+a[1]*60+a[2];return null}
