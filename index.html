@@ -95,6 +95,19 @@ button{transition:transform .15s,filter .15s}button:hover{filter:brightness(1.08
 .plan-done-btn.completed{background:rgba(185,244,91,.12);border-color:var(--lime);color:var(--lime)}
 .plan-day.is-completed{border-color:rgba(185,244,91,.42)}
 
+
+/* Fixibilidade: CTA de conclusão sempre visível, em linha própria */
+.plan-day{grid-template-columns:66px minmax(0,1fr);padding-bottom:16px}
+.plan-day .plan-accent{position:absolute;right:0;top:0;bottom:0;width:4px}
+.plan-done-btn{grid-column:2;justify-self:start;align-self:end;display:inline-flex!important;align-items:center;justify-content:center;min-height:40px;min-width:190px;margin-top:14px;padding:10px 16px;font-size:12px;font-weight:800;line-height:1.2;white-space:normal;opacity:1!important;visibility:visible!important;position:relative;z-index:2}
+.plan-day.is-completed .plan-done-btn{background:#b9f45b;color:#10160b;border-color:#b9f45b}
+.plan-day.is-completed .plan-done-btn.completed{color:#10160b}
+@media(max-width:680px){.plan-day{grid-template-columns:48px minmax(0,1fr);gap:10px}.plan-done-btn{grid-column:2;min-width:0;width:100%;max-width:260px}}
+
+
+.lib-video-link{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 12px;padding:10px 12px;border-radius:10px;background:#b9f45b12;border:1px solid #b9f45b55;color:var(--lime);font-weight:800;font-size:11px;text-decoration:none;transition:.15s}
+.lib-video-link:hover{background:#b9f45b25;border-color:var(--lime);transform:translateY(-1px)}
+
 /* Biblioteca reorganizada */
 .library-hero .eyebrow{font-size:10px;letter-spacing:2px;color:var(--lime);font-weight:800}
 .library-hero h2{margin:5px 0 8px}
@@ -531,7 +544,7 @@ function renderLibrary(filter="all",query=""){
  const q=query.trim().toLocaleLowerCase("pt-BR");
  const items=LIBRARY_ITEMS.filter(x=>(filter==="all"||x.cat===filter)&&(!q||[x.title,x.label,x.summary,x.goal,x.pills.join(" ")].join(" ").toLocaleLowerCase("pt-BR").includes(q)));
  $("libraryCount").textContent=items.length;
- host.innerHTML=items.map((x,i)=>`<article class="lib-card"><div class="lib-card-top"><span class="lib-icon">${x.icon}</span><span class="lib-category">${x.label}</span></div><h3>${x.title}</h3><p class="lib-summary">${x.summary}</p><div class="lib-pills">${x.pills.map(p=>`<span class="lib-pill">${p}</span>`).join("")}</div><details class="lib-details"><summary>Ver guia completo</summary><div class="lib-detail-body"><p><strong>Objetivo:</strong> ${x.goal}</p><p><strong>Como executar</strong></p><ul>${x.steps.map(st=>`<li>${st}</li>`).join("")}</ul><p><strong>Volume sugerido:</strong> ${x.dose}</p><p><strong>Atenção:</strong> ${x.caution}</p></div></details></article>`).join("")||'<div class="lib-empty">Nenhum guia encontrado. Tente outra busca ou categoria.</div>';
+ host.innerHTML=items.map((x,i)=>`<article class="lib-card"><div class="lib-card-top"><span class="lib-icon">${x.icon}</span><span class="lib-category">${x.label}</span></div><h3>${x.title}</h3><p class="lib-summary">${x.summary}</p><div class="lib-pills">${x.pills.map(p=>`<span class="lib-pill">${p}</span>`).join("")}</div><a class="lib-video-link" target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/results?search_query=${encodeURIComponent(x.title+" execução exercício demonstração")}">▶ Ver vídeo demonstrativo</a><details class="lib-details"><summary>Ver guia completo</summary><div class="lib-detail-body"><p><strong>Objetivo:</strong> ${x.goal}</p><p><strong>Como executar</strong></p><ul>${x.steps.map(st=>`<li>${st}</li>`).join("")}</ul><p><strong>Volume sugerido:</strong> ${x.dose}</p><p><strong>Atenção:</strong> ${x.caution}</p></div></details></article>`).join("")||'<div class="lib-empty">Nenhum guia encontrado. Tente outra busca ou categoria.</div>';
 }
 document.addEventListener("DOMContentLoaded",()=>{
  const search=$("librarySearch");if(search)search.addEventListener("input",()=>renderLibrary(document.querySelector(".lib-filter.active")?.dataset.filter||"all",search.value));
